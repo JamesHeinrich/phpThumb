@@ -82,7 +82,7 @@ function RedirectToCachedFile() {
 		SendSaveAsFileHeaderIfNeeded();
 
 		header('Last-Modified: '.gmdate('D, d M Y H:i:s', $nModified).' GMT');
-		if (@$_SERVER['HTTP_IF_MODIFIED_SINCE'] && ($nModified == strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE'])) && @$_SERVER['SERVER_PROTOCOL']) {
+		if (!empty($_SERVER['HTTP_IF_MODIFIED_SINCE']) && ($nModified == strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE'])) && !empty($_SERVER['SERVER_PROTOCOL'])) {
 			header($_SERVER['SERVER_PROTOCOL'].' 304 Not Modified');
 			exit;
 		}
@@ -92,7 +92,7 @@ function RedirectToCachedFile() {
 		} elseif (preg_match('#\\.ico$#i', $phpThumb->cache_filename)) {
 			header('Content-Type: image/x-icon');
 		}
-		if (!@$PHPTHUMB_CONFIG['cache_force_passthru'] && preg_match('#^'.preg_quote($nice_docroot).'(.*)$#', $nice_cachefile, $matches)) {
+		if (empty($PHPTHUMB_CONFIG['cache_force_passthru']) && preg_match('#^'.preg_quote($nice_docroot).'(.*)$#', $nice_cachefile, $matches)) {
 			header('Location: '.dirname($matches[1]).'/'.urlencode(basename($matches[1])));
 		} else {
 			@readfile($phpThumb->cache_filename);
@@ -180,7 +180,7 @@ if (!empty($PHPTHUMB_CONFIG['high_security_enabled'])) {
 	} elseif (PasswordStrength($PHPTHUMB_CONFIG['high_security_password']) < 20) {
 		$phpThumb->config_disable_debug = false; // otherwise error message won't print
 		$phpThumb->ErrorImage('ERROR: $PHPTHUMB_CONFIG[high_security_password] is not complex enough');
-	} elseif ($_GET['hash'] != md5(str_replace('&hash='.$_GET['hash'], '', $_SERVER['QUERY_STRING']).$PHPTHUMB_CONFIG['high_security_password'])) {
+	} elseif ($_GET['hash'] != md5(str_replace('&hash='.$_GET['hash'], '', urldecode($_SERVER['QUERY_STRING'])).$PHPTHUMB_CONFIG['high_security_password'])) {
 		sleep(10); // deliberate delay to discourage password-guessing
 		$phpThumb->config_disable_debug = false; // otherwise error message won't print
 		$phpThumb->ErrorImage('ERROR: invalid hash');
