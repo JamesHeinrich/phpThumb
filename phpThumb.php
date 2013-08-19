@@ -81,17 +81,19 @@ function RedirectToCachedFile() {
 		}
 		SendSaveAsFileHeaderIfNeeded();
 
-		header('Last-Modified: '.gmdate('D, d M Y H:i:s', $nModified).' GMT');
+		header('Cache-Control: private');
+		header('Pragma: private');
+		header('Expires: '.date(DATE_RFC822, strtotime(' 1 day')));
 		if (!empty($_SERVER['HTTP_IF_MODIFIED_SINCE']) && ($nModified == strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE'])) && !empty($_SERVER['SERVER_PROTOCOL'])) {
-			header($_SERVER['SERVER_PROTOCOL'].' 304 Not Modified');
+			header('Last-Modified: '.gmdate('D, d M Y H:i:s', $nModified).' GMT', true, 304);
 			exit;
 		}
-
 		if ($getimagesize = @GetImageSize($phpThumb->cache_filename)) {
 			header('Content-Type: '.phpthumb_functions::ImageTypeToMIMEtype($getimagesize[2]));
 		} elseif (preg_match('#\\.ico$#i', $phpThumb->cache_filename)) {
 			header('Content-Type: image/x-icon');
 		}
+		header('Content-Length: '.filesize($phpThumb->cache_filename));
 		if (empty($PHPTHUMB_CONFIG['cache_force_passthru']) && preg_match('#^'.preg_quote($nice_docroot).'(.*)$#', $nice_cachefile, $matches)) {
 			header('Location: '.dirname($matches[1]).'/'.urlencode(basename($matches[1])));
 		} else {
