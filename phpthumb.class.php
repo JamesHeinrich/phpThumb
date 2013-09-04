@@ -871,6 +871,7 @@ class phpthumb {
 		return true;
 	}
 
+
 	function setOutputFormat() {
 		static $alreadyCalled = false;
 		if ($this->thumbnailFormat && $alreadyCalled) {
@@ -952,6 +953,7 @@ class phpthumb {
 
 		return true;
 	}
+
 
 	function setCacheDirectory() {
 		// resolve cache directory to absolute pathname
@@ -1113,6 +1115,7 @@ class phpthumb {
 		return $AbsoluteFilename;
 	}
 
+
 	function file_exists_ignoreopenbasedir($filename, $cached=true) {
 		static $open_basedirs = null;
 		static $file_exists_cache = array();
@@ -1133,6 +1136,7 @@ class phpthumb {
 		return $file_exists_cache[$filename];
 	}
 
+
 	function ImageMagickWhichConvert() {
 		static $WhichConvert = null;
 		if (is_null($WhichConvert)) {
@@ -1151,6 +1155,7 @@ class phpthumb {
 		return $WhichConvert;
 	}
 
+
 	function ImageMagickCommandlineBase() {
 		static $commandline = null;
 		if (is_null($commandline)) {
@@ -1158,6 +1163,12 @@ class phpthumb {
 				$commandline = '';
 				return $commandline;
 			}
+
+			$IMcommandlineBaseCacheFilename = $this->config_cache_directory.DIRECTORY_SEPARATOR.'phpThumbCacheIMcommandlineBase.txt';
+			if (($commandline = @file_get_contents($IMcommandlineBaseCacheFilename)) !== false) {
+				return $commandline;
+			}
+
 			$commandline = (!is_null($this->config_imagemagick_path) ? $this->config_imagemagick_path : '');
 
 			if ($this->config_imagemagick_path && ($this->config_imagemagick_path != realpath($this->config_imagemagick_path))) {
@@ -1174,40 +1185,46 @@ class phpthumb {
 			$this->DebugMessage('                is_executable('.$this->config_imagemagick_path.') = '.intval(                      @is_executable($this->config_imagemagick_path)), __FILE__, __LINE__);
 
 			if ($this->file_exists_ignoreopenbasedir($this->config_imagemagick_path)) {
+
 				$this->DebugMessage('using ImageMagick path from $this->config_imagemagick_path ('.$this->config_imagemagick_path.')', __FILE__, __LINE__);
 				if ($this->iswindows) {
 					$commandline = substr($this->config_imagemagick_path, 0, 2).' && cd '.escapeshellarg(str_replace('/', DIRECTORY_SEPARATOR, substr(dirname($this->config_imagemagick_path), 2))).' && '.escapeshellarg(basename($this->config_imagemagick_path));
 				} else {
 					$commandline = escapeshellarg($this->config_imagemagick_path);
 				}
-				return $commandline;
-			}
-
-			$which_convert = $this->ImageMagickWhichConvert();
-			$IMversion     = $this->ImageMagickVersion();
-
-			if ($which_convert && ($which_convert{0} == '/') && $this->file_exists_ignoreopenbasedir($which_convert)) {
-
-				// `which convert` *should* return the path if "convert" exist, or nothing if it doesn't
-				// other things *may* get returned, like "sh: convert: not found" or "no convert in /usr/local/bin /usr/sbin /usr/bin /usr/ccs/bin"
-				// so only do this if the value returned exists as a file
-				$this->DebugMessage('using ImageMagick path from `which convert` ('.$which_convert.')', __FILE__, __LINE__);
-				$commandline = 'convert';
-
-			} elseif ($IMversion) {
-
-				$this->DebugMessage('setting ImageMagick path to $this->config_imagemagick_path ('.$this->config_imagemagick_path.') ['.$IMversion.']', __FILE__, __LINE__);
-				$commandline = $this->config_imagemagick_path;
 
 			} else {
 
-				$this->DebugMessage('ImageMagickThumbnailToGD() aborting because cannot find convert in $this->config_imagemagick_path ('.$this->config_imagemagick_path.'), and `which convert` returned ('.$which_convert.')', __FILE__, __LINE__);
-				$commandline = '';
+				$which_convert = $this->ImageMagickWhichConvert();
+				$IMversion     = $this->ImageMagickVersion();
+
+				if ($which_convert && ($which_convert{0} == '/') && $this->file_exists_ignoreopenbasedir($which_convert)) {
+
+					// `which convert` *should* return the path if "convert" exist, or nothing if it doesn't
+					// other things *may* get returned, like "sh: convert: not found" or "no convert in /usr/local/bin /usr/sbin /usr/bin /usr/ccs/bin"
+					// so only do this if the value returned exists as a file
+					$this->DebugMessage('using ImageMagick path from `which convert` ('.$which_convert.')', __FILE__, __LINE__);
+					$commandline = 'convert';
+
+				} elseif ($IMversion) {
+
+					$this->DebugMessage('setting ImageMagick path to $this->config_imagemagick_path ('.$this->config_imagemagick_path.') ['.$IMversion.']', __FILE__, __LINE__);
+					$commandline = $this->config_imagemagick_path;
+
+				} else {
+
+					$this->DebugMessage('ImageMagickThumbnailToGD() aborting because cannot find convert in $this->config_imagemagick_path ('.$this->config_imagemagick_path.'), and `which convert` returned ('.$which_convert.')', __FILE__, __LINE__);
+					$commandline = '';
+
+				}
 
 			}
+
+			@file_put_contents($IMcommandlineBaseCacheFilename, $commandline);
 		}
 		return $commandline;
 	}
+
 
 	function ImageMagickVersion($returnRAW=false) {
 		static $versionstring = null;
@@ -1245,6 +1262,7 @@ class phpthumb {
 		return $versionstring[intval($returnRAW)];
 	}
 
+
 	function ImageMagickSwitchAvailable($switchname) {
 		static $IMoptions = null;
 		if (is_null($IMoptions)) {
@@ -1276,6 +1294,7 @@ class phpthumb {
 		return $allOK;
 	}
 
+
 	function ImageMagickFormatsList() {
 		static $IMformatsList = null;
 		if (is_null($IMformatsList)) {
@@ -1289,6 +1308,7 @@ class phpthumb {
 		}
 		return $IMformatsList;
 	}
+
 
 	function SourceDataToTempFile() {
 		if ($IMtempSourceFilename = $this->phpThumb_tempnam()) {
@@ -1311,6 +1331,7 @@ class phpthumb {
 		$this->DebugMessage('SourceDataToTempFile() FAILED because $this->phpThumb_tempnam() failed', __FILE__, __LINE__);
 		return false;
 	}
+
 
 	function ImageMagickThumbnailToGD() {
 		// http://www.imagemagick.org/script/command-line-options.php
