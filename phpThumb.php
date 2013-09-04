@@ -15,7 +15,7 @@ ini_set('magic_quotes_runtime', '0');
 if (ini_get('magic_quotes_runtime')) {
 	die('"magic_quotes_runtime" is set in php.ini, cannot run phpThumb with this enabled');
 }
-$starttime = array_sum(explode(' ', microtime()));
+$starttime = array_sum(explode(' ', microtime())); // could be called as microtime(true) for PHP 5.0.0+
 
 // this script relies on the superglobal arrays, fake it here for old PHP versions
 if (phpversion() < '4.1.0') {
@@ -114,7 +114,6 @@ if (!include_once(dirname(__FILE__).'/phpthumb.class.php')) {
 	die('failed to include_once("'.realpath(dirname(__FILE__).'/phpthumb.class.php').'")');
 }
 ob_end_clean();
-
 $phpThumb = new phpThumb();
 $phpThumb->DebugTimingMessage('phpThumb.php start', __FILE__, __LINE__, $starttime);
 $phpThumb->SetParameter('config_error_die_on_error', true);
@@ -249,7 +248,7 @@ if (!empty($PHPTHUMB_CONFIG)) {
 	$phpThumb->DebugMessage('$PHPTHUMB_CONFIG is empty', __FILE__, __LINE__);
 }
 
-if (@$_GET['src'] && !@$PHPTHUMB_CONFIG['allow_local_http_src'] && preg_match('#^http://'.@$_SERVER['HTTP_HOST'].'(.+)#i', @$_GET['src'], $matches)) {
+if (!empty($_GET['src']) && empty($PHPTHUMB_CONFIG['allow_local_http_src']) && preg_match('#^http://'.@$_SERVER['HTTP_HOST'].'(.+)#i', $_GET['src'], $matches)) {
 	$phpThumb->ErrorImage('It is MUCH better to specify the "src" parameter as "'.$matches[1].'" instead of "'.$matches[0].'".'."\n\n".'If you really must do it this way, enable "allow_local_http_src" in phpThumb.config.php');
 }
 

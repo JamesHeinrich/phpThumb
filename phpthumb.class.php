@@ -912,7 +912,8 @@ class phpthumb {
 			//return $this->ErrorImage('ImageTypes() does not exist - GD support might not be enabled?');
 			$this->DebugMessage('ImageTypes() does not exist - GD support might not be enabled?',  __FILE__, __LINE__);
 		}
-		if ($this->ImageMagickVersion()) {
+		//if ($this->ImageMagickVersion()) { // this call is dangerous, can add ~50ms to the retrieval of a cached image by spawning several shell calls to ImageMagick
+		if (true) { // far from ideal, but experimentally changing to this for now (2013-Sep-03)
 			$IMformats = array('jpeg', 'png', 'gif', 'bmp', 'ico', 'wbmp');
 			$this->DebugMessage('Addding ImageMagick formats to $AvailableImageOutputFormats ('.implode(';', $AvailableImageOutputFormats).')', __FILE__, __LINE__);
 			foreach ($IMformats as $key => $format) {
@@ -3241,7 +3242,7 @@ exit;
 			$broad_directory_name = strtolower(md5($this->sourceFilename));
 			$this->cache_filename .= '_src'.$broad_directory_name;
 		}
-		if (@$_SERVER['HTTP_REFERER'] && $this->config_nooffsitelink_enabled) {
+		if (!empty($_SERVER['HTTP_REFERER']) && $this->config_nooffsitelink_enabled) {
 			$parsed_url1 = @phpthumb_functions::ParseURLbetter(@$_SERVER['HTTP_REFERER']);
 			$parsed_url2 = @phpthumb_functions::ParseURLbetter('http://'.@$_SERVER['HTTP_HOST']);
 			if (@$parsed_url1['host'] && @$parsed_url2['host'] && ($parsed_url1['host'] != $parsed_url2['host'])) {
