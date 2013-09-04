@@ -912,8 +912,7 @@ class phpthumb {
 			//return $this->ErrorImage('ImageTypes() does not exist - GD support might not be enabled?');
 			$this->DebugMessage('ImageTypes() does not exist - GD support might not be enabled?',  __FILE__, __LINE__);
 		}
-		//if ($this->ImageMagickVersion()) { // this call is dangerous, can add ~50ms to the retrieval of a cached image by spawning several shell calls to ImageMagick
-		if (true) { // far from ideal, but experimentally changing to this for now (2013-Sep-03)
+		if ($this->ImageMagickVersion()) {
 			$IMformats = array('jpeg', 'png', 'gif', 'bmp', 'ico', 'wbmp');
 			$this->DebugMessage('Addding ImageMagick formats to $AvailableImageOutputFormats ('.implode(';', $AvailableImageOutputFormats).')', __FILE__, __LINE__);
 			foreach ($IMformats as $key => $format) {
@@ -1140,7 +1139,13 @@ class phpthumb {
 			if ($this->iswindows) {
 				$WhichConvert = false;
 			} else {
-				$WhichConvert = trim(phpthumb_functions::SafeExec('which convert'));
+				$IMwhichConvertCacheFilename = $this->config_cache_directory.DIRECTORY_SEPARATOR.'phpThumbCacheIMwhichConvert.txt';
+				if (($cachedwhichconvertstring = @file_get_contents($IMwhichConvertCacheFilename)) !== false) {
+					$WhichConvert = $cachedwhichconvertstring;
+				} else {
+					$WhichConvert = trim(phpthumb_functions::SafeExec('which convert'));
+					@file_put_contents($IMwhichConvertCacheFilename, $WhichConvert);
+				}
 			}
 		}
 		return $WhichConvert;
@@ -1208,20 +1213,33 @@ class phpthumb {
 		static $versionstring = null;
 		if (is_null($versionstring)) {
 			$versionstring = array(0=>false, 1=>false);
-			$commandline = $this->ImageMagickCommandlineBase();
-			$commandline = (!is_null($commandline) ? $commandline : '');
 
-			if ($commandline) {
-				$commandline .= ' --version';
-				$this->DebugMessage('ImageMagick version checked with "'.$commandline.'"', __FILE__, __LINE__);
-				$versionstring[1] = trim(phpthumb_functions::SafeExec($commandline));
-				if (preg_match('#^Version: [^0-9]*([ 0-9\\.\\:Q/\\-]+) (http|file)\:#i', $versionstring[1], $matches)) {
-					$versionstring[0] = $matches[1];
-				} else {
-					$versionstring[0] = false;
-					$this->DebugMessage('ImageMagick did not return recognized version string ('.$versionstring[1].')', __FILE__, __LINE__);
+			$IMversionCacheFilename = $this->config_cache_directory.DIRECTORY_SEPARATOR.'phpThumbCacheIMversion.txt';
+			if ($cachedversionstring = @file_get_contents($IMversionCacheFilename)) {
+
+				$versionstring = explode("\n", $cachedversionstring, 2);
+				$versionstring[0] = ($versionstring[0] ? $versionstring[0] : false); // "false" is stored as an empty string in the cache file
+				$versionstring[1] = ($versionstring[1] ? $versionstring[1] : false); // "false" is stored as an empty string in the cache file
+
+			} else {
+
+				$commandline = $this->ImageMagickCommandlineBase();
+				$commandline = (!is_null($commandline) ? $commandline : '');
+				if ($commandline) {
+					$commandline .= ' --version';
+					$this->DebugMessage('ImageMagick version checked with "'.$commandline.'"', __FILE__, __LINE__);
+					$versionstring[1] = trim(phpthumb_functions::SafeExec($commandline));
+					if (preg_match('#^Version: [^0-9]*([ 0-9\\.\\:Q/\\-]+) (http|file)\:#i', $versionstring[1], $matches)) {
+						$versionstring[0] = $matches[1];
+					} else {
+						$versionstring[0] = false;
+						$this->DebugMessage('ImageMagick did not return recognized version string ('.$versionstring[1].')', __FILE__, __LINE__);
+					}
+					$this->DebugMessage('ImageMagick convert --version says "'.@$matches[0].'"', __FILE__, __LINE__);
 				}
-				$this->DebugMessage('ImageMagick convert --version says "'.@$matches[0].'"', __FILE__, __LINE__);
+
+				@file_put_contents($IMversionCacheFilename, $versionstring[0]."\n".$versionstring[1]);
+
 			}
 		}
 		return $versionstring[intval($returnRAW)];
@@ -3198,12 +3216,14 @@ exit;
 			$this->DebugMessage('$this->cache_filename already set, skipping SetCacheFilename()', __FILE__, __LINE__);
 			return true;
 		}
-		$this->setOutputFormat();
-		$this->setCacheDirectory();
-		if (!$this->config_cache_directory) {
-			$this->DebugMessage('SetCacheFilename() failed because $this->config_cache_directory is empty', __FILE__, __LINE__);
-			return false;
+		if (is_null($this->config_cache_directory)) {
+			$this->setCacheDirectory();
+			if (!$this->config_cache_directory) {
+				$this->DebugMessage('SetCacheFilename() failed because $this->config_cache_directory is empty', __FILE__, __LINE__);
+				return false;
+			}
 		}
+		$this->setOutputFormat();
 
 		if (!$this->sourceFilename && !$this->rawImageData && $this->src) {
 			$this->sourceFilename = $this->ResolveFilenameToAbsolute($this->src);
