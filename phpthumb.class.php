@@ -2535,7 +2535,8 @@ exit;
 							$this->DebugMessage('Skipping Mask() because gd_version is "'.phpthumb_functions::gd_version().'"', __FILE__, __LINE__);
 							return false;
 						}
-						$mask_filename = $this->ResolveFilenameToAbsolute($parameter);
+						@list($mask_filename, $invert) = explode('|', $parameter, 2);
+						$mask_filename = $this->ResolveFilenameToAbsolute($mask_filename);
 						if (@is_readable($mask_filename) && ($fp_mask = @fopen($mask_filename, 'rb'))) {
 							$MaskImageData = '';
 							do {
@@ -2544,6 +2545,9 @@ exit;
 							} while (strlen($buffer) > 0);
 							fclose($fp_mask);
 							if ($gdimg_mask = $this->ImageCreateFromStringReplacement($MaskImageData)) {
+								if ($invert && phpthumb_functions::version_compare_replacement(phpversion(), '5.0.0', '>=') && phpthumb_functions::gd_is_bundled()) {
+									ImageFilter($gdimg_mask, IMG_FILTER_NEGATE);
+								}
 								$this->is_alpha = true;
 								$phpthumbFilters->ApplyMask($gdimg_mask, $this->gdimg_output);
 								ImageDestroy($gdimg_mask);

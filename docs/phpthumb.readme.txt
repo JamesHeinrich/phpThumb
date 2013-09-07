@@ -411,10 +411,12 @@ fltr = filter system. Call as an array as follows:
          of the curve and <y> is the vertical radius
        - "elip" [ex: &fltr[]=elip]
          similar to rounded corners but more extreme
-       - "mask" [ex: &fltr[]=mask|filename.png]
+       - "mask" [ex: &fltr[]=mask|filename.png|<i>]
          greyscale values of mask are applied as the alpha
          channel to the main image. White is opaque, black
-         is transparent.
+         is transparent, unless the <i> (invert) parameter is
+         set to 1 in which case black is opaque and white is
+         transparent
        - "bvl" (BeVeL) [ex: &fltr[]=bvl|<w>|<c1>|<c2>]
          where <w> is the bevel width, <c1> is the hex color
          for the top and left shading, <c2> is the hex color
