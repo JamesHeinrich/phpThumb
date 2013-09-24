@@ -604,7 +604,7 @@ class phpthumb {
 				case 'jpeg':
 					header('Content-Type: '.phpthumb_functions::ImageTypeToMIMEtype($this->thumbnailFormat));
 					$ImageOutFunction = 'image'.$this->thumbnailFormat;
-					@$ImageOutFunction($this->gdimg_output, '', $this->thumbnailQuality);
+					@$ImageOutFunction($this->gdimg_output, null, $this->thumbnailQuality);
 					break;
 
 				case 'png':
@@ -2901,7 +2901,7 @@ exit;
 						for ($i = 3; $i < 20; $i++) {
 							$q = round(100 * (1 - log10($i / 2)));
 							ob_start();
-							ImageJPEG($this->gdimg_output, '', $q);
+							ImageJPEG($this->gdimg_output, null, $q);
 							$imgdata = ob_get_contents();
 							ob_end_clean();
 
