@@ -246,7 +246,7 @@ $PHPTHUMB_DEFAULTS_DISABLEGETPARAMS  = false; // if true, GETstring parameters w
 
 function phpThumbURL($ParameterString) {
 	global $PHPTHUMB_CONFIG;
-	return str_replace(DIRECTORY_SEPARATOR, '/', str_replace(@$PHPTHUMB_CONFIG['document_root'], '', dirname(__FILE__))).DIRECTORY_SEPARATOR.'phpThumb.php?'.$ParameterString.'&hash='.md5($ParameterString.@$PHPTHUMB_CONFIG['high_security_password']);
+	return str_replace(DIRECTORY_SEPARATOR, '/', str_replace(@$PHPTHUMB_CONFIG['document_root'], '', dirname(__FILE__)).DIRECTORY_SEPARATOR).'phpThumb.php?'.$ParameterString.'&hash='.md5($ParameterString.@$PHPTHUMB_CONFIG['high_security_password']);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
