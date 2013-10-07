@@ -314,7 +314,7 @@ if (!empty($PHPTHUMB_DEFAULTS) && is_array($PHPTHUMB_DEFAULTS)) {
 	foreach ($PHPTHUMB_DEFAULTS as $key => $value) {
 		if ($PHPTHUMB_DEFAULTS_GETSTRINGOVERRIDE || !isset($_GET[$key])) {
 			$_GET[$key] = $value;
-			$phpThumb->DebugMessage('PHPTHUMB_DEFAULTS assigning ('.$value.') to $_GET['.$key.']', __FILE__, __LINE__);
+			$phpThumb->DebugMessage('PHPTHUMB_DEFAULTS assigning ('.(is_array($value) ? print_r($value, true) : $value).') to $_GET['.$key.']', __FILE__, __LINE__);
 		}
 	}
 }
