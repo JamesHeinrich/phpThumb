@@ -42,7 +42,7 @@ and the roundoff errors in the Gaussian blur process, are welcome.
 
 class phpUnsharpMask {
 
-	function applyUnsharpMask(&$img, $amount, $radius, $threshold) {
+	static function applyUnsharpMask(&$img, $amount, $radius, $threshold) {
 
 		// $img is an image that is already created within php using
 		// imgcreatetruecolor. No url! $img must be a truecolor image.
