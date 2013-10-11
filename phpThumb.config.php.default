@@ -191,17 +191,19 @@ $PHPTHUMB_CONFIG['mysql_database'] = '';
 
 
 // * Security configuration
-$PHPTHUMB_CONFIG['high_security_enabled']    = false;  // if enabled, requires 'high_security_password' set to be set and requires the use of phpThumbURL() function (at the bottom of phpThumb.config.php) to generate hashed URLs
-$PHPTHUMB_CONFIG['high_security_password']   = '';     // required if 'high_security_enabled' is true, and must be at complex (uppercase, lowercase, numbers, punctuation, etc -- punctuation is strongest, lowercase is weakest; see PasswordStrength() in phpThumb.php). You can use a password generator like http://silisoftware.com/tools/password-random.php to generate a strong password
-$PHPTHUMB_CONFIG['disable_debug']            = true;   // prevent phpThumb from displaying any information about your system. If true, phpThumbDebug and error messages will be disabled
-$PHPTHUMB_CONFIG['allow_src_above_docroot']  = false;  // if true, allow src to be anywhere in filesystem; if false (default) only allow src within document_root
-$PHPTHUMB_CONFIG['allow_src_above_phpthumb'] = true;   // if true (default), allow src to be anywhere in filesystem; if false only allow src within sub-directory of phpThumb installation
+$PHPTHUMB_CONFIG['high_security_enabled']              = false;  // if enabled, requires 'high_security_password' set to be set and requires the use of phpThumbURL() function (at the bottom of phpThumb.config.php) to generate hashed URLs
+$PHPTHUMB_CONFIG['high_security_password']             = '';     // required if 'high_security_enabled' is true, and must be at complex (uppercase, lowercase, numbers, punctuation, etc -- punctuation is strongest, lowercase is weakest; see PasswordStrength() in phpThumb.php). You can use a password generator like http://silisoftware.com/tools/password-random.php to generate a strong password
+$PHPTHUMB_CONFIG['config_high_security_url_separator'] = '&';    // should almost always be left as '&'. Must be a single character. Do not change to '&amp;' -- htmlspecialchars wrapped around phpThumbURL() takes care of this without breaking the hash
+$PHPTHUMB_CONFIG['disable_debug']                      = true;   // prevent phpThumb from displaying any information about your system. If true, phpThumbDebug and error messages will be disabled
+$PHPTHUMB_CONFIG['allow_src_above_docroot']            = false;  // if true, allow src to be anywhere in filesystem; if false (default) only allow src within document_root
+$PHPTHUMB_CONFIG['allow_src_above_phpthumb']           = true;   // if true (default), allow src to be anywhere in filesystem; if false only allow src within sub-directory of phpThumb installation
 
 
 // * HTTP UserAgent configuration
-//$PHPTHUMB_CONFIG['http_user_agent'] = '';                                                                                      // PHP default: none
-//$PHPTHUMB_CONFIG['http_user_agent'] = 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)';                                    // Windows XP, Internet Explorer
-$PHPTHUMB_CONFIG['http_user_agent'] = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.7.12) Gecko/20050915 Firefox/1.0.7'; // Windows XP, Firefox
+//$PHPTHUMB_CONFIG['http_user_agent'] = '';                                                                                        // PHP default: none
+//$PHPTHUMB_CONFIG['http_user_agent'] = 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)';                                      // Windows XP, Internet Explorer
+//$PHPTHUMB_CONFIG['http_user_agent'] = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.7.12) Gecko/20050915 Firefox/1.0.7'; // Windows XP, Firefox
+$PHPTHUMB_CONFIG['http_user_agent'] = @$_SERVER['HTTP_USER_AGENT'];                                                                // use client user-agent
 
 
 // * Compatability settings
@@ -242,11 +244,11 @@ $PHPTHUMB_DEFAULTS_DISABLEGETPARAMS  = false; // if true, GETstring parameters w
 // Function for generating hashed calls to phpThumb if 'high_security_enabled'
 // example:
 //   require_once($_SERVER['DOCUMENT_ROOT'].'/phpThumb/phpThumb.config.php');
-//   echo '<img src="'.phpThumbURL('src=/images/pic.jpg&w=50').'">';
+//   echo '<img src="'.htmlspecialchars(phpThumbURL('src=/images/pic.jpg&w=50')).'">';
 
-function phpThumbURL($ParameterString, $separator='&', $path_to_phpThumb='phpThumb.php') {
+function phpThumbURL($ParameterString, $path_to_phpThumb='phpThumb.php') {
 	global $PHPTHUMB_CONFIG;
-	return str_replace(DIRECTORY_SEPARATOR, '/', str_replace(@$PHPTHUMB_CONFIG['document_root'], '', dirname(__FILE__)).DIRECTORY_SEPARATOR).$path_to_phpThumb.'?'.$ParameterString.$separator.'hash='.md5($ParameterString.@$PHPTHUMB_CONFIG['high_security_password']);
+	return str_replace(DIRECTORY_SEPARATOR, '/', str_replace(@$PHPTHUMB_CONFIG['document_root'], '', dirname(__FILE__)).DIRECTORY_SEPARATOR).$path_to_phpThumb.'?'.$ParameterString.$PHPTHUMB_CONFIG['config_high_security_url_separator'].'hash='.md5($ParameterString.@$PHPTHUMB_CONFIG['high_security_password']);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

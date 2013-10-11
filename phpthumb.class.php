@@ -138,6 +138,7 @@ class phpthumb {
 	// * Security
 	var $config_high_security_enabled                = false;
 	var $config_high_security_password               = null;
+	var $config_high_security_url_separator          = '&';
 	var $config_disable_debug                        = true;
 	var $config_allow_src_above_docroot              = false;
 	var $config_allow_src_above_phpthumb             = true;
