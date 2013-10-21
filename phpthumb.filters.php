@@ -1380,9 +1380,13 @@ class phpthumb_filters {
 
 						case 'BR':
 						default:
-							$x_offset = $text_width - (ImageFontWidth($size) * strlen($line));
-							$originOffsetX = ImageSX($gdimg) - ImageSX($img_watermark) - $margin;
-							$originOffsetY = ImageSY($gdimg) - ImageSY($img_watermark) - $margin;
+							if (!empty($originOffsetX) || !empty($originOffsetY)) {
+								// absolute pixel positioning
+							} else {
+								$x_offset = $text_width - (ImageFontWidth($size) * strlen($line));
+								$originOffsetX = ImageSX($gdimg) - ImageSX($img_watermark) - $margin;
+								$originOffsetY = ImageSY($gdimg) - ImageSY($img_watermark) - $margin;
+							}
 							break;
 					}
 					$this->DebugMessage('WatermarkText() calling ImageString($img_watermark, '.$size.', '.$x_offset.', '.($key * ImageFontHeight($size)).', '.$line.', $text_color_watermark)', __FILE__, __LINE__);
