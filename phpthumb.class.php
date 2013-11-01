@@ -207,7 +207,7 @@ class phpthumb {
 	var $iswindows  = null;
 	var $issafemode = null;
 
-	var $phpthumb_version = '1.7.11-201108081537';
+	var $phpthumb_version = '1.7.12-201311010937';
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -3889,7 +3889,7 @@ exit;
 		$width  = ($width  ? $width  : $this->config_error_image_width);
 		$height = ($height ? $height : $this->config_error_image_height);
 
-		$text = 'phpThumb() v'.$this->phpthumb_version."\n".'http://phpthumb.sourceforge.net'."\n\n".($this->config_disable_debug ? 'Error messages disabled' : $text);
+		$text = 'phpThumb() v'.$this->phpthumb_version."\n".'http://phpthumb.sourceforge.net'."\n\n".($this->config_disable_debug ? 'Error messages disabled.'."\n\n".'edit phpThumb.config.php and (temporarily) set'."\n".'$PHPTHUMB_CONFIG[\'disable_debug\'] = false;'."\n".'to view the details of this error' : $text);
 
 		$this->FatalError($text);
 		$this->DebugMessage($text, __FILE__, __LINE__);
