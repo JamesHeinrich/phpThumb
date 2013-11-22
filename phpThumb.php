@@ -28,10 +28,10 @@ function SendSaveAsFileHeaderIfNeeded() {
 		return false;
 	}
 	global $phpThumb;
-	$downloadfilename = phpthumb_functions::SanitizeFilename(@$_GET['sia'] ? $_GET['sia'] : (@$_GET['down'] ? $_GET['down'] : 'phpThumb_generated_thumbnail'.(@$_GET['f'] ? $_GET['f'] : 'jpg')));
-	if (@$downloadfilename) {
+	$downloadfilename = phpthumb_functions::SanitizeFilename(@$_GET['sia'] ? $_GET['sia'] : (!empty($_GET['down']) ? $_GET['down'] : 'phpThumb_generated_thumbnail'.(!empty($_GET['f']) ? $_GET['f'] : 'jpg')));
+	if (!empty($downloadfilename)) {
 		$phpThumb->DebugMessage('SendSaveAsFileHeaderIfNeeded() sending header: Content-Disposition: '.(@$_GET['down'] ? 'attachment' : 'inline').'; filename="'.$downloadfilename.'"', __FILE__, __LINE__);
-		header('Content-Disposition: '.(@$_GET['down'] ? 'attachment' : 'inline').'; filename="'.$downloadfilename.'"');
+		header('Content-Disposition: '.(!empty($_GET['down']) ? 'attachment' : 'inline').'; filename="'.$downloadfilename.'"');
 	}
 	return true;
 }
@@ -216,10 +216,14 @@ if (empty($_SERVER['PATH_INFO']) && empty($_SERVER['QUERY_STRING'])) {
 	$phpThumb->ErrorImage('ERROR: no parameters specified');
 }
 
-if (@$_GET['src'] && isset($_GET['md5s']) && empty($_GET['md5s'])) {
-	if (preg_match('#^(f|ht)tps?://#i', $_GET['src'])) {
-		if ($rawImageData = phpthumb_functions::SafeURLread($_GET['src'], $error, $phpThumb->config_http_fopen_timeout, $phpThumb->config_http_follow_redirect)) {
-			$md5s = md5($rawImageData);
+if (!empty($_GET['src']) && isset($_GET['md5s']) && empty($_GET['md5s'])) {
+	if (preg_match('#^([a-z0-9]+)://#i', $_GET['src'], $protocol_matches)) {
+		if (preg_match('#^(f|ht)tps?://#i', $_GET['src'])) {
+			if ($rawImageData = phpthumb_functions::SafeURLread($_GET['src'], $error, $phpThumb->config_http_fopen_timeout, $phpThumb->config_http_follow_redirect)) {
+				$md5s = md5($rawImageData);
+			}
+		} else {
+			$phpThumb->ErrorImage('only FTP and HTTP/HTTPS protocols are allowed, "'.$protocol_matches[1].'" is not');
 		}
 	} else {
 		$SourceFilename = $phpThumb->ResolveFilenameToAbsolute($_GET['src']);
@@ -229,7 +233,7 @@ if (@$_GET['src'] && isset($_GET['md5s']) && empty($_GET['md5s'])) {
 			$phpThumb->ErrorImage('ERROR: "'.$SourceFilename.'" cannot be read');
 		}
 	}
-	if (@$_SERVER['HTTP_REFERER']) {
+	if (!empty($_SERVER['HTTP_REFERER'])) {
 		$phpThumb->ErrorImage('&md5s='.$md5s);
 	} else {
 		die('&md5s='.$md5s);
@@ -541,24 +545,29 @@ if ($phpThumb->rawImageData) {
 
 	$phpThumb->ErrorImage('Usage: '.$_SERVER['PHP_SELF'].'?src=/path/and/filename.jpg'."\n".'read Usage comments for details');
 
-} elseif (preg_match('#^(f|ht)tp\://#i', $phpThumb->src)) {
+} elseif (preg_match('#^([a-z0-9]+)://#i', $_GET['src'], $protocol_matches)) {
 
-	$phpThumb->DebugMessage('$phpThumb->src ('.$phpThumb->src.') is remote image, attempting to download', __FILE__, __LINE__);
-	if ($phpThumb->config_http_user_agent) {
-		$phpThumb->DebugMessage('Setting "user_agent" to "'.$phpThumb->config_http_user_agent.'"', __FILE__, __LINE__);
-		ini_set('user_agent', $phpThumb->config_http_user_agent);
-	}
-	$cleanedupurl = phpthumb_functions::CleanUpURLencoding($phpThumb->src);
-	$phpThumb->DebugMessage('CleanUpURLencoding('.$phpThumb->src.') returned "'.$cleanedupurl.'"', __FILE__, __LINE__);
-	$phpThumb->src = $cleanedupurl;
-	unset($cleanedupurl);
-	if ($rawImageData = phpthumb_functions::SafeURLread($phpThumb->src, $error, $phpThumb->config_http_fopen_timeout, $phpThumb->config_http_follow_redirect)) {
-		$phpThumb->DebugMessage('SafeURLread('.$phpThumb->src.') succeeded'.($error ? ' with messsages: "'.$error.'"' : ''), __FILE__, __LINE__);
-		$phpThumb->DebugMessage('Setting source data from URL "'.$phpThumb->src.'"', __FILE__, __LINE__);
-		$phpThumb->setSourceData($rawImageData, urlencode($phpThumb->src));
+	if (preg_match('#^(f|ht)tps?://#i', $_GET['src'])) {
+		$phpThumb->DebugMessage('$phpThumb->src ('.$phpThumb->src.') is remote image, attempting to download', __FILE__, __LINE__);
+		if ($phpThumb->config_http_user_agent) {
+			$phpThumb->DebugMessage('Setting "user_agent" to "'.$phpThumb->config_http_user_agent.'"', __FILE__, __LINE__);
+			ini_set('user_agent', $phpThumb->config_http_user_agent);
+		}
+		$cleanedupurl = phpthumb_functions::CleanUpURLencoding($phpThumb->src);
+		$phpThumb->DebugMessage('CleanUpURLencoding('.$phpThumb->src.') returned "'.$cleanedupurl.'"', __FILE__, __LINE__);
+		$phpThumb->src = $cleanedupurl;
+		unset($cleanedupurl);
+		if ($rawImageData = phpthumb_functions::SafeURLread($phpThumb->src, $error, $phpThumb->config_http_fopen_timeout, $phpThumb->config_http_follow_redirect)) {
+			$phpThumb->DebugMessage('SafeURLread('.$phpThumb->src.') succeeded'.($error ? ' with messsages: "'.$error.'"' : ''), __FILE__, __LINE__);
+			$phpThumb->DebugMessage('Setting source data from URL "'.$phpThumb->src.'"', __FILE__, __LINE__);
+			$phpThumb->setSourceData($rawImageData, urlencode($phpThumb->src));
+		} else {
+			$phpThumb->ErrorImage($error);
+		}
 	} else {
-		$phpThumb->ErrorImage($error);
+		$phpThumb->ErrorImage('only FTP and HTTP/HTTPS protocols are allowed, "'.$protocol_matches[1].'" is not');
 	}
+
 }
 
 ////////////////////////////////////////////////////////////////

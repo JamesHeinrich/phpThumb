@@ -207,7 +207,7 @@ class phpthumb {
 	var $iswindows  = null;
 	var $issafemode = null;
 
-	var $phpthumb_version = '1.7.12-201311010937';
+	var $phpthumb_version = '1.7.12-201311221429';
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -537,7 +537,7 @@ class phpthumb {
 
 	// public:
 	function RenderToFile($filename) {
-		if (preg_match('#^(f|ht)tps?\://#i', $filename)) {
+		if (preg_match('#^[a-z0-9]+://#i', $filename)) {
 			$this->DebugMessage('RenderToFile() failed because $filename ('.$filename.') is a URL', __FILE__, __LINE__);
 			return false;
 		}
@@ -859,11 +859,15 @@ class phpthumb {
 		}
 		if ($this->iswindows && ((substr($this->sourceFilename, 0, 2) == '//') || (substr($this->sourceFilename, 0, 2) == '\\\\'))) {
 			// Windows \\share\filename.ext
-		} elseif (preg_match('#^(f|ht)tps?\://#i', $this->sourceFilename)) {
-			// URL
-			if ($this->config_http_user_agent) {
-				ini_set('user_agent', $this->config_http_user_agent);
-			}
+		} elseif (preg_match('#^[a-z0-9]+://#i', $this->sourceFilename, $protocol_matches)) {
+			if (preg_match('#^(f|ht)tps?\://#i', $this->sourceFilename)) {
+				// URL
+				if ($this->config_http_user_agent) {
+					ini_set('user_agent', $this->config_http_user_agent);
+				}
+			} else {
+				return $this->ErrorImage('only FTP and HTTP/HTTPS protocols are allowed, "'.$protocol_matches[1].'" is not');
+		}
 		} elseif (!@file_exists($this->sourceFilename)) {
 			return $this->ErrorImage('"'.$this->sourceFilename.'" does not exist');
 		} elseif (!@is_file($this->sourceFilename)) {
