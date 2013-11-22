@@ -191,7 +191,7 @@ $PHPTHUMB_CONFIG['mysql_database'] = '';
 
 
 // * Security configuration
-$PHPTHUMB_CONFIG['high_security_enabled']              = false;  // if enabled, requires 'high_security_password' set to be set and requires the use of phpThumbURL() function (at the bottom of phpThumb.config.php) to generate hashed URLs
+$PHPTHUMB_CONFIG['high_security_enabled']              = true;   // if enabled, requires 'high_security_password' set to be set and requires the use of phpThumbURL() function (at the bottom of phpThumb.config.php) to generate hashed URLs
 $PHPTHUMB_CONFIG['high_security_password']             = '';     // required if 'high_security_enabled' is true, and must be at complex (uppercase, lowercase, numbers, punctuation, etc -- punctuation is strongest, lowercase is weakest; see PasswordStrength() in phpThumb.php). You can use a password generator like http://silisoftware.com/tools/password-random.php to generate a strong password
 $PHPTHUMB_CONFIG['config_high_security_url_separator'] = '&';    // should almost always be left as '&'. Must be a single character. Do not change to '&amp;' -- htmlspecialchars wrapped around phpThumbURL() takes care of this without breaking the hash
 $PHPTHUMB_CONFIG['disable_debug']                      = true;   // prevent phpThumb from displaying any information about your system. If true, phpThumbDebug and error messages will be disabled
