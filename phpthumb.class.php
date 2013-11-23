@@ -207,7 +207,7 @@ class phpthumb {
 	var $iswindows  = null;
 	var $issafemode = null;
 
-	var $phpthumb_version = '1.7.12-201311221429';
+	var $phpthumb_version = '1.7.12-201311231153';
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -226,6 +226,11 @@ class phpthumb {
 		$php_sapi_name = strtolower(function_exists('php_sapi_name') ? php_sapi_name() : '');
 		if ($php_sapi_name == 'cli') {
 			$this->config_allow_src_above_docroot = true;
+		}
+
+		if (!$this->config_disable_debug) {
+			// if debug mode is enabled, force phpThumbDebug output, do not allow normal thumbnails to be generated
+			$this->phpThumbDebug = (is_null($this->phpThumbDebug) ? 9 : max(1, intval($this->phpThumbDebug)));
 		}
 	}
 

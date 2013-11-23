@@ -248,6 +248,11 @@ if (!empty($PHPTHUMB_CONFIG)) {
 			$phpThumb->DebugMessage('setParameter('.$keyname.', '.$phpThumb->phpThumbDebugVarDump($value).')', __FILE__, __LINE__);
 		}
 	}
+	if (empty($PHPTHUMB_CONFIG['disable_debug'])) {
+		// if debug mode is enabled, force phpThumbDebug output, do not allow normal thumbnails to be generated
+		$_GET['phpThumbDebug'] = (!empty($_GET['phpThumbDebug']) ? max(1, intval($_GET['phpThumbDebug'])) : 9);
+		$phpThumb->setParameter('phpThumbDebug', $_GET['phpThumbDebug']);
+	}
 } else {
 	$phpThumb->DebugMessage('$PHPTHUMB_CONFIG is empty', __FILE__, __LINE__);
 }
