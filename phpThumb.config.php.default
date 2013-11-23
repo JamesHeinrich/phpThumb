@@ -152,7 +152,7 @@ $PHPTHUMB_CONFIG['error_silent_die_on_error']   = false;    // simply die with n
 $PHPTHUMB_CONFIG['error_die_on_source_failure'] = true;     // die with error message if source image cannot be processed by phpThumb() (usually because source image is corrupt in some way). If false the source image will be passed through unprocessed, if true (default) an error message will be displayed.
 
 // * Off-server Thumbnailing Configuration:
-$PHPTHUMB_CONFIG['nohotlink_enabled']           = false;                                    // If false will allow thumbnailing from any source domain
+$PHPTHUMB_CONFIG['nohotlink_enabled']           = true;                                     // If false will allow thumbnailing from any source domain, if true then only domains in 'nohotlink_valid_domains' will be accepted
 $PHPTHUMB_CONFIG['nohotlink_valid_domains']     = array(@$_SERVER['HTTP_HOST']);            // This is the list of domains for which thumbnails are allowed to be created. Note: domain only, do not include port numbers. The default value of the current domain should be fine in most cases, but if neccesary you can add more domains in here, in the format "www.example.com"
 $PHPTHUMB_CONFIG['nohotlink_erase_image']       = true;                                     // if true thumbnail is covered up with $PHPTHUMB_CONFIG['nohotlink_fill_color'] before text is applied, if false text is written over top of thumbnail
 $PHPTHUMB_CONFIG['nohotlink_text_message']      = 'Off-server thumbnailing is not allowed'; // text of error message
