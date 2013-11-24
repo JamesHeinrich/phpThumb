@@ -1,7 +1,8 @@
 <?php
 //////////////////////////////////////////////////////////////
-///  phpThumb() by James Heinrich <info@silisoftware.com>   //
-//        available at http://phpthumb.sourceforge.net     ///
+//   phpThumb() by James Heinrich <info@silisoftware.com>   //
+//        available at http://phpthumb.sourceforge.net      //
+//         and/or https://github.com/JamesHeinrich/phpThumb //
 //////////////////////////////////////////////////////////////
 ///                                                         //
 // phpThumb.demo.check.php                                  //
@@ -28,11 +29,13 @@ if (!include_once('../phpthumb.class.php')) {
 }
 //ob_end_clean();
 $phpThumb = new phpThumb();
-if (include_once('../phpThumb.config.php')) {
+if (file_exists('../phpThumb.config.php') && include_once('../phpThumb.config.php')) {
 	foreach ($PHPTHUMB_CONFIG as $key => $value) {
 		$keyname = 'config_'.$key;
 		$phpThumb->setParameter($keyname, $value);
 	}
+} else {
+	echo '<div style="color: red; border: 1px red dashed; font-weight: bold; padding: 10px; margin: 10px; display: inline-block;">Error reading ../phpThumb.config.php</div><br>';
 }
 
 $ServerInfo['gd_string']  = phpthumb_functions::gd_version(true);
@@ -89,7 +92,6 @@ foreach ($versions['raw'] as $key => $value) {
 	$versions['min'][$key]   = $min;
 	$versions['date'][$key]  = @mktime($hour, $min, 0, $month, $day, $year);
 }
-
 $downloadlatest = 'Download the latest version from <a href="http://phpthumb.sourceforge.net">http://phpthumb.sourceforge.net</a>';
 echo '<tr><th nowrap>Latest phpThumb version:</th><th colspan="2">'.$versions['raw']['latest'].'</th><td>'.$downloadlatest.'</td></tr>';
 echo '<tr><th nowrap>This phpThumb version:</th><th colspan="2" style="background-color: ';
@@ -126,13 +128,17 @@ echo '</th><td>'.$message.'.<br></td></tr>';
 
 echo '<tr><th>phpThumb.config.php:</th><th colspan="2" style="background-color: ';
 if (file_exists('../phpThumb.config.php') && !file_exists('../phpThumb.config.php.default')) {
-	echo 'lime;">"phpThumb.config.php" exists and "phpThumb.config.php.default" does not';
+	if (!defined('phpThumbConfigFileVersion') || phpthumb_functions::version_compare_replacement($versions['base']['this'], phpThumbConfigFileVersion, '>')) {
+		echo 'red;">"phpThumb.config.php" version does not match phpThumb version. Please be sure to use the config file from the phpThumb distribution (copy any customized settings to the .default file, then rename "phpThumb.config.php.default" to "phpThumb.config.php")';
+	} else {
+		echo 'lime;">"phpThumb.config.php" exists and "phpThumb.config.php.default" does not';
+	}
 } elseif (file_exists('../phpThumb.config.php') && file_exists('../phpThumb.config.php.default')) {
 	echo 'yellow;">"phpThumb.config.php" and "phpThumb.config.php.default" both exist';
 } elseif (!file_exists('../phpThumb.config.php') && file_exists('../phpThumb.config.php.default')) {
-	echo 'yellow;">rename "phpThumb.config.php.default" to "phpThumb.config.php"';
+	echo 'red;">rename "phpThumb.config.php.default" to "phpThumb.config.php"';
 } else {
-	echo 'yellow;">"phpThumb.config.php" not found (nor "phpThumb.config.php")';
+	echo 'red;">"phpThumb.config.php" not found';
 }
 echo '</th><td>"phpThumb.config.php.default" that comes in the distribution must be renamed to "phpThumb.config.php" before phpThumb.php can be used. Avoid having both files present to minimize confusion.</td></tr>';
 

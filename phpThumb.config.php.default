@@ -1,7 +1,8 @@
 <?php
 //////////////////////////////////////////////////////////////
-///  phpThumb() by James Heinrich <info@silisoftware.com>   //
-//        available at http://phpthumb.sourceforge.net     ///
+//   phpThumb() by James Heinrich <info@silisoftware.com>   //
+//        available at http://phpthumb.sourceforge.net      //
+//         and/or https://github.com/JamesHeinrich/phpThumb //
 //////////////////////////////////////////////////////////////
 ///                                                         //
 // See: phpthumb.readme.txt for usage instructions          //
@@ -10,6 +11,7 @@
 //                                                         ///
 //////////////////////////////////////////////////////////////
 
+define('phpThumbConfigFileVersion', '1.7.12');
 ob_start();
 if (!file_exists(dirname(__FILE__).'/phpthumb.functions.php') || !include_once(dirname(__FILE__).'/phpthumb.functions.php')) {
 	ob_end_flush();
@@ -18,8 +20,9 @@ if (!file_exists(dirname(__FILE__).'/phpthumb.functions.php') || !include_once(d
 ob_end_clean();
 
 
+
 /****************************************************************************************/
-// START USER CONFIGURATION SECTION:
+/* START USER CONFIGURATION SECTION: */
 
 // * DocumentRoot configuration
 // phpThumb() depends on $_SERVER['DOCUMENT_ROOT'] to resolve path/filenames. This value is usually correct,
@@ -222,11 +225,12 @@ $PHPTHUMB_CONFIG['http_follow_redirect']            = true; // if true (default)
 $PHPTHUMB_CONFIG['allow_local_http_src']         = false; // If true, 'src' parameter can be "http://<thishostname>/path/image.ext" instead of just "/path/image.ext"; if false then display warning message to encourage more efficient local-filename calling.
 $PHPTHUMB_CONFIG['use_exif_thumbnail_for_speed'] = false; // If true, and EXIF thumbnail is available, and is larger or equal to output image dimensions, use EXIF thumbnail rather than actual source image for generating thumbnail. Benefit is only speed, avoiding resizing large image.
 
-// END USER CONFIGURATION SECTION
+/* END USER CONFIGURATION SECTION */
 
-///////////////////////////////////////////////////////////////////////////////
 
-// START DEFAULT PARAMETERS SECTION
+
+
+/* START DEFAULT PARAMETERS SECTION */
 // If any parameters are constant across ALL images, you can set them here
 
 $PHPTHUMB_DEFAULTS_GETSTRINGOVERRIDE = true;  // if true, any parameters in the URL will override the defaults set here; if false, any parameters set here cannot be overridden in the URL
@@ -237,22 +241,17 @@ $PHPTHUMB_DEFAULTS_DISABLEGETPARAMS  = false; // if true, GETstring parameters w
 //$PHPTHUMB_DEFAULTS['q']    =  90;
 
 
-// END DEFAULT PARAMETERS SECTION
+/* END DEFAULT PARAMETERS SECTION */
 
 
 
-///////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 // Function for generating hashed calls to phpThumb if 'high_security_enabled'
 // example:
-//   require_once($_SERVER['DOCUMENT_ROOT'].'/phpThumb/phpThumb.config.php');
-//   echo '<img src="'.htmlspecialchars(phpThumbURL('src=/images/pic.jpg&w=50')).'">';
+//   require_once('phpThumb/phpThumb.config.php');
+//   echo '<img src="'.htmlspecialchars(phpThumbURL('src=/images/pic.jpg&w=50', '/phpThumb/phpThumb.php')).'">';
 
 function phpThumbURL($ParameterString, $path_to_phpThumb='phpThumb.php') {
 	global $PHPTHUMB_CONFIG;
-	//return str_replace(DIRECTORY_SEPARATOR, '/', str_replace($PHPTHUMB_CONFIG['document_root'], '', dirname(__FILE__)).DIRECTORY_SEPARATOR).$path_to_phpThumb.'?'.$ParameterString.$PHPTHUMB_CONFIG['config_high_security_url_separator'].'hash='.md5($ParameterString.$PHPTHUMB_CONFIG['high_security_password']);
 	return $path_to_phpThumb.'?'.$ParameterString.$PHPTHUMB_CONFIG['config_high_security_url_separator'].'hash='.md5($ParameterString.$PHPTHUMB_CONFIG['high_security_password']);
 }
-
-///////////////////////////////////////////////////////////////////////////////
-
-?>
