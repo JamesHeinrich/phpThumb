@@ -1,23 +1,24 @@
-//////////////////////////////////////////////////////////////
-///  phpThumb() by James Heinrich <info@silisoftware.com>   //
-//        available at http://phpthumb.sourceforge.net     ///
-//////////////////////////////////////////////////////////////
-///                                                         //
-//    phpThumb() included and related demos                 //
-//                                                         ///
-//////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
+//   phpThumb() by James Heinrich <info@silisoftware.com>       //
+//        available at http://phpthumb.sourceforge.net          //
+//             and/or https://github.com/JamesHeinrich/phpThumb //
+//////////////////////////////////////////////////////////////////
+///                                                             //
+//    phpThumb() included and related demos                     //
+//                                                             ///
+//////////////////////////////////////////////////////////////////
 
 The phpThumb() distribution includes several demos, and it
 should be self-evident what they do when you run them:
+
+* phpThumb.demo.check.php - configuration checker, will check
+    your config file and server configuration and warn of any
+    potential problems
 
 * phpThumb.demo.demo.php - shows a wide variety of samples,
     basically all the different features and filters of phpThumb.
     Note: sample image files are not included in the distribution
     but can be downloaded from http://phpthumb.sourceforge.net/demo
-
-* phpThumb.demo.check.php - configuration checker, will check
-    your config file and server configuration and warn of any
-    potential problems
 
 * phpThumb.demo.gallery.php - basic demonstration of a photo
     gallery with ability to browse subdirectories. May use
