@@ -1,71 +1,85 @@
-//////////////////////////////////////////////////////////////
-///  phpThumb() by James Heinrich <info@silisoftware.com>   //
-//        available at http://phpthumb.sourceforge.net     ///
-//////////////////////////////////////////////////////////////
-///                                                         //
-//       This code is released under the GNU GPL:           //
-//         http://www.gnu.org/copyleft/gpl.html             //
-//                                                          //
-//    +-----------------------------------------------+     //
-//    | phpThumb() is free to use according to the    |     //
-//    | terms of the GPL. Donations also gratefully   |     //
-//    | GPL FAQ: http://gnu.org/licenses/gpl-faq.html |     //
-//    |                                               |     //
-//    | Donations are gratefully accepted from happy  |     //
-//    | users :)  See http://phpthumb.sourceforge.net |     //
-//    |                                               |     //
-//    | If you like phpThumb(), please consider       |     //
-//    | writing a review at HotScripts.com:           |     //
-//    | http://www.hotscripts.com/Detailed/25654.html |     //
-//    |                                               |     //
-//    | If you do use this code somewhere, send me    |     //
-//    | an email and tell me how/where you used it.   |     //
-//    +-----------------------------------------------+     //
-//                                                         ///
-//////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
+//   phpThumb() by James Heinrich <info@silisoftware.com>       //
+//        available at http://phpthumb.sourceforge.net          //
+//             and/or https://github.com/JamesHeinrich/phpThumb //
+//////////////////////////////////////////////////////////////////
+///                                                             //
+//       This code is released under the GNU GPL:               //
+//         http://www.gnu.org/copyleft/gpl.html                 //
+//                                                              //
+// phpThumb() is free to use according to the terms of the GPL. //
+// GPL FAQ: http://gnu.org/licenses/gpl-faq.html                //
+//                                                              //
+// Donations are gratefully accepted from happy users :)        //
+// See http://phpthumb.sourceforge.net                          //
+//                                                             ///
+//////////////////////////////////////////////////////////////////
 
 ============
 Description:
 ============
 
-phpThumb() uses the GD library to create thumbnails from
-images (GIF, PNG or JPEG) on the fly. The output size is
-configurable (can be larger or smaller than the source),
-and the source may be the entire image or only a portion
-of the original image. True color and resampling is used
-if GD v2.0+ is available, otherwise low-color and simple
-resizing is used. Source image can be a physical file on
-the server or can be retrieved from a database. GIFs are
-supported on all versions of GD even if GD does not have
-native GIF support thanks to the GIFutil class by Fabien
-Ezber. AntiHotlinking feature prevents other people from
-using your server to resize their thumbnails, or link to
-your  images  from  another  server.  The  cache feature
-reduces server load.
+phpThumb() uses the GD library to create thumbnails from images (GIF, PNG
+or JPEG) on the fly. The output size is configurable (can be larger or
+smaller than the source), and the source may be the entire image or only a
+portion of the original image. True color and resampling is used if
+GD v2.0+ is available, otherwise low-color and simple resizing is used.
+Source image can be a physical file on the server or can be retrieved from
+a database. GIFs are supported on all versions of GD even if GD does not
+have native GIF support thanks to the GIFutil class by Fabien Ezber.
+
+AntiHotlinking feature prevents other people from using your server to
+resize their thumbnails, or link to your images from another server. The
+cache feature reduces server load.
 
 
 ========
 Support:
 ========
-
 First, read this file.
 Then read phpthumb.faq.txt
 Then run /demo/phpThumb.demo.check.php
-If you still think it's a bug, or can't figure it out,
-please go to http://support.silisoftware.com
+If you still think it's a bug, or can't figure it out, please go to
+http://support.silisoftware.com
+
+
+=============
+Installation:
+=============
+
+1) Download from either official site:
+  * https://github.com/JamesHeinrich/phpThumb (current development version)
+  * http://phpthumb.sourceforge.net (occasional releases + documentation)
+2) unzip to a location of your choice on your server, putting it in its
+  own subdirectory (e.g. /phpThumb/ is useful but not required)
+3) rename phpThumb.config.php.default -> phpThumb.config.php
+4) edit phpThumb.config.php as needed to suit your server configuration.
+  * the only setting you must set is 'high_security_password'
+  * most other values are auto-detected, but your particular server config
+    may necessitate setting other values such as 'document_root' or
+    'imagemagick_path'
+  * see also "Configuration" section below
+5) Check your server configuration by opening
+   /phpThumb/demo/phpThumb.demo.check.php in your browser. Settings that are
+   highlighted green are good; yellow/orange/red may need to be adjusted.
 
 
 ======
 Usage:
 ======
 
-Call phpThumb() just like you would a normal image.
-Examples:
- <IMG SRC="phpThumb.php?src=/image.jpg&w=100">
- <IMG SRC="phpThumb.php?src=http://example.com/foo.jpg">
-See the "demo" link on http://phpthumb.sourceforge.net
-for more usage examples). Parameters that can be passed
-are listed below under "URL Parameters".
+Call phpThumb() just like you would a normal image (i.e. as the SRC attribute
+of an IMG tag):
+   <img src="phpThumb.php?src=/image.jpg&w=100&hash=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+To generate the hash value you must include the phpThumb.config.php file and use the
+phpThumbURL function to generate the URL including the hash value:
+  echo '<img src="'.htmlspecialchars(phpThumbURL('src=/images/pic.jpg&w=50', '/path/to/phpThumb.php')).'">';
+The hash is calculated with the 'high_security_password' config value, so you
+must generate a complex password value for that setting in phpThumb.config.php
+(once, when installing phpThumb).
+
+See the "demo" link on http://phpthumb.sourceforge.net for more usage examples.
+Parameters that can be passed are listed below under "URL Parameters".
 
 NOTE: It's recommended you use the local image filename
 wherever possible (rather than http://) because performance
@@ -112,77 +126,67 @@ equals ("=") and seperated by semicolon (";")
 Calling as an object (not using phpThumb.php):
 ==============================================
 
-NOTE: most people don't need to and should not do this.
-If you just want to display resized images, please just
-use phpThumb.php, not the object mode. To render output
-to one (or more) files instead of the browser, you should
-skip phpThumb.php and instantiate your own object. Please
-take a look at /demo/phpThumb.demo.object.php for details.
+NOTE: most people don't need to and should not do this. If you just want to
+display resized images, please just use phpThumb.php, not the object mode.
+To render output to one (or more) files instead of the browser, you should
+skip phpThumb.php and instantiate your own object. Please take a look at
+/demo/phpThumb.demo.object.php for details.
 
-Note: phpThumb.php is where the caching code is located, if
-  you instantiate your own phpThumb() object that code is
-  bypassed and it's up to you to handle the reading and
-  writing of cached files.
+Note: phpThumb.php is where the caching code is located, if you instantiate
+  your own phpThumb() object that code is bypassed and it's up to you to
+  handle the reading and writing of cached files.
 
 
 ==============
 Configuration:
 ==============
 
-There are some configuration options you may (but are
-not required to) change. Most configuration options can
-be set when you call phpThumb() - see list below), but
-default configuration options (such as cache directory)
-are in phpThumb.config.php - this is the only file you
-should ever modify.
+There are some configuration options you may (but are not required to) change.
+Most configuration options can be set when you call phpThumb() - see list below),
+but default configuration options (such as cache directory) are in
+phpThumb.config.php - this is the only file you should ever modify.
 
 
 IMPORTANT:
-The configuration file is distributed as
-phpThumb.config.php.default to prevent accidental
-overwriting of old configuration settings. Please
-migrate your old settings to the new file (if upgrading),
-or delete your old config and rename the default to
-phpThumb.config.php
+The configuration file is distributed as phpThumb.config.php.default to prevent
+accidental overwriting of old configuration settings. Please migrate your old
+settings to the new file (if upgrading), or delete your old config and rename
+the default to phpThumb.config.php since newer releases may include settings not
+present in your older configuration file.
 
-
-The amount of memory required for phpThumb depends on
-several factors: the dimensions of the source image,
-the dimensions of the output image, whether unsharp
-masking is applied, whether watermarks are applied, etc.
-The auto-detection of memory limits works as a general
-"safe" value. You may be able to exceed the auto value
-by a small or large amount, depending on whether you
-apply watermarks and/or sharpening, and the output size
-of your thumbnails. I do not currently have a reliable
-formula for calculating such things, but I will attempt
-to craft one for future versions of phpThumb(). Until
-then, set "max_source_pixels" in phpThumb.config.php to a
-value that works well for you (or leave it alone if the
-defaults give you no problems).
 
 The configuration options you should maybe modify are:
-* cache_directory - thumbnailing is slow and processor-
-    intensive. Enabling caching will dramatically speed
-    up future thumbnail serving
-* max_source_pixels - This should be auto-detected, but
-    if auto-detection fails and you get an invalid image
-    from large source images, set this to about 20% of
-    your available PHP memory limit.
-* imagemagick_path - If the source image is larger than
-    max_source_pixels allows, but ImageMagick is available
-    phpThumb() will use it to generate the thumbnail.
+* high_security_password - required to generate the secure hashed URLs for
+  phpThumb using phpThumbURL() in phpThumb.config.php
+  Password must be sufficiently complex (typically means at least 20 mixed
+  alpha/numeric/punctuation characters). You can generate a good password
+  at http://www.silisoftware.com/tools/password-random.php
+* cache_directory - thumbnailing is slow and processor-intensive. Enabling
+  caching will dramatically speed up future thumbnail serving
+* imagemagick_path - Most image-processing functions can be processed faster
+  if ImageMagick is available on the server.
+* max_source_pixels - This should be auto-detected, but if auto-detection
+  fails and you get an invalid image from large source images, set this to
+  about 20% of your available PHP memory limit.
+  The amount of memory required for phpThumb depends on several factors:
+  * the dimensions of the source image
+  * the dimensions of the output image
+  * whether unsharp masking is applied
+  * whether watermarks are applied, etc.
+  The auto-detection of memory limits works as a general "safe" value. You
+  may be able to exceed the auto value by a small or large amount, depending
+  on whether you apply watermarks and/or sharpening, and the output size of
+  your thumbnails. If ImageMagick is available then the amount of available
+  PHP memory is usually not an issue.
 
 
-///////////////////////////////////////////////////////////
-Note: High-Security mode is recommended enabled if possible.
-  Set $PHPTHUMB_CONFIG['high_security_enabled'] in
-  phpThumb.config.php to enable it. Each call to phpThumb
-  needs to be made through the function supplied at the
-  bottom of phpThumb.config.php which create the hash:
-    require_once('phpThumb.config.php');
-    echo '<img src="'.phpThumbURL('src=pic.jpg&w=50').'">';
-///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////
+Note: High-Security mode is VERY STRONGLY recommended enabled in all cases.
+Each call to phpThumb.php needs to be made through the function supplied
+at the bottom of phpThumb.config.php which create the hash:
+ require_once('phpThumb.config.php');
+ echo '<img src="'.phpThumbURL('src=pic.jpg&w=50', '/path/to/phpThumb.php').'">';
+///////////////////////////////////////////////////////////////////////////
 
 
 ===========

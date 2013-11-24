@@ -1,11 +1,12 @@
-//////////////////////////////////////////////////////////////
-///  phpThumb() by James Heinrich <info@silisoftware.com>   //
-//        available at http://phpthumb.sourceforge.net     ///
-//////////////////////////////////////////////////////////////
-///                                                         //
-//    Frequently Asked Questions (FAQ) about phpThumb()     //
-//                                                         ///
-//////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
+//   phpThumb() by James Heinrich <info@silisoftware.com>       //
+//        available at http://phpthumb.sourceforge.net          //
+//             and/or https://github.com/JamesHeinrich/phpThumb //
+//////////////////////////////////////////////////////////////////
+///                                                             //
+//    Frequently Asked Questions (FAQ) about phpThumb()         //
+//                                                             ///
+//////////////////////////////////////////////////////////////////
 
 
 Q: My question isn't answered here, how do I get support?
@@ -14,9 +15,10 @@ A: Please visit http://support.silisoftware.com for any
 
 
 Q: I think I found a bug, what's the first thing I should do?
-A: Please make sure you're using the latest version. There's
-   a good chance I may have already fixed the bug, so please
-   make sure you can reproduce it with the latest version
+A: Please make sure you're using the latest version:
+   https://github.com/JamesHeinrich/phpThumb
+   There's a good chance I may have already fixed the bug, so
+   please make sure you can reproduce it with the latest version
    before reporting the bug.
 
 
