@@ -208,7 +208,7 @@ class phpthumb {
 	var $iswindows  = null;
 	var $issafemode = null;
 
-	var $phpthumb_version = '1.7.12-201311242141';
+	var $phpthumb_version = '1.7.12-201311251202';
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -2228,9 +2228,8 @@ if (false) {
 				$allow = false;
 				$erase   = $this->config_nooffsitelink_erase_image;
 				$message = $this->config_nooffsitelink_text_message;
-$this->ErrorImage('AntiOffsiteLinking() - "'.@$parsed_url['host'].'" is NOT in $this->config_nooffsitelink_valid_domains ('.implode(';', $this->config_nooffsitelink_valid_domains).')');
-exit;
-				$this->DebugMessage('AntiOffsiteLinking() - "'.@$parsed_url['host'].'" is NOT in $this->config_nooffsitelink_valid_domains ('.implode(';', $this->config_nooffsitelink_valid_domains).')', __FILE__, __LINE__);
+				//$this->DebugMessage('AntiOffsiteLinking() - "'.@$parsed_url['host'].'" is NOT in $this->config_nooffsitelink_valid_domains ('.implode(';', $this->config_nooffsitelink_valid_domains).')', __FILE__, __LINE__);
+				$this->ErrorImage('AntiOffsiteLinking() - "'.@$parsed_url['host'].'" is NOT in $this->config_nooffsitelink_valid_domains ('.implode(';', $this->config_nooffsitelink_valid_domains).')');
 			} else {
 				$this->DebugMessage('AntiOffsiteLinking() - "'.@$parsed_url['host'].'" is in $this->config_nooffsitelink_valid_domains ('.implode(';', $this->config_nooffsitelink_valid_domains).')', __FILE__, __LINE__);
 			}
@@ -2239,7 +2238,7 @@ exit;
 		if ($allow && $this->config_nohotlink_enabled && preg_match('#^(f|ht)tps?\://#i', $this->src)) {
 			$parsed_url = phpthumb_functions::ParseURLbetter($this->src);
 			//if (!phpthumb_functions::CaseInsensitiveInArray(@$parsed_url['host'], $this->config_nohotlink_valid_domains)) {
-			if ($this->OffsiteDomainIsAllowed(@$parsed_url['host'], $this->config_nohotlink_valid_domains)) {
+			if (!$this->OffsiteDomainIsAllowed(@$parsed_url['host'], $this->config_nohotlink_valid_domains)) {
 				// This domain is not allowed
 				$allow = false;
 				$erase   = $this->config_nohotlink_erase_image;
