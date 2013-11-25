@@ -2,6 +2,19 @@ phpThumbCacheIMcommandlineBase.txt
 phpThumbCacheIMversion.txt
 phpThumbCacheStats.txt
 cache/*
+*.bmp
+*.eps
+*.gif
+*.ico
+*.jpeg
+*.jpg
+*.pdf
+*.png
+*.tif
+*.tiff
+*.ttf
+*.wmf
+php_error.log
 
 #################
 ## Eclipse
