@@ -29,9 +29,9 @@ function SendSaveAsFileHeaderIfNeeded() {
 		return false;
 	}
 	global $phpThumb;
-	$downloadfilename = phpthumb_functions::SanitizeFilename(@$_GET['sia'] ? $_GET['sia'] : (!empty($_GET['down']) ? $_GET['down'] : 'phpThumb_generated_thumbnail'.(!empty($_GET['f']) ? $_GET['f'] : 'jpg')));
+	$downloadfilename = phpthumb_functions::SanitizeFilename(!empty($_GET['sia']) ? $_GET['sia'] : (!empty($_GET['down']) ? $_GET['down'] : 'phpThumb_generated_thumbnail'.(!empty($_GET['f']) ? $_GET['f'] : 'jpg')));
 	if (!empty($downloadfilename)) {
-		$phpThumb->DebugMessage('SendSaveAsFileHeaderIfNeeded() sending header: Content-Disposition: '.(@$_GET['down'] ? 'attachment' : 'inline').'; filename="'.$downloadfilename.'"', __FILE__, __LINE__);
+		$phpThumb->DebugMessage('SendSaveAsFileHeaderIfNeeded() sending header: Content-Disposition: '.(!empty($_GET['down']) ? 'attachment' : 'inline').'; filename="'.$downloadfilename.'"', __FILE__, __LINE__);
 		header('Content-Disposition: '.(!empty($_GET['down']) ? 'attachment' : 'inline').'; filename="'.$downloadfilename.'"');
 	}
 	return true;
@@ -56,7 +56,7 @@ function RedirectToCachedFile() {
 
 	$nModified  = filemtime($phpThumb->cache_filename);
 
-	if ($phpThumb->config_nooffsitelink_enabled && @$_SERVER['HTTP_REFERER'] && !in_array(@$parsed_url['host'], $phpThumb->config_nooffsitelink_valid_domains)) {
+	if ($phpThumb->config_nooffsitelink_enabled && !empty($_SERVER['HTTP_REFERER']) && !in_array(@$parsed_url['host'], $phpThumb->config_nooffsitelink_valid_domains)) {
 
 		$phpThumb->DebugMessage('Would have used cached (image/'.$phpThumb->thumbnailFormat.') file "'.$phpThumb->cache_filename.'" (Last-Modified: '.gmdate('D, d M Y H:i:s', $nModified).' GMT), but skipping because $_SERVER[HTTP_REFERER] ('.@$_SERVER['HTTP_REFERER'].') is not in $phpThumb->config_nooffsitelink_valid_domains ('.implode(';', $phpThumb->config_nooffsitelink_valid_domains).')', __FILE__, __LINE__);
 
@@ -319,7 +319,7 @@ if (isset($_GET['phpThumbDebug']) && ($_GET['phpThumbDebug'] == '2')) {
 }
 ////////////////////////////////////////////////////////////////
 
-$PHPTHUMB_DEFAULTS_DISABLEGETPARAMS = (bool) (@$PHPTHUMB_CONFIG['cache_default_only_suffix'] && (strpos($PHPTHUMB_CONFIG['cache_default_only_suffix'], '*') !== false));
+$PHPTHUMB_DEFAULTS_DISABLEGETPARAMS = (bool) (!empty($PHPTHUMB_CONFIG['cache_default_only_suffix']) && (strpos($PHPTHUMB_CONFIG['cache_default_only_suffix'], '*') !== false));
 
 if (!empty($PHPTHUMB_DEFAULTS) && is_array($PHPTHUMB_DEFAULTS)) {
 	$phpThumb->DebugMessage('setting $PHPTHUMB_DEFAULTS['.implode(';', array_keys($PHPTHUMB_DEFAULTS)).']', __FILE__, __LINE__);
