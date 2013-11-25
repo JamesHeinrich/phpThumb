@@ -1,6 +1,7 @@
 phpThumbCacheIMcommandlineBase.txt
 phpThumbCacheIMversion.txt
 phpThumbCacheStats.txt
+cache/*
 
 #################
 ## Eclipse
