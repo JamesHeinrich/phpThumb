@@ -3923,7 +3923,7 @@ if (false) {
 			}
 		}
 		$this->setOutputFormat();
-		if (!$this->thumbnailFormat || (phpthumb_functions::gd_version() < 1)) {
+		if (!$this->thumbnailFormat || !$this->config_disable_debug || (phpthumb_functions::gd_version() < 1)) {
 			$this->thumbnailFormat = 'text';
 		}
 		if (@$this->thumbnailFormat == 'text') {
