@@ -208,7 +208,7 @@ class phpthumb {
 	var $iswindows  = null;
 	var $issafemode = null;
 
-	var $phpthumb_version = '1.7.12-201311241405';
+	var $phpthumb_version = '1.7.12-201311242130';
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -1257,7 +1257,7 @@ class phpthumb {
 					$commandline .= ' --version';
 					$this->DebugMessage('ImageMagick version checked with "'.$commandline.'"', __FILE__, __LINE__);
 					$versionstring[1] = trim(phpthumb_functions::SafeExec($commandline));
-					if (preg_match('#^Version: [^0-9]*([ 0-9\\.\\:Q/\\-]+) (http|file)\:#i', $versionstring[1], $matches)) {
+					if (preg_match('#^Version: [^0-9]*([ 0-9\\.\\:Q/\\-]+)#i', $versionstring[1], $matches)) {
 						$versionstring[0] = $matches[1];
 					} else {
 						$versionstring[0] = false;
