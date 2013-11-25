@@ -149,13 +149,13 @@ $phpThumb->setCacheDirectory();
 echo '<div style="background-color: '.(     is_dir($phpThumb->config_cache_directory) ? 'lime;">exists'   : 'red;">does NOT exist').'</div>';
 echo '<div style="background-color: '.(is_readable($phpThumb->config_cache_directory) ? 'lime;">readable' : 'red;">NOT readable'  ).'</div>';
 echo '<div style="background-color: '.(is_writable($phpThumb->config_cache_directory) ? 'lime;">writable' : 'red;">NOT writable'  ).'</div>';
-echo '</th><td>Original: "'.htmlentities($orig_config_cache_directory).'"<br>Resolved: "'.htmlentities($phpThumb->config_cache_directory).'"<br>Must exist and be both readable and writable by PHP.</td></tr>';
+echo '</th><td>Original: "'.htmlspecialchars($orig_config_cache_directory).'"<br>Resolved: "'.htmlspecialchars($phpThumb->config_cache_directory).'"<br>Must exist and be both readable and writable by PHP.</td></tr>';
 
 
 echo '<tr><th>cache write test:</th><th colspan="2">';
 $phpThumb->rawImageData = 'phpThumb.demo.check.php_cachetest';
 $phpThumb->SetCacheFilename();
-echo '<div>'.htmlentities($phpThumb->cache_filename ? implode(' / ', preg_split('#[/\\\\]#', $phpThumb->cache_filename)) : 'NO CACHE FILENAME RESOLVED').'</div>';
+echo '<div>'.htmlspecialchars($phpThumb->cache_filename ? implode(' / ', preg_split('#[/\\\\]#', $phpThumb->cache_filename)) : 'NO CACHE FILENAME RESOLVED').'</div>';
 echo '<div>directory '.(is_dir(dirname($phpThumb->cache_filename)) ? 'exists' : 'does NOT exist').' (before EnsureDirectoryExists())</div>';
 phpthumb_functions::EnsureDirectoryExists(dirname($phpThumb->cache_filename));
 echo '<div style="background-color: '.(is_dir(dirname($phpThumb->cache_filename)) ? 'lime;">directory exists' : 'red;">directory does NOT exist').' (after EnsureDirectoryExists())</div>';
@@ -168,7 +168,7 @@ if ($fp = @fopen($phpThumb->cache_filename, 'wb')) {
 	@chmod($phpThumb->cache_filename, 0644);
 	clearstatcache();
 	$new_perms = substr(sprintf('%o', fileperms($phpThumb->cache_filename)), -4);
-	echo '<div style="background-color: '.(($new_perms == '0644') ? 'lime' : (($new_perms > '0644') ? 'orange' : 'red')).';">chmod($phpThumb->cache_filename, 0644) from "'.htmlentities($old_perms).'" resulted in permissions "'.htmlentities($new_perms).'"</div>';
+	echo '<div style="background-color: '.(($new_perms == '0644') ? 'lime' : (($new_perms > '0644') ? 'orange' : 'red')).';">chmod($phpThumb->cache_filename, 0644) from "'.htmlspecialchars($old_perms).'" resulted in permissions "'.htmlspecialchars($new_perms).'"</div>';
 
 	if (@unlink($phpThumb->cache_filename)) {
 		echo '<div style="background-color: lime;">delete test succeeded</div>';
@@ -179,7 +179,7 @@ if ($fp = @fopen($phpThumb->cache_filename, 'wb')) {
 } else {
 	echo '<div style="background-color: red;">write test FAILED</div>';
 }
-//echo '</th><td>Original: "'.htmlentities($orig_config_cache_directory).'"<br>Resolved: "'.htmlentities($phpThumb->config_cache_directory).'"<br>Must exist and be both readable and writable by PHP.</td></tr>';
+//echo '</th><td>Original: "'.htmlspecialchars($orig_config_cache_directory).'"<br>Resolved: "'.htmlspecialchars($phpThumb->config_cache_directory).'"<br>Must exist and be both readable and writable by PHP.</td></tr>';
 echo '</th><td>Created and deletes a sample cache file to see if you actually have create/delete permission.<br>If <i>Safe Mode</i> is enabled this is often broken.</td></tr>';
 
 
@@ -189,7 +189,7 @@ echo $phpThumb->phpThumb_tempnam();
 echo '<div style="background-color: '.(     is_dir($phpThumb->config_temp_directory) ? 'lime;">exists'   : 'red;">does NOT exist').'</div>';
 echo '<div style="background-color: '.(is_readable($phpThumb->config_temp_directory) ? 'lime;">readable' : 'red;">NOT readable'  ).'</div>';
 echo '<div style="background-color: '.(is_writable($phpThumb->config_temp_directory) ? 'lime;">writable' : 'red;">NOT writable'  ).'</div>';
-echo '</th><td>Original: "'.htmlentities($orig_config_temp_directory).'"<br>Resolved: "'.htmlentities($phpThumb->config_temp_directory).'"<br>Must exist and be both readable and writable by PHP.</td></tr>';
+echo '</th><td>Original: "'.htmlspecialchars($orig_config_temp_directory).'"<br>Resolved: "'.htmlspecialchars($phpThumb->config_temp_directory).'"<br>Must exist and be both readable and writable by PHP.</td></tr>';
 
 
 echo '<tr><th>PHP version:</th><th colspan="2" style="background-color: ';
@@ -261,14 +261,14 @@ if ($ServerInfo['im_version']) {
 	echo 'red';
 }
 echo ';">';
-echo '<div style="color: navy; font-family: monospace;">'.htmlentities($phpThumb->config_imagemagick_path);
+echo '<div style="color: navy; font-family: monospace;">'.htmlspecialchars($phpThumb->config_imagemagick_path);
 echo ' <span style="cursor: help;" title="file_exists"                  >['.intval(                            @file_exists($phpThumb->config_imagemagick_path)).']</span> ';
 echo ' <span style="cursor: help;" title="file_exists_ignoreopenbasedir">['.intval($phpThumb->file_exists_ignoreopenbasedir($phpThumb->config_imagemagick_path)).']</span> ';
 echo ' <span style="cursor: help;" title="is_file"                      >['.intval(                                @is_file($phpThumb->config_imagemagick_path)).']</span> ';
 echo ' <span style="cursor: help;" title="is_readable"                  >['.intval(                            @is_readable($phpThumb->config_imagemagick_path)).']</span> ';
 echo ' <span style="cursor: help;" title="is_executable"                >['.intval(                          @is_executable($phpThumb->config_imagemagick_path)).']</span> ';
 echo '</div>';
-echo '<div style="color: blue; font-family: monospace;">'.htmlentities($phpThumb->ImageMagickCommandlineBase()).'</div>';
+echo '<div style="color: blue; font-family: monospace;">'.htmlspecialchars($phpThumb->ImageMagickCommandlineBase()).'</div>';
 echo ($ServerInfo['im_version'] ? $ServerInfo['im_version'] : 'n/a');
 echo ($IMreleaseDate ? '<br><br>This version of ImageMagick is '.NiceTimeFormatting($IMversionAge).' old<br>(see <a href="http://www.imagemagick.org/">www.imagemagick.org</a> for new versions)' : '');
 echo '</th><td>ImageMagick is faster than GD, can process larger images without PHP memory_limit issues, can resize animated GIFs. phpThumb can perform most operations with ImageMagick only, even if GD is not available.</td></tr>';
@@ -294,7 +294,7 @@ if ($ServerInfo['im_version']) {
 			} else {
 				$foundOneThatWorks = $phpThumb->ImageMagickSwitchAvailable($feature);
 			}
-			echo '| <span style="background-color: '.($foundOneThatWorks ? 'lime' : $missingcolor).';">'.htmlentities($feature).'</span> |';
+			echo '| <span style="background-color: '.($foundOneThatWorks ? 'lime' : $missingcolor).';">'.htmlspecialchars($feature).'</span> |';
 		}
 	}
 	echo '|</th>';
@@ -306,7 +306,7 @@ echo '<td>All of these parameters may be called by phpThumb, depending on parame
 
 echo '<tr><th>ImageMagick formats:</th>';
 if ($ServerInfo['im_version']) {
-	echo '<td colspan="2"><div style="width: 100%; height: 200px; overflow: auto; font-family: monospace; white-space: pre; background-color: #FFFFFF;">'.htmlentities($phpThumb->ImageMagickFormatsList()).'</div></td>';
+	echo '<td colspan="2"><div style="width: 100%; height: 200px; overflow: auto; font-family: monospace; white-space: pre; background-color: #FFFFFF;">'.htmlspecialchars($phpThumb->ImageMagickFormatsList()).'</div></td>';
 } else {
 	echo '<th colspan="2" style="background-color: orange;">ImageMagick not found</th>';
 }
@@ -318,7 +318,7 @@ $GDfeatures['orange'] = array('GIF Read Support', 'GIF Create Support', 'FreeTyp
 foreach ($GDfeatures as $missingcolor => $features) {
 	foreach ($features as $dummy => $feature) {
 		if (isset($gd_info[$feature])) {
-			echo '<div style="background-color: '.($gd_info[$feature] ? 'lime' : $missingcolor).';">'.htmlentities($feature).'</div>';
+			echo '<div style="background-color: '.($gd_info[$feature] ? 'lime' : $missingcolor).';">'.htmlspecialchars($feature).'</div>';
 		}
 	}
 }
@@ -348,7 +348,7 @@ if (!$php_sapi_name || (preg_match('#~#', dirname($_SERVER['PHP_SELF'])) && ($ph
 } else {
 	echo 'green';
 }
-echo ';">'.htmlentities($php_sapi_name).'</th>';
+echo ';">'.htmlspecialchars($php_sapi_name).'</th>';
 echo '<td>SAPI mode preferred to CGI mode. FCGI mode has unconfirmed strange behavior (notably more than one space in "wmt" filter text causes errors). If not working in "apache" (SAPI) mode, <i>apache_lookup_uri()</i> will not work.</td></tr>';
 
 
@@ -413,7 +413,7 @@ foreach ($FunctionsExist as $function => $details) {
 	} else {
 		echo $color.';">FALSE';
 	}
-	echo '</th><td>'.htmlentities($description).'</td></tr>';
+	echo '</th><td>'.htmlspecialchars($description).'</td></tr>';
 }
 
 
@@ -433,7 +433,7 @@ foreach ($SettingFeatures as $feature => $FeaturesDetails) {
 	echo '<tr><th>'.$feature.':</th>';
 	echo '<th style="background-color: '.(@get_cfg_var($feature)                      ? $color_true : $color_false).';">'.$phpThumb->phpThumbDebugVarDump((bool) @get_cfg_var($feature)).'</th>';
 	echo '<th style="background-color: '.(preg_match('#(1|ON)#i', @ini_get($feature)) ? $color_true : $color_false).';">'.$phpThumb->phpThumbDebugVarDump((bool) preg_match('#(1|ON)#i', ini_get($feature))).'</th>';
-	echo '<td>'.htmlentities($reason).'</td></tr>';
+	echo '<td>'.htmlspecialchars($reason).'</td></tr>';
 }
 
 $MissingFunctionSeverity = array(
@@ -453,8 +453,7 @@ for ($i = 0; $i <= 1; $i++) {
 		}
 	}
 	$disabled_functions = implode(', ', $DisabledFunctions[$i]);
-	echo '<th style="background-color: '.($disabled_functions ? 'yellow' : 'lime').';">';
-	echo '</th>';
+	echo '<th style="background-color: '.($disabled_functions ? 'yellow' : 'lime').';">'.htmlspecialchars($disabled_functions).'</th>';
 }
 echo '<td>Best if nothing disabled. Calls to ImageMagick will be prevented if exec+system+shell_exec+passthru are disabled.</td></tr>';
 
