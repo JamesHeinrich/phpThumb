@@ -208,7 +208,7 @@ class phpthumb {
 	var $iswindows  = null;
 	var $issafemode = null;
 
-	var $phpthumb_version = '1.7.12-201311251202';
+	var $phpthumb_version = '1.7.12-201311251522';
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -2034,6 +2034,10 @@ if (false) {
 					} else {
 						$this->useRawIMoutput = true;
 						$this->DebugMessage('$this->useRawIMoutput set to TRUE because '.@$ImageCreateFunction.'('.$IMtempfilename.') failed', __FILE__, __LINE__);
+					}
+					if (file_exists($IMtempfilename)) {
+						$this->DebugMessage('deleting "'.$IMtempfilename.'"', __FILE__, __LINE__);
+						@unlink($IMtempfilename);
 					}
 					return true;
 
