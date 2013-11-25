@@ -135,7 +135,7 @@ $Examples[] = array('getstrings' => array('src='.$img['square'].'&w=300'), 'desc
 $Examples[] = array('getstrings' => array('src='.$img['square'].'&w=300&q=10&sia=custom-filename'), 'description' => 'width=300px, JPEGquality=10%, SaveImageAs=custom-filename');
 $Examples[] = array('getstrings' => array('src='.$img['watermark'].'&w=400&aoe=1&bg=ffffff'), 'description' => 'width=400px, AllowOutputEnlargement enabled');
 $Examples[] = array('getstrings' => array('src='.$img['square'].'&w=250&sx=600&sy=5&sw=100&sh=100&aoe=1'), 'description' => 'section from (600x5 - 700x105) cropped and enlarged by 250%, AllowOutputEnlargement enabled');
-$Examples[] = array('getstrings' => array('src='.urlencode('http://silisoftware.com/images/SiliSoft.gif').'&w=100'), 'description' => 'HTTP source image'.$only_gd);
+$Examples[] = array('getstrings' => array('src='.urlencode('http://www.silisoftware.com/images/SiliSoft.gif').'&w=100'), 'description' => 'HTTP source image'.$only_gd);
 $Examples[] = array('getstrings' => array('src='.$img['square'].'&w=300&fltr[]=wmi|'.$img['watermark'].'|BL'), 'description' => 'width=300px, watermark (bottom-left, 75% opacity)'.$only_gd);
 $Examples[] = array('getstrings' => array('src='.$img['square'].'&w=300&fltr[]=wmi|'.$img['watermark'].'|*|25'), 'description' => 'width=300px, watermark (tiled, 25% opacity)'.$only_gd);
 $Examples[] = array('getstrings' => array('src='.$img['square'].'&w=300&fltr[]=wmi|'.$img['watermark'].'|75x50|80|75|75|45'), 'description' => 'width=300px, watermark (absolute position (75x50), rotation (45), scaling (75x75)))'.$only_gd);
@@ -151,7 +151,7 @@ $Examples[] = array('getstrings' => array('src='.$img['portrait'].'&w=100&h=100&
 $Examples[] = array('getstrings' => array('src='.$img['portrait'].'&w=150&ar=L', 'src='.$img['landscape'].'&w=150&ar=L'), 'description' => 'auto-rotate counter-clockwise to landscape from portrait &amp; lanscape'.$only_php42.$only_gd);
 $Examples[] = array('getstrings' => array('src='.$img['portrait'].'&hp=100&wl=200', 'src='.$img['landscape'].'&hp=100&wl=200'), 'description' => 'auto-selection of W and H based on source image orientation');
 $Examples[] = array('getstrings' => array('src='.$img['unrotated'].'&w=150&h=150', 'src='.$img['unrotated'].'&w=150&h=150&ar=x'), 'description' => 'original image vs. auto-rotated based on EXIF data'.$only_php42.$only_exif.$only_gd);
-$Examples[] = array('getstrings' => array('src='.$img['landscape'].'&w=300&ra=30&bg=0000FF', 'src='.$img['landscape'].'&w=300&ra=30&f=png', 'src='.$img['alpha'].'&ra=30&f=png', 'src='.$img['alpha'].'&ra=30&f=gif'), 'description' => 'Rotated 30° (counter-clockwise), width=300px, blue background vs. transparent background vs. rotated image with pre-existing alpha'.$only_php42.$only_gd);
+$Examples[] = array('getstrings' => array('src='.$img['landscape'].'&w=300&ra=30&bg=0000FF', 'src='.$img['landscape'].'&w=300&ra=30&f=png', 'src='.$img['alpha'].'&ra=30&f=png', 'src='.$img['alpha'].'&ra=30&f=gif'), 'description' => 'Rotated 30&deg; (counter-clockwise), width=300px, blue background vs. transparent background vs. rotated image with pre-existing alpha'.$only_php42.$only_gd);
 $Examples[] = array('getstrings' => array('src='.$img['landscape'].'&w=300&h=300&far=1&bg=CCCCCC', 'src='.$img['landscape'].'&w=300&h=300&iar=1'), 'description' => 'Normal resize behavior (left) vs. Forced non-proportional resize (right)'.$only_gd);
 $Examples[] = array('getstrings' => array('src='.$img['landscape'].'&w=100&h=50&zc=1', 'src='.$img['landscape'].'&w=100&zc=1', 'src='.$img['landscape'].'&h=50&zc=1', 'src='.$img['portrait'].'&w=100&h=50&zc=1', 'src='.$img['portrait'].'&w=100&zc=1', 'src='.$img['portrait'].'&h=50&zc=1'), 'description' => 'Zoom-Crop');
 $Examples[] = array('getstrings' => array('src='.$img['landscape'].'&w=300&fltr[]=crop|50', 'src='.$img['landscape'].'&w=300&fltr[]=crop|0|0|0|0.25'), 'description' => 'crop filter');
@@ -200,10 +200,10 @@ foreach ($Examples as $key => $ExamplesArray) {
 			echo '<br>';
 			$text .= "\n";
 		} else {
-			echo '<a href="'.htmlentities($GETstring.'&down=phpThumb.demo.'.$key.'.'.$dummy).'.jpg" title="'.htmlentities($GETstring, ENT_QUOTES).'">';
-			echo '<img border="0" src="'.htmlentities(phpThumbURL($GETstring, '&', $phpThumbBase), ENT_QUOTES).'" alt="">';
-			echo '</a> ';
-			$text .= '<img border="0" src="'.htmlentities(phpThumbURL($GETstring, '&', $phpThumbBase), ENT_QUOTES).'" alt="">'."\n";
+			//echo '<a href="'.htmlentities($GETstring.'&down=phpThumb.demo.'.$key.'.'.$dummy).'.jpg" title="'.htmlentities($GETstring, ENT_QUOTES).'">';
+			echo '<img border="0" src="'.htmlentities(phpThumbURL($GETstring, $phpThumbBase), ENT_QUOTES).'" alt="">';
+			//echo '</a> ';
+			$text .= '<img border="0" src="'.htmlentities(phpThumbURL($GETstring, $phpThumbBase), ENT_QUOTES).'" alt="">'."\n";
 		}
 	}
 	echo '</td></tr></table>';
@@ -266,7 +266,7 @@ echo '<br><br><hr size="1">';
 <?php
 echo 'Small picture (400x300), window opened at wrong size (640x480):<br>';
 echo '<i>(mouse-over to see calling parameters)</i><br>';
-echo '<img src="'.'src='.$img['small'].'&amp;w=100" border="2" alt=""><br>';
+echo '<img src="../'.$img['small'].'" border="2" alt="" style="max-width: 200px; max-height: 200px;"><br>';
 $SmallParams = array(
 	'unmodified'     => '',
 	'text watermark' => '&fltr[]=wmt|Watermark|20|C|FF0000|arial.ttf|100',
@@ -280,7 +280,7 @@ foreach ($SmallParams as $description => $moreparams) {
 <?php
 echo 'Big picture (2272x1704), window opened at wrong size (640x480):<br>';
 echo '<i>(mouse-over to see calling parameters)</i><br>';
-echo '<img src="'.'src='.$img['big'].'&amp;w=100" border="2" alt=""><br>';
+echo '<img src="../'.$img['big'].'" border="2" alt="" style="max-width: 200px; max-height: 200px;"><br>';
 $BigParams = array(
 	'unmodified'           => '',
 	'width=800'            => '&w=800',

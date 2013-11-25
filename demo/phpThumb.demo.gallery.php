@@ -79,7 +79,7 @@ if (!empty($_REQUEST['pic'])) {
 		}
 		if (!empty($pictures)) {
 			foreach ($pictures as $file) {
-				$alt = (@$CAPTIONS[$file] ? $CAPTIONS[$file] : $file);
+				$alt = (!empty($CAPTIONS[$file]) ? $CAPTIONS[$file] : $file);
 				echo '<table style="float: left;">'.(!empty($CAPTIONS[$file]) ? '<caption align="bottom">'.htmlentities($CAPTIONS[$file]).'</caption>' : '').'<tbody><tr><td>';
 				if ($use_popup) {
 					echo '<a title="'.htmlentities($alt, ENT_QUOTES).'" href="#" onClick="window.open(\''.$popup.'?src='.htmlentities($basedir.@$_REQUEST['dir'].'/'.$file.'&w='.$displaysize.'&h='.$displaysize.'&title='.urlencode(@$CAPTIONS[$file] ? $CAPTIONS[$file] : $file)).'\', \'showpic\', \'width='.$displaysize.',height='.$displaysize.',resizable=no,status=no,menubar=no,toolbar=no,scrollbars=no\'); return false;">';
