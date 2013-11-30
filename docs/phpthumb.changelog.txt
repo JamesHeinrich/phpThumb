@@ -7,6 +7,24 @@
 ¤ = structure change or important new feature
 * = less important new feature or change
 
+v1.7.12-201312__xx__xx - December ??, 2013
+  ¤ high_security_mode enabled by default and strongly recommended
+  ¤ debug mode must be disabled to allow thumbnail generation
+    Thanks to Rafay Baloch (www.rafayhackingarticles.net) for
+    recommending some security configuration changes
+  * Bugfix: temp files used with ImageMagick might not get deleted
+    from cache directory
+  * Bugfix (#934): source image region (sx/sy/sw/sh) did not work
+    when using ImageMagick
+  * Bugfix (#925): add configurable URL separator
+  * Bugfix (#921): non-static phpUnsharpMask::applyUnsharpMask()
+  * Bugfix (#920): $PHPTHUMB_DEFAULTS with array value gives
+    array-to-string PHP error
+  * Bugfix (#909): unnecessary calls of shell commands when cached
+  * Bugfix (#618): cached files inside subdirs won't be deleted
+  * Bugfix (#594): ImageMagick variants not detected (e.g. OpenMP)
+
+
 v1.7.11-201108081344 - August 8, 2011
   ¤ Added even more explicit escaping of command line parameters
   ¤ $PHPTHUMB_CONFIG['high_security_password'] needs to be more
