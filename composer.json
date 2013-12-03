@@ -1,27 +1,20 @@
 {
-    "name": "My Project",
-    "minimum-stability": "dev",
-    "prefer-stable": true,
-    "repositories": [
-        {
-            "type": "package",
-            "package": {
-                "name": "JamesHeinrich/phpThumb",
-                "version": "dev-master",
-                "source": {
-                    "type": "git",
-                    "url": "git://github.com/JamesHeinrich/phpThumb.git",
-                    "reference": "master"
-                }
-            }
-        }
-    ],
+    "name": "JamesHeinrich/phpThumb",
+    "description": "The PHP thumbnail generator",
+    "type": "library",
+    "license": "GPL",
+    "keywords": ["thumbnail", "thumb", "GD", "ImageMagick", "image", "magic"],
+    "homepage": "http://phpthumb.sourceforge.net/",
     "require": {
-        "JamesHeinrich/phpThumb": "dev-master"
+        "php": ">=4.3.3"
+    },
+    "suggest": {
+        "ext-gd": "PHP GD library",
+        "ext-imagick": "PHP ImageMagick"
     },
     "autoload": {
         "files": [
-            "vendor/JamesHeinrich/phpThumb/phpthumb.class.php"
+            "phpthumb.class.php"
         ]
     }
 }
