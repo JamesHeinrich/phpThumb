@@ -1,0 +1,27 @@
+{
+    "name": "My Project",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "JamesHeinrich/phpThumb",
+                "version": "dev-master",
+                "source": {
+                    "type": "git",
+                    "url": "git://github.com/JamesHeinrich/phpThumb.git",
+                    "reference": "master"
+                }
+            }
+        }
+    ],
+    "require": {
+        "JamesHeinrich/phpThumb": "dev-master"
+    },
+    "autoload": {
+        "files": [
+            "vendor/JamesHeinrich/phpThumb/phpthumb.class.php"
+        ]
+    }
+}
