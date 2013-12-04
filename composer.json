@@ -1,8 +1,16 @@
 {
-    "name": "JamesHeinrich/phpThumb",
+    "name": "jamesheinrich/phpthumb",
     "description": "The PHP thumbnail generator",
     "type": "library",
     "license": "GPL",
+	"authors": [
+        {
+            "name": "James Heinrich",
+            "email": "info@silisoftware.com",
+            "homepage": "http://www.silisoftware.com/",
+            "role": "Developer"
+        }
+    ],
     "keywords": ["thumbnail", "thumb", "GD", "ImageMagick", "image", "magic"],
     "homepage": "http://phpthumb.sourceforge.net/",
     "require": {
