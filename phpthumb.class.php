@@ -3907,14 +3907,14 @@ if (false) {
 		$this->FatalError($text);
 		$this->DebugMessage($text, __FILE__, __LINE__);
 		$this->purgeTempFiles();
+		if ($this->config_error_silent_die_on_error) {
+			exit;
+		}
 		if ($this->phpThumbDebug && !$forcedisplay) {
 			return false;
 		}
 		if (!$this->config_error_die_on_error && !$forcedisplay) {
 			return false;
-		}
-		if ($this->config_error_silent_die_on_error) {
-			exit;
 		}
 		if ($this->err || $this->config_error_message_image_default) {
 			// Show generic custom error image instead of error message
