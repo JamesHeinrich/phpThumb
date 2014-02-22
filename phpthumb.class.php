@@ -708,6 +708,7 @@ class phpthumb {
 				}
 			}
 			if (empty($CacheDirOldFilesSize)) {
+				$this->DebugMessage('CleanUpCacheDirectory() skipped because $CacheDirOldFilesSize is empty (phpthumb_functions::GetAllFilesInSubfolders('.$this->config_cache_directory.') found no files)', __FILE__, __LINE__);
 				return true;
 			}
 			$DeletedKeys['zerobyte'] = array();
