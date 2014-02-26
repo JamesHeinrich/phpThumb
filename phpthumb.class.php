@@ -690,7 +690,9 @@ class phpthumb {
 			$this->DebugMessage('CleanUpCacheDirectory() skipped because "'.$phpThumbCacheStats_filename.'" is recently modified', __FILE__, __LINE__);
 			return true;
 		}
-		touch($phpThumbCacheStats_filename);
+		if (!@touch($phpThumbCacheStats_filename)) {
+			$this->DebugMessage('touch('.$phpThumbCacheStats_filename.') failed', __FILE__, __LINE__);
+		}
 
 		$DeletedKeys = array();
 		$AllFilesInCacheDirectory = array();
