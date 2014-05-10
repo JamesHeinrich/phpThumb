@@ -7,7 +7,7 @@
 ¤ = structure change or important new feature
 * = less important new feature or change
 
-v1.7.12-201312__xx__xx - December ??, 2013
+v1.7.12-dev - ??? ??, 2014
   ¤ high_security_mode enabled by default and strongly recommended
   ¤ debug mode must be disabled to allow thumbnail generation
     Thanks to Rafay Baloch (www.rafayhackingarticles.net) for
