@@ -322,7 +322,7 @@ $PHPTHUMB_DEFAULTS_DISABLEGETPARAMS = (bool) (!empty($PHPTHUMB_CONFIG['cache_def
 if (!empty($PHPTHUMB_DEFAULTS) && is_array($PHPTHUMB_DEFAULTS)) {
 	$phpThumb->DebugMessage('setting $PHPTHUMB_DEFAULTS['.implode(';', array_keys($PHPTHUMB_DEFAULTS)).']', __FILE__, __LINE__);
 	foreach ($PHPTHUMB_DEFAULTS as $key => $value) {
-		if ($PHPTHUMB_DEFAULTS_GETSTRINGOVERRIDE || !isset($_GET[$key])) {
+		if (!$PHPTHUMB_DEFAULTS_GETSTRINGOVERRIDE || !isset($_GET[$key])) { // set parameter to default value if config is set to allow _GET to override default, OR if no value is passed via _GET for this parameter
 			$_GET[$key] = $value;
 			$phpThumb->DebugMessage('PHPTHUMB_DEFAULTS assigning ('.(is_array($value) ? print_r($value, true) : $value).') to $_GET['.$key.']', __FILE__, __LINE__);
 		}
