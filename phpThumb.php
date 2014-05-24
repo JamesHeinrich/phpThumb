@@ -319,16 +319,6 @@ if (isset($_GET['phpThumbDebug']) && ($_GET['phpThumbDebug'] == '2')) {
 
 $PHPTHUMB_DEFAULTS_DISABLEGETPARAMS = (bool) (!empty($PHPTHUMB_CONFIG['cache_default_only_suffix']) && (strpos($PHPTHUMB_CONFIG['cache_default_only_suffix'], '*') !== false));
 
-if (!empty($PHPTHUMB_DEFAULTS) && is_array($PHPTHUMB_DEFAULTS)) {
-	$phpThumb->DebugMessage('setting $PHPTHUMB_DEFAULTS['.implode(';', array_keys($PHPTHUMB_DEFAULTS)).']', __FILE__, __LINE__);
-	foreach ($PHPTHUMB_DEFAULTS as $key => $value) {
-		if (!$PHPTHUMB_DEFAULTS_GETSTRINGOVERRIDE || !isset($_GET[$key])) { // set parameter to default value if config is set to allow _GET to override default, OR if no value is passed via _GET for this parameter
-			$_GET[$key] = $value;
-			$phpThumb->DebugMessage('PHPTHUMB_DEFAULTS assigning ('.(is_array($value) ? print_r($value, true) : $value).') to $_GET['.$key.']', __FILE__, __LINE__);
-		}
-	}
-}
-
 // deprecated: 'err', 'file', 'goto',
 $allowedGETparameters = array('src', 'new', 'w', 'h', 'wp', 'hp', 'wl', 'hl', 'ws', 'hs', 'f', 'q', 'sx', 'sy', 'sw', 'sh', 'zc', 'bc', 'bg', 'bgt', 'fltr', 'xto', 'ra', 'ar', 'aoe', 'far', 'iar', 'maxb', 'down', 'phpThumbDebug', 'hash', 'md5s', 'sfn', 'dpi', 'sia', 'nocache');
 foreach ($_GET as $key => $value) {
@@ -340,6 +330,16 @@ foreach ($_GET as $key => $value) {
 		$phpThumb->setParameter($key, $value);
 	} else {
 		$phpThumb->ErrorImage('Forbidden parameter: '.$key);
+	}
+}
+
+if (!empty($PHPTHUMB_DEFAULTS) && is_array($PHPTHUMB_DEFAULTS)) {
+	$phpThumb->DebugMessage('setting $PHPTHUMB_DEFAULTS['.implode(';', array_keys($PHPTHUMB_DEFAULTS)).']', __FILE__, __LINE__);
+	foreach ($PHPTHUMB_DEFAULTS as $key => $value) {
+		if (!$PHPTHUMB_DEFAULTS_GETSTRINGOVERRIDE || !isset($_GET[$key])) { // set parameter to default value if config is set to allow _GET to override default, OR if no value is passed via _GET for this parameter
+			$_GET[$key] = $value;
+			$phpThumb->DebugMessage('PHPTHUMB_DEFAULTS assigning ('.(is_array($value) ? print_r($value, true) : $value).') to $_GET['.$key.']', __FILE__, __LINE__);
+		}
 	}
 }
 
