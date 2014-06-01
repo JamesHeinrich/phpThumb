@@ -210,7 +210,7 @@ class phpthumb {
 	var $iswindows  = null;
 	var $issafemode = null;
 
-	var $phpthumb_version = '1.7.12-201405301706';
+	var $phpthumb_version = '1.7.12-201406011225';
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -1023,51 +1023,58 @@ class phpthumb {
 		return true;
 	}
 
+	/* Takes the array of path segments up to now, and the next segment (maybe a modifier: empty, . or ..)
+	   Applies it, adding or removing from $segments as a result. Returns nothing. */
+	// http://support.silisoftware.com/phpBB3/viewtopic.php?t=961
+	function applyPathSegment(&$segments, $segment) {
+		if ($segment == '.') {
+			return; // always remove
+		}
+		if ($segment == '') {
+			$test = array_pop($segments);
+			if (is_null($test)) {
+				$segments[] = $segment; // keep the first empty block
+			} elseif ($test == '') {
+				$test = array_pop($segments);
+				if (is_null($test)) {
+					$segments[] = $test;
+					$segments[] = $segment; // keep the second one too
+				} else { // put both back and ignore segment
+					$segments[] = $test;
+					$segments[] = $test;
+				}
+			} else {
+				$segments[] = $test; // ignore empty blocks
+			}
+		} else {
+			if ($segment == '..') {
+				$test = array_pop($segments);
+				if (is_null($test)) {
+					$segments[] = $segment;
+				} elseif ($test == '..') {
+					$segments[] = $test;
+					$segments[] = $segment;
+				} else {
+					if ($test == '') {
+						$segments[] = $test;
+					} // else nothing, remove both
+				}
+			} else {
+				$segments[] = $segment;
+			}
+		}
+	}
+
 	/* Takes array of path components, normalizes it: removes empty slots and '.', collapses '..' and folder names.  Returns array. */
 	// http://support.silisoftware.com/phpBB3/viewtopic.php?t=961
 	function normalizePath($segments) {
 		$parts = array();
 		foreach ($segments as $segment) {
-			if ($segment == '.') {// always remove
-				continue;
-			}
-			if ($segment == '') {
-				$test = array_pop($parts);
-				if (is_null($test)) {
-					$parts[] = $segment; // keep the first empty block
-				} elseif ($test == ''){
-					$test = array_pop($parts);
-					if (is_null($test)) {
-						$parts[] = $test;
-						$parts[] = $segment; // keep the second one too
-					} else { // put both back and ignore segment
-						$parts[] = $test;
-						$parts[] = $test;
-					}
-				} else {
-					$parts[] = $test; // ignore empty blocks
-				}
-			} else {
-				if ($segment == '..') {
-					$test = array_pop($parts);
-					if (is_null($test)) {
-						$parts[] = $segment;
-					} elseif ($test == '..') {
-						$parts[] = $test;
-						$parts[] = $segment;
-					} else {
-						if ($test == '') {
-							$parts[] = $test;
-						} // else nothing, remove both
-					}
-				} else {
-					$parts[] = $segment;
-				}
-			}
+			$this->applyPathSegment($parts, $segment);
 		}
 		return $parts;
 	}
-		
+
 	/* True if the provided path points (without resolving symbolic links) into one of the allowed directories. */
 	// http://support.silisoftware.com/phpBB3/viewtopic.php?t=961
 	function matchPath($path, $allowed_dirs) {
@@ -1080,11 +1087,29 @@ class phpthumb {
 		}
 		return false;
 	}
-	
+
+	/* True if the provided path points inside one of open_basedirs (or if open_basedirs are disabled) */
+	// http://support.silisoftware.com/phpBB3/viewtopic.php?t=961
+	function isInOpenBasedir($path) {
+		static $open_basedirs = null;
+		if (is_null($open_basedirs)) {
+			$ini_text = ini_get('open_basedir');
+			$this->DebugMessage('open_basedir: "'.$ini_text.'"', __FILE__, __LINE__);
+			$open_basedirs = array();
+			if (strlen($ini_text) > 0) {
+				foreach (preg_split('#[;:]#', $ini_text) as $key => $value) {
+					$open_basedirs[$key] = realpath($value);
+				}
+			}
+		}
+		return (empty($open_basedirs) || $this->matchPath($path, $open_basedirs));
+	}
+
 	/* Resolves all symlinks in $path, checking that each continuous part ends in an allowed zone. Returns null, if any component leads outside of allowed zone. */
 	// http://support.silisoftware.com/phpBB3/viewtopic.php?t=961
 	function resolvePath($path, $allowed_dirs) {
 		$this->DebugMessage('resolvePath: '.$path.' (allowed_dirs: '.print_r($allowed_dirs, true).')', __FILE__, __LINE__);
+
 		// add base path to the top of the list
 		if (!$this->config_allow_src_above_docroot) {
 			array_unshift($allowed_dirs, realpath($this->config_document_root));
@@ -1100,20 +1125,24 @@ class phpthumb {
 		if ($path == '') {
 			return null; // save us trouble
 		}
-	
+
 		do {
 			$this->DebugMessage('resolvePath: iteration, path='.$path.', base path = '.$allowed_dirs[0], __FILE__, __LINE__);
-			$segments = explode(DIRECTORY_SEPARATOR, $path);
+
 			$parts = array();
-			for ($i = 0; $i < count($segments); $i++) {
-				$parts[] = $segments[$i];
-				if (is_link(implode(DIRECTORY_SEPARATOR, $parts))) {
-					break;
+			foreach (explode(DIRECTORY_SEPARATOR, $path) as $this_segment) {
+				$this->applyPathSegment($parts, $this_segment);
+				$thispart = implode(DIRECTORY_SEPARATOR, $parts);
+				if ($this->isInOpenBasedir($thispart)) {
+					if (is_link($thispart)) {
+						break;
+					}
 				}
 			}
+
 			$this->DebugMessage('resolvePath: stop at component '.$i, __FILE__, __LINE__);
 			// test the part up to here
-			$path = implode(DIRECTORY_SEPARATOR, $this->normalizePath($parts));
+			$path = implode(DIRECTORY_SEPARATOR, $parts);
 			$this->DebugMessage('resolvePath: stop at path='.$path, __FILE__, __LINE__);
 			if (!$this->matchPath($path, $allowed_dirs)) {
 				$this->DebugMessage('resolvePath: no match, returning null', __FILE__, __LINE__);
@@ -1126,7 +1155,7 @@ class phpthumb {
 			// else it's symlink, rewrite path
 			$path = readlink($path);
 			$this->DebugMessage('resolvePath: symlink matched, target='.$path, __FILE__, __LINE__);
-	
+
 			/*
 			Replace base path with symlink target.
 			Assuming:
@@ -1257,7 +1286,7 @@ class phpthumb {
 		static $file_exists_cache = array();
 		if (!$cached || !isset($file_exists_cache[$filename])) {
 			if (is_null($open_basedirs)) {
-				$open_basedirs = explode(';', ini_get('open_basedir'));
+				$open_basedirs = preg_split('#[;:]#', ini_get('open_basedir'));
 			}
 			if (empty($open_basedirs) || in_array(dirname($filename), $open_basedirs)) {
 				$file_exists_cache[$filename] = file_exists($filename);
