@@ -210,7 +210,7 @@ class phpthumb {
 	var $iswindows  = null;
 	var $issafemode = null;
 
-	var $phpthumb_version = '1.7.12-201406011225';
+	var $phpthumb_version = '1.7.12-201406240820';
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -357,35 +357,20 @@ class phpthumb {
 		$this->CreateGDoutput();
 			$this->phpThumbDebug('8h');
 
-		switch ($this->far) {
-			case 'L':
-			case 'TL':
-			case 'BL':
-				$destination_offset_x = 0;
-				$destination_offset_y = round(($this->thumbnail_height - $this->thumbnail_image_height) / 2);
-				break;
-			case 'R':
-			case 'TR':
-			case 'BR':
-				$destination_offset_x =  round($this->thumbnail_width  - $this->thumbnail_image_width);
-				$destination_offset_y = round(($this->thumbnail_height - $this->thumbnail_image_height) / 2);
-				break;
-			case 'T':
-			case 'TL':
-			case 'TR':
-				$destination_offset_x = round(($this->thumbnail_width  - $this->thumbnail_image_width)  / 2);
-				$destination_offset_y = 0;
-				break;
-			case 'B':
-			case 'BL':
-			case 'BR':
-				$destination_offset_x = round(($this->thumbnail_width  - $this->thumbnail_image_width)  / 2);
-				$destination_offset_y =  round($this->thumbnail_height - $this->thumbnail_image_height);
-				break;
-			case 'C':
-			default:
-				$destination_offset_x = round(($this->thumbnail_width  - $this->thumbnail_image_width)  / 2);
-				$destination_offset_y = round(($this->thumbnail_height - $this->thumbnail_image_height) / 2);
+		// default values, also applicable for far="C"
+		$destination_offset_x = round(($this->thumbnail_width  - $this->thumbnail_image_width)  / 2);
+		$destination_offset_y = round(($this->thumbnail_height - $this->thumbnail_image_height) / 2);
+		if (($this->far == 'L') || ($this->far == 'TL') || ($this->far == 'BL')) {
+			$destination_offset_x = 0;
+		}
+		if (($this->far == 'R') || ($this->far == 'TR') || ($this->far == 'BR')) {
+			$destination_offset_x =  round($this->thumbnail_width  - $this->thumbnail_image_width);
+		}
+		if (($this->far == 'T') || ($this->far == 'TL') || ($this->far == 'TR')) {
+			$destination_offset_y = 0;
+		}
+		if (($this->far == 'B') || ($this->far == 'BL') || ($this->far == 'BR')) {
+			$destination_offset_y =  round($this->thumbnail_height - $this->thumbnail_image_height);
 		}
 
 //		// copy/resize image to appropriate dimensions
