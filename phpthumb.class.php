@@ -210,7 +210,7 @@ class phpthumb {
 	var $iswindows  = null;
 	var $issafemode = null;
 
-	var $phpthumb_version = '1.7.12-201406240820';
+	var $phpthumb_version = '1.7.12-201406240834';
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -1115,8 +1115,11 @@ class phpthumb {
 			$this->DebugMessage('resolvePath: iteration, path='.$path.', base path = '.$allowed_dirs[0], __FILE__, __LINE__);
 
 			$parts = array();
-			foreach (explode(DIRECTORY_SEPARATOR, $path) as $this_segment) {
-				$this->applyPathSegment($parts, $this_segment);
+			// do not use "cleaner" foreach version of this loop as later code relies on both $segments and $i
+			// http://support.silisoftware.com/phpBB3/viewtopic.php?t=964
+			$segments = explode(DIRECTORY_SEPARATOR, $path);
+			for ($i = 0; $i < count($segments); $i++) {
+	            $this->applyPathSegment($parts, $segments[$i]);
 				$thispart = implode(DIRECTORY_SEPARATOR, $parts);
 				if ($this->isInOpenBasedir($thispart)) {
 					if (is_link($thispart)) {
