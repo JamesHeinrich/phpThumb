@@ -47,10 +47,10 @@ function PasswordStrength($password) {
 }
 
 function RedirectToCachedFile() {
-	global $phpThumb, $PHPTHUMB_CONFIG;
+	global $phpThumb;
 
 	$nice_cachefile = str_replace(DIRECTORY_SEPARATOR, '/', $phpThumb->cache_filename);
-	$nice_docroot   = str_replace(DIRECTORY_SEPARATOR, '/', rtrim($PHPTHUMB_CONFIG['document_root'], '/\\'));
+	$nice_docroot   = str_replace(DIRECTORY_SEPARATOR, '/', rtrim($phpThumb->config_document_root, '/\\'));
 
 	$parsed_url = phpthumb_functions::ParseURLbetter(@$_SERVER['HTTP_REFERER']);
 
@@ -95,7 +95,7 @@ function RedirectToCachedFile() {
 			header('Content-Type: image/x-icon');
 		}
 		header('Content-Length: '.filesize($phpThumb->cache_filename));
-		if (empty($PHPTHUMB_CONFIG['cache_force_passthru']) && preg_match('#^'.preg_quote($nice_docroot).'(.*)$#', $nice_cachefile, $matches)) {
+		if (empty($phpThumb->config_cache_force_passthru) && preg_match('#^'.preg_quote($nice_docroot).'(.*)$#', $nice_cachefile, $matches)) {
 			header('Location: '.dirname($matches[1]).'/'.urlencode(basename($matches[1])));
 		} else {
 			@readfile($phpThumb->cache_filename);
@@ -152,7 +152,7 @@ if (!empty($PHPTHUMB_CONFIG)) {
 			$phpThumb->DebugMessage('setParameter('.$keyname.', '.$phpThumb->phpThumbDebugVarDump($value).')', __FILE__, __LINE__);
 		}
 	}
-	if (empty($PHPTHUMB_CONFIG['disable_debug'])) {
+	if (!$phpThumb->config_disable_debug) {
 		// if debug mode is enabled, force phpThumbDebug output, do not allow normal thumbnails to be generated
 		$_GET['phpThumbDebug'] = (!empty($_GET['phpThumbDebug']) ? max(1, intval($_GET['phpThumbDebug'])) : 9);
 		$phpThumb->setParameter('phpThumbDebug', $_GET['phpThumbDebug']);
@@ -161,7 +161,7 @@ if (!empty($PHPTHUMB_CONFIG)) {
 	$phpThumb->DebugMessage('$PHPTHUMB_CONFIG is empty', __FILE__, __LINE__);
 }
 
-if (empty($PHPTHUMB_CONFIG['disable_pathinfo_parsing']) && (empty($_GET) || isset($_GET['phpThumbDebug'])) && !empty($_SERVER['PATH_INFO'])) {
+if (empty($phpThumb->config_disable_pathinfo_parsing) && (empty($_GET) || isset($_GET['phpThumbDebug'])) && !empty($_SERVER['PATH_INFO'])) {
 	$_SERVER['PHP_SELF'] = str_replace($_SERVER['PATH_INFO'], '', @$_SERVER['PHP_SELF']);
 
 	$args = explode(';', substr($_SERVER['PATH_INFO'], 1));
@@ -192,14 +192,14 @@ if (empty($PHPTHUMB_CONFIG['disable_pathinfo_parsing']) && (empty($_GET) || isse
 	}
 }
 
-if (!empty($PHPTHUMB_CONFIG['high_security_enabled'])) {
+if (!empty($phpThumb->config_high_security_enabled)) {
 	if (empty($_GET['hash'])) {
 		$phpThumb->config_disable_debug = false; // otherwise error message won't print
 		$phpThumb->ErrorImage('ERROR: missing hash');
-	} elseif (PasswordStrength($PHPTHUMB_CONFIG['high_security_password']) < 20) {
+	} elseif (PasswordStrength($phpThumb->config_high_security_password) < 20) {
 		$phpThumb->config_disable_debug = false; // otherwise error message won't print
 		$phpThumb->ErrorImage('ERROR: $PHPTHUMB_CONFIG[high_security_password] is not complex enough');
-	} elseif ($_GET['hash'] != md5(str_replace($PHPTHUMB_CONFIG['high_security_url_separator'].'hash='.$_GET['hash'], '', $_SERVER['QUERY_STRING']).$PHPTHUMB_CONFIG['high_security_password'])) {
+	} elseif ($_GET['hash'] != md5(str_replace($phpThumb->config_high_security_url_separator.'hash='.$_GET['hash'], '', $_SERVER['QUERY_STRING']).$phpThumb->config_high_security_password)) {
 		header('HTTP/1.0 403 Forbidden');
 		sleep(10); // deliberate delay to discourage password-guessing
 		$phpThumb->ErrorImage('ERROR: invalid hash');
@@ -258,7 +258,7 @@ if (!empty($_GET['src']) && isset($_GET['md5s']) && empty($_GET['md5s'])) {
 	}
 }
 
-if (!empty($_GET['src']) && empty($PHPTHUMB_CONFIG['allow_local_http_src']) && preg_match('#^http://'.@$_SERVER['HTTP_HOST'].'(.+)#i', $_GET['src'], $matches)) {
+if (!empty($_GET['src']) && empty($phpThumb->config_allow_local_http_src) && preg_match('#^http://'.@$_SERVER['HTTP_HOST'].'(.+)#i', $_GET['src'], $matches)) {
 	$phpThumb->ErrorImage('It is MUCH better to specify the "src" parameter as "'.$matches[1].'" instead of "'.$matches[0].'".'."\n\n".'If you really must do it this way, enable "allow_local_http_src" in phpThumb.config.php');
 }
 
@@ -317,7 +317,7 @@ if (isset($_GET['phpThumbDebug']) && ($_GET['phpThumbDebug'] == '2')) {
 }
 ////////////////////////////////////////////////////////////////
 
-$PHPTHUMB_DEFAULTS_DISABLEGETPARAMS = (bool) (!empty($PHPTHUMB_CONFIG['cache_default_only_suffix']) && (strpos($PHPTHUMB_CONFIG['cache_default_only_suffix'], '*') !== false));
+$PHPTHUMB_DEFAULTS_DISABLEGETPARAMS = (bool) ($phpThumb->config_cache_default_only_suffix && (strpos($phpThumb->config_cache_default_only_suffix, '*') !== false));
 
 // deprecated: 'err', 'file', 'goto',
 $allowedGETparameters = array('src', 'new', 'w', 'h', 'wp', 'hp', 'wl', 'hl', 'ws', 'hs', 'f', 'q', 'sx', 'sy', 'sw', 'sh', 'zc', 'bc', 'bg', 'bgt', 'fltr', 'xto', 'ra', 'ar', 'aoe', 'far', 'iar', 'maxb', 'down', 'phpThumbDebug', 'hash', 'md5s', 'sfn', 'dpi', 'sia', 'nocache');
@@ -594,7 +594,7 @@ if (isset($_GET['phpThumbDebug']) && ($_GET['phpThumbDebug'] == '8')) {
 }
 ////////////////////////////////////////////////////////////////
 
-if (!empty($PHPTHUMB_CONFIG['high_security_enabled']) && !empty($_GET['nocache'])) {
+if (!empty($phpThumb->config_high_security_enabled) && !empty($_GET['nocache'])) {
 
 	// cache disabled, don't write cachefile
 
