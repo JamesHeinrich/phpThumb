@@ -7,13 +7,20 @@
 ¤ = structure change or important new feature
 * = less important new feature or change
 
-v1.7.12-dev - ??? ??, 2014
+v1.7.12-201406260900 - June 26, 2014
   ¤ high_security_mode enabled by default and strongly recommended
   ¤ debug mode must be disabled to allow thumbnail generation
     Thanks to Rafay Baloch (www.rafayhackingarticles.net) for
     recommending some security configuration changes
+  * default config_cache_directory_depth is now 2 (was 4)
   * Bugfix: temp files used with ImageMagick might not get deleted
     from cache directory
+  * Bugfix (G:17): 'far' parameter not working as intended
+  * Bugfix (G:16): $PHPTHUMB_DEFAULTS configuration ignored
+  * Bugfix (G:15): $PHPTHUMB_DEFAULTS_GETSTRINGOVERRIDE logic wrong
+  * Bugfix (G:11): config_cache_maxsize does not count wasted space
+  * Bugfix (G:10): error images ignored relevant config options
+  * Bugfix (#962): support symlinked subfolders for image source
   * Bugfix (#934): source image region (sx/sy/sw/sh) did not work
     when using ImageMagick
   * Bugfix (#925): add configurable URL separator
