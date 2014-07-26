@@ -11,7 +11,7 @@
 //                                                         ///
 //////////////////////////////////////////////////////////////
 
-define('phpThumbConfigFileVersion', '1.7.12');
+define('phpThumbConfigFileVersion', '1.7.13');
 ob_start();
 if (!file_exists(dirname(__FILE__).'/phpthumb.functions.php') || !include_once(dirname(__FILE__).'/phpthumb.functions.php')) {
 	ob_end_flush();
