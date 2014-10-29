@@ -210,7 +210,7 @@ class phpthumb {
 	var $iswindows  = null;
 	var $issafemode = null;
 
-	var $phpthumb_version = '1.7.13-201406261000';
+	var $phpthumb_version = '1.7.13-201410291054';
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -447,7 +447,7 @@ class phpthumb {
 		ob_start();
 		switch ($this->thumbnailFormat) {
 			case 'wbmp':
-				if (!@$builtin_formats['wbmp']) {
+				if (empty($builtin_formats['wbmp'])) {
 					$this->DebugMessage('GD does not have required built-in support for WBMP output', __FILE__, __LINE__);
 					ob_end_clean();
 					return false;
@@ -458,7 +458,7 @@ class phpthumb {
 
 			case 'jpeg':
 			case 'jpg':  // should be "jpeg" not "jpg" but just in case...
-				if (!@$builtin_formats['jpg']) {
+				if (empty($builtin_formats['jpg'])) {
 					$this->DebugMessage('GD does not have required built-in support for JPEG output', __FILE__, __LINE__);
 					ob_end_clean();
 					return false;
@@ -468,17 +468,37 @@ class phpthumb {
 				break;
 
 			case 'png':
-				if (!@$builtin_formats['png']) {
+				if (empty($builtin_formats['png'])) {
 					$this->DebugMessage('GD does not have required built-in support for PNG output', __FILE__, __LINE__);
 					ob_end_clean();
 					return false;
 				}
-				ImagePNG($this->gdimg_output);
+				if (phpthumb_functions::version_compare_replacement(phpversion(), '5.1.2', '>=')) {
+					// https://github.com/JamesHeinrich/phpThumb/issues/24
+
+					/* http://php.net/manual/en/function.imagepng.php:
+					from php source (gd.h):
+					2.0.12: Compression level: 0-9 or -1, where 0 is NO COMPRESSION at all,
+					:: 1 is FASTEST but produces larger files, 9 provides the best
+					:: compression (smallest files) but takes a long time to compress, and
+					:: -1 selects the default compiled into the zlib library.
+					Conclusion: Based on the Zlib manual (http://www.zlib.net/manual.html) the default compression level is set to 6.
+					*/
+					if (($this->thumbnailQuality >= -1) && ($this->thumbnailQuality <= 9)) {
+						$PNGquality = $this->thumbnailQuality;
+					} else {
+						$this->DebugMessage('Specified thumbnailQuality "'.$this->thumbnailQuality.'" is outside the accepted range (0-9, or -1). Using 6 as default value.', __FILE__, __LINE__);
+						$PNGquality = 6;
+					}
+					ImagePNG($this->gdimg_output, null, $PNGquality);
+				} else {
+					ImagePNG($this->gdimg_output);
+				}
 				$this->outputImageData = ob_get_contents();
 				break;
 
 			case 'gif':
-				if (!@$builtin_formats['gif']) {
+				if (empty($builtin_formats['gif'])) {
 					$this->DebugMessage('GD does not have required built-in support for GIF output', __FILE__, __LINE__);
 					ob_end_clean();
 					return false;
