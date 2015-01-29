@@ -122,6 +122,12 @@ class phpthumb_functions {
 		return 0;
 	}
 
+	static function escapeshellarg_replacement($arg) {
+		if (function_exists('escapeshellarg') && !phpthumb_functions::FunctionIsDisabled('escapeshellarg')) {
+			return escapeshellarg($arg);
+		}
+		return '\''.str_replace('\'', '\\\'', $arg).'\'';
+	}
 
 	static function phpinfo_array() {
 		static $phpinfo_array = array();

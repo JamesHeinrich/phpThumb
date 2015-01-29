@@ -7,6 +7,9 @@
 ¤ = structure change or important new feature
 * = less important new feature or change
 
+v1.7.14 -
+  * Bugfix (G:25): escapeshellarg may exist but be disabled
+
 v1.7.13-201406261000 - June 26, 2014
   * Bugfix: incorrect variable name in phpThumb.php could prevent
     all hash values from matching
