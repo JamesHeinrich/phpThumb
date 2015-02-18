@@ -210,7 +210,7 @@ class phpthumb {
 	var $iswindows  = null;
 	var $issafemode = null;
 
-	var $phpthumb_version = '1.7.14-201501291246';
+	var $phpthumb_version = '1.7.14-201502181106';
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -1299,8 +1299,8 @@ class phpthumb {
 			if (empty($open_basedirs) || in_array(dirname($filename), $open_basedirs)) {
 				$file_exists_cache[$filename] = file_exists($filename);
 			} elseif ($this->iswindows) {
-				$ls_filename = trim(phpthumb_functions::SafeExec('dir '.phpthumb_functions::escapeshellarg_replacement($filename)));
-				$file_exists_cache[$filename] = !preg_match('#File Not Found#i', $ls_filename);
+				$ls_filename = trim(phpthumb_functions::SafeExec('dir /b '.phpthumb_functions::escapeshellarg_replacement($filename)));
+				$file_exists_cache[$filename] = ($ls_filename == basename($filename));  // command dir /b return only filename without path
 			} else {
 				$ls_filename = trim(phpthumb_functions::SafeExec('ls '.phpthumb_functions::escapeshellarg_replacement($filename)));
 				$file_exists_cache[$filename] = ($ls_filename == $filename);
