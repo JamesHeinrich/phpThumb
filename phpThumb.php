@@ -29,7 +29,7 @@ function SendSaveAsFileHeaderIfNeeded() {
 		return false;
 	}
 	global $phpThumb;
-	$downloadfilename = phpthumb_functions::SanitizeFilename(!empty($_GET['sia']) ? $_GET['sia'] : (!empty($_GET['down']) ? $_GET['down'] : 'phpThumb_generated_thumbnail'.(!empty($_GET['f']) ? $_GET['f'] : 'jpg')));
+	$downloadfilename = phpthumb_functions::SanitizeFilename(!empty($_GET['sia']) ? $_GET['sia'] : (!empty($_GET['down']) ? $_GET['down'] : 'phpThumb_generated_thumbnail.'.(!empty($_GET['f']) ? $_GET['f'] : 'jpg')));
 	if (!empty($downloadfilename)) {
 		$phpThumb->DebugMessage('SendSaveAsFileHeaderIfNeeded() sending header: Content-Disposition: '.(!empty($_GET['down']) ? 'attachment' : 'inline').'; filename="'.$downloadfilename.'"', __FILE__, __LINE__);
 		header('Content-Disposition: '.(!empty($_GET['down']) ? 'attachment' : 'inline').'; filename="'.$downloadfilename.'"');
