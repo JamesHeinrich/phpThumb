@@ -90,6 +90,7 @@ function RedirectToCachedFile() {
 			header($_SERVER['SERVER_PROTOCOL'].' 304 Not Modified');
 			exit;
 		}
+		header('Last-Modified: '.gmdate('D, d M Y H:i:s', $nModified).' GMT');
 		if ($getimagesize = @GetImageSize($phpThumb->cache_filename)) {
 			header('Content-Type: '.phpthumb_functions::ImageTypeToMIMEtype($getimagesize[2]));
 		} elseif (preg_match('#\\.ico$#i', $phpThumb->cache_filename)) {
