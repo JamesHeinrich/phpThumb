@@ -210,7 +210,7 @@ class phpthumb {
 	var $iswindows  = null;
 	var $issafemode = null;
 
-	var $phpthumb_version = '1.7.14-201503301816';
+	var $phpthumb_version = '1.7.14-201507071049';
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -2310,7 +2310,7 @@ if (false) {
 			if ($rotate_angle % 90) {
 				$this->is_alpha = true;
 			}
-			phpthumb_filters::ImprovedImageRotate($this->gdimg_source, $rotate_angle, $this->config_background_hexcolor, $this->bg);
+			phpthumb_filters::ImprovedImageRotate($this->gdimg_source, $rotate_angle, $this->config_background_hexcolor, $this->bg, $this);
 			$this->source_width  = ImageSX($this->gdimg_source);
 			$this->source_height = ImageSY($this->gdimg_source);
 		}
@@ -2867,7 +2867,7 @@ if (false) {
 						if (@is_readable($filename)) {
 							if ($img_watermark = $this->ImageCreateFromFilename($filename)) {
 								if ($rotate_angle !== 0) {
-									$phpthumbFilters->ImprovedImageRotate($img_watermark, $rotate_angle);
+									$phpthumbFilters->ImprovedImageRotate($img_watermark, $rotate_angle, 'FFFFFF', null, $this);
 								}
 								if (preg_match('#^([0-9\\.\\-]*)x([0-9\\.\\-]*)$#i', $alignment, $matches)) {
 									$watermark_max_width  = intval($margin['x'] ? $margin['x'] : ImageSX($img_watermark));
@@ -3006,7 +3006,7 @@ if (false) {
 
 					case 'rot': // ROTate
 						@list($angle, $bgcolor) = explode('|', $parameter, 2);
-						$phpthumbFilters->ImprovedImageRotate($this->gdimg_output, $angle, $bgcolor);
+						$phpthumbFilters->ImprovedImageRotate($this->gdimg_output, $angle, $bgcolor, null, $this);
 						break;
 
 					case 'stc': // Source Transparent Color
