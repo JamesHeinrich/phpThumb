@@ -12,7 +12,7 @@
 ob_start();
 if (!include_once(dirname(__FILE__).'/phpthumb.functions.php')) {
 	ob_end_flush();
-	die('failed to include_once("'.realpath(dirname(__FILE__).'/phpthumb.functions.php').'")');
+	die('failed to include_once("'.dirname(__FILE__).'/phpthumb.functions.php")');
 }
 ob_end_clean();
 
@@ -154,6 +154,7 @@ class phpthumb {
 	var $config_disable_pathinfo_parsing             = false;
 	var $config_disable_imagecopyresampled           = false;
 	var $config_disable_onlycreateable_passthru      = false;
+	var $config_disable_realpath                     = false;
 
 	var $config_http_user_agent                      = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.7.12) Gecko/20050915 Firefox/1.0.7';
 
@@ -210,7 +211,7 @@ class phpthumb {
 	var $iswindows  = null;
 	var $issafemode = null;
 
-	var $phpthumb_version = '1.7.14-201507071049';
+	var $phpthumb_version = '1.7.14-201510091133';
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -819,9 +820,9 @@ class phpthumb {
 			$empty_dirs = array();
 			foreach ($AllFilesInCacheDirectory as $fullfilename) {
 				if (is_dir($fullfilename)) {
-					$empty_dirs[realpath($fullfilename)] = 1;
+					$empty_dirs[$this->realPathSafe($fullfilename)] = 1;
 				} else {
-					unset($empty_dirs[realpath(dirname($fullfilename))]);
+					unset($empty_dirs[$this->realPathSafe(dirname($fullfilename))]);
 				}
 			}
 			krsort($empty_dirs);
@@ -1002,15 +1003,15 @@ class phpthumb {
 			$this->config_cache_directory = str_replace('/', DIRECTORY_SEPARATOR, $this->config_cache_directory);
 		}
 		if ($this->config_cache_directory) {
-			$real_cache_path = realpath($this->config_cache_directory);
+			$real_cache_path = $this->realPathSafe($this->config_cache_directory);
 			if (!$real_cache_path) {
-				$this->DebugMessage('realpath($this->config_cache_directory) failed for "'.$this->config_cache_directory.'"', __FILE__, __LINE__);
+				$this->DebugMessage('$this->realPathSafe($this->config_cache_directory) failed for "'.$this->config_cache_directory.'"', __FILE__, __LINE__);
 				if (!is_dir($this->config_cache_directory)) {
 					$this->DebugMessage('!is_dir('.$this->config_cache_directory.')', __FILE__, __LINE__);
 				}
 			}
 			if ($real_cache_path) {
-				$this->DebugMessage('setting config_cache_directory to realpath('.$this->config_cache_directory.') = "'.$real_cache_path.'"', __FILE__, __LINE__);
+				$this->DebugMessage('setting config_cache_directory to $this->realPathSafe('.$this->config_cache_directory.') = "'.$real_cache_path.'"', __FILE__, __LINE__);
 				$this->config_cache_directory = $real_cache_path;
 			}
 		}
@@ -1089,7 +1090,7 @@ class phpthumb {
 	function matchPath($path, $allowed_dirs) {
 		if (!empty($allowed_dirs)) {
 			foreach ($allowed_dirs as $one_dir) {
-				if (preg_match('#^'.preg_quote(str_replace(DIRECTORY_SEPARATOR, '/', realpath($one_dir))).'#', $path)) {
+				if (preg_match('#^'.preg_quote(str_replace(DIRECTORY_SEPARATOR, '/', $this->realPathSafe($one_dir))).'#', $path)) {
 					return true;
 				}
 			}
@@ -1107,7 +1108,7 @@ class phpthumb {
 			$open_basedirs = array();
 			if (strlen($ini_text) > 0) {
 				foreach (preg_split('#[;:]#', $ini_text) as $key => $value) {
-					$open_basedirs[$key] = realpath($value);
+					$open_basedirs[$key] = $this->realPathSafe($value);
 				}
 			}
 		}
@@ -1121,14 +1122,14 @@ class phpthumb {
 
 		// add base path to the top of the list
 		if (!$this->config_allow_src_above_docroot) {
-			array_unshift($allowed_dirs, realpath($this->config_document_root));
+			array_unshift($allowed_dirs, $this->realPathSafe($this->config_document_root));
 		} else {
 			if (!$this->config_allow_src_above_phpthumb) {
-				array_unshift($allowed_dirs, realpath(dirname(__FILE__)));
+				array_unshift($allowed_dirs, $this->realPathSafe(dirname(__FILE__)));
 			} else {
 				// no checks are needed, offload the work to realpath and forget about it
-				$this->DebugMessage('resolvePath: checks disabled, returning '.realpath($path), __FILE__, __LINE__);
-				return realpath($path);
+				$this->DebugMessage('resolvePath: checks disabled, returning '.$this->realPathSafe($path), __FILE__, __LINE__);
+				return $this->realPathSafe($path);
 			}
 		}
 		if ($path == '') {
@@ -1186,6 +1187,45 @@ class phpthumb {
 		return $path;
 	}
 
+
+	function realPathSafe($filename) {
+		// http://php.net/manual/en/function.realpath.php -- "Note: The running script must have executable permissions on all directories in the hierarchy, otherwise realpath() will return FALSE"
+		// realPathSafe() provides a reasonable facsimile of realpath() but does not resolve symbolic links, nor does it check that the file/path actually exists
+		if (!$this->config_disable_realpath) {
+			return realpath($filename);
+		}
+
+		// http://stackoverflow.com/questions/21421569
+		$newfilename = preg_replace('#[\\/]+#', DIRECTORY_SEPARATOR, $filename);
+		if (!preg_match('#^'.DIRECTORY_SEPARATOR.'#', $newfilename)) {
+			$newfilename = dirname(__FILE__).DIRECTORY_SEPARATOR.$newfilename;
+		}
+		do {
+			$beforeloop = $newfilename;
+
+			// Replace all sequences of more than one / with a single one [[ If you're working on a system that treats // at the start of a path as special, make sure you replace multiple / characters at the start with two of them. This is the only place where POSIX allows (but does not mandate) special handling for multiples, in all other cases, multiple / characters are equivalent to a single one.]]
+			$newfilename = preg_replace('#'.DIRECTORY_SEPARATOR.'+#', DIRECTORY_SEPARATOR, $newfilename);
+
+			// Replace all occurrences of /./ with /
+			$newfilename = preg_replace('#'.DIRECTORY_SEPARATOR.'\\.'.DIRECTORY_SEPARATOR.'#', DIRECTORY_SEPARATOR, $newfilename);
+
+			// Remove ./ if at the start
+			$newfilename = preg_replace('#^\\.'.DIRECTORY_SEPARATOR.'#', '', $newfilename);
+
+			// Remove /. if at the end
+			$newfilename = preg_replace('#'.DIRECTORY_SEPARATOR.'\\.$#', '', $newfilename);
+
+			// Replace /anything/../ with /
+			$newfilename = preg_replace('#'.DIRECTORY_SEPARATOR.'[^'.DIRECTORY_SEPARATOR.']+'.DIRECTORY_SEPARATOR.'\\.\\.'.DIRECTORY_SEPARATOR.'#', DIRECTORY_SEPARATOR, $newfilename);
+
+			// Remove /anything/.. if at the end
+			$newfilename = preg_replace('#'.DIRECTORY_SEPARATOR.'[^'.DIRECTORY_SEPARATOR.']+'.DIRECTORY_SEPARATOR.'\\.\\.$#', '', $newfilename);
+
+		} while ($newfilename != $beforeloop);
+		return $newfilename;
+	}
+
+
 	function ResolveFilenameToAbsolute($filename) {
 		if (empty($filename)) {
 			return false;
@@ -1222,11 +1262,11 @@ class phpthumb {
 				if ($ApacheLookupURIarray = phpthumb_functions::ApacheLookupURIarray($filename)) {
 					$AbsoluteFilename = $ApacheLookupURIarray['filename'];
 				} else {
-					$AbsoluteFilename = realpath($filename);
+					$AbsoluteFilename = $this->realPathSafe($filename);
 					if (@is_readable($AbsoluteFilename)) {
-						$this->DebugMessage('phpthumb_functions::ApacheLookupURIarray() failed for "'.$filename.'", but the correct filename ('.$AbsoluteFilename.') seems to have been resolved with realpath($filename)', __FILE__, __LINE__);
+						$this->DebugMessage('phpthumb_functions::ApacheLookupURIarray() failed for "'.$filename.'", but the correct filename ('.$AbsoluteFilename.') seems to have been resolved with $this->realPathSafe($filename)', __FILE__, __LINE__);
 					} elseif (is_dir(dirname($AbsoluteFilename))) {
-						$this->DebugMessage('phpthumb_functions::ApacheLookupURIarray() failed for "'.dirname($filename).'", but the correct directory ('.dirname($AbsoluteFilename).') seems to have been resolved with realpath(.)', __FILE__, __LINE__);
+						$this->DebugMessage('phpthumb_functions::ApacheLookupURIarray() failed for "'.dirname($filename).'", but the correct directory ('.dirname($AbsoluteFilename).') seems to have been resolved with $this->realPathSafe(.)', __FILE__, __LINE__);
 					} else {
 						return $this->ErrorImage('phpthumb_functions::ApacheLookupURIarray() failed for "'.$filename.'". This has been known to fail on Apache2 - try using the absolute filename for the source image (ex: "/home/user/httpdocs/image.jpg" instead of "/~user/image.jpg")');
 					}
@@ -1254,11 +1294,11 @@ class phpthumb {
 				if ($ApacheLookupURIarray = phpthumb_functions::ApacheLookupURIarray(dirname(@$_SERVER['PHP_SELF']))) {
 					$AbsoluteFilename = $ApacheLookupURIarray['filename'].DIRECTORY_SEPARATOR.$filename;
 				} else {
-					$AbsoluteFilename = realpath('.').DIRECTORY_SEPARATOR.$filename;
+					$AbsoluteFilename = $this->realPathSafe('.').DIRECTORY_SEPARATOR.$filename;
 					if (@is_readable($AbsoluteFilename)) {
-						$this->DebugMessage('phpthumb_functions::ApacheLookupURIarray() failed for "'.dirname(@$_SERVER['PHP_SELF']).'", but the correct filename ('.$AbsoluteFilename.') seems to have been resolved with realpath(.)/$filename', __FILE__, __LINE__);
+						$this->DebugMessage('phpthumb_functions::ApacheLookupURIarray() failed for "'.dirname(@$_SERVER['PHP_SELF']).'", but the correct filename ('.$AbsoluteFilename.') seems to have been resolved with $this->realPathSafe(.)/$filename', __FILE__, __LINE__);
 					} elseif (is_dir(dirname($AbsoluteFilename))) {
-						$this->DebugMessage('phpthumb_functions::ApacheLookupURIarray() failed for "'.dirname(@$_SERVER['PHP_SELF']).'", but the correct directory ('.dirname($AbsoluteFilename).') seems to have been resolved with realpath(.)', __FILE__, __LINE__);
+						$this->DebugMessage('phpthumb_functions::ApacheLookupURIarray() failed for "'.dirname(@$_SERVER['PHP_SELF']).'", but the correct directory ('.dirname($AbsoluteFilename).') seems to have been resolved with $this->realPathSafe(.)', __FILE__, __LINE__);
 					} else {
 						return $this->ErrorImage('phpthumb_functions::ApacheLookupURIarray() failed for "'.dirname(@$_SERVER['PHP_SELF']).'". This has been known to fail on Apache2 - try using the absolute filename for the source image');
 					}
@@ -1272,17 +1312,17 @@ class phpthumb {
 			$this->DebugMessage('is_link()==true, changing "'.$AbsoluteFilename.'" to "'.readlink($AbsoluteFilename).'"', __FILE__, __LINE__);
 			$AbsoluteFilename = readlink($AbsoluteFilename);
 		}
-		if (realpath($AbsoluteFilename)) {
-			$AbsoluteFilename = realpath($AbsoluteFilename);
+		if ($this->realPathSafe($AbsoluteFilename)) {
+			$AbsoluteFilename = $this->realPathSafe($AbsoluteFilename);
 		}
 		*/
 		if ($this->iswindows) {
-			$AbsoluteFilename = preg_replace('#^'.preg_quote(realpath($this->config_document_root)).'#i', realpath($this->config_document_root), $AbsoluteFilename);
+			$AbsoluteFilename = preg_replace('#^'.preg_quote($this->realPathSafe($this->config_document_root)).'#i', $this->realPathSafe($this->config_document_root), $AbsoluteFilename);
 			$AbsoluteFilename = str_replace(DIRECTORY_SEPARATOR, '/', $AbsoluteFilename);
 		}
 		$AbsoluteFilename = $this->resolvePath($AbsoluteFilename, $this->config_additional_allowed_dirs);
-		if (!$this->config_allow_src_above_docroot && !preg_match('#^'.preg_quote(str_replace(DIRECTORY_SEPARATOR, '/', realpath($this->config_document_root))).'#', $AbsoluteFilename)) {
-			$this->DebugMessage('!$this->config_allow_src_above_docroot therefore setting "'.$AbsoluteFilename.'" (outside "'.realpath($this->config_document_root).'") to null', __FILE__, __LINE__);
+		if (!$this->config_allow_src_above_docroot && !preg_match('#^'.preg_quote(str_replace(DIRECTORY_SEPARATOR, '/', $this->realPathSafe($this->config_document_root))).'#', $AbsoluteFilename)) {
+			$this->DebugMessage('!$this->config_allow_src_above_docroot therefore setting "'.$AbsoluteFilename.'" (outside "'.$this->realPathSafe($this->config_document_root).'") to null', __FILE__, __LINE__);
 			return false;
 		}
 		if (!$this->config_allow_src_above_phpthumb && !preg_match('#^'.preg_quote(str_replace(DIRECTORY_SEPARATOR, '/', dirname(__FILE__))).'#', $AbsoluteFilename)) {
@@ -1348,12 +1388,12 @@ class phpthumb {
 
 			$commandline = (!is_null($this->config_imagemagick_path) ? $this->config_imagemagick_path : '');
 
-			if ($this->config_imagemagick_path && ($this->config_imagemagick_path != realpath($this->config_imagemagick_path))) {
-				if (@is_executable(realpath($this->config_imagemagick_path))) {
-					$this->DebugMessage('Changing $this->config_imagemagick_path ('.$this->config_imagemagick_path.') to realpath($this->config_imagemagick_path) ('.realpath($this->config_imagemagick_path).')', __FILE__, __LINE__);
-					$this->config_imagemagick_path = realpath($this->config_imagemagick_path);
+			if ($this->config_imagemagick_path && ($this->config_imagemagick_path != $this->realPathSafe($this->config_imagemagick_path))) {
+				if (@is_executable($this->realPathSafe($this->config_imagemagick_path))) {
+					$this->DebugMessage('Changing $this->config_imagemagick_path ('.$this->config_imagemagick_path.') to $this->realPathSafe($this->config_imagemagick_path) ('.$this->realPathSafe($this->config_imagemagick_path).')', __FILE__, __LINE__);
+					$this->config_imagemagick_path = $this->realPathSafe($this->config_imagemagick_path);
 				} else {
-					$this->DebugMessage('Leaving $this->config_imagemagick_path as ('.$this->config_imagemagick_path.') because !is_execuatable(realpath($this->config_imagemagick_path)) ('.realpath($this->config_imagemagick_path).')', __FILE__, __LINE__);
+					$this->DebugMessage('Leaving $this->config_imagemagick_path as ('.$this->config_imagemagick_path.') because !is_execuatable($this->realPathSafe($this->config_imagemagick_path)) ('.$this->realPathSafe($this->config_imagemagick_path).')', __FILE__, __LINE__);
 				}
 			}
 			$this->DebugMessage('                  file_exists('.$this->config_imagemagick_path.') = '.intval(                        @file_exists($this->config_imagemagick_path)), __FILE__, __LINE__);
@@ -1489,7 +1529,7 @@ class phpthumb {
 
 	function SourceDataToTempFile() {
 		if ($IMtempSourceFilename = $this->phpThumb_tempnam()) {
-			$IMtempSourceFilename = realpath($IMtempSourceFilename);
+			$IMtempSourceFilename = $this->realPathSafe($IMtempSourceFilename);
 			ob_start();
 			$fp_tempfile = fopen($IMtempSourceFilename, 'wb');
 			$tempfile_open_error  = ob_get_contents();
@@ -1592,7 +1632,7 @@ class phpthumb {
 		$commandline = $this->ImageMagickCommandlineBase();
 		if ($commandline) {
 			if ($IMtempfilename = $this->phpThumb_tempnam()) {
-				$IMtempfilename = realpath($IMtempfilename);
+				$IMtempfilename = $this->realPathSafe($IMtempfilename);
 
 				$IMuseExplicitImageOutputDimensions = false;
 				if ($this->ImageMagickSwitchAvailable('thumbnail') && $this->config_imagemagick_use_thumbnail) {
@@ -2916,7 +2956,7 @@ if (false) {
 						$fillextend = ($fillextend      ? $fillextend : '');
 
 						if (basename($ttffont) == $ttffont) {
-							$ttffont = realpath($this->config_ttf_directory.DIRECTORY_SEPARATOR.$ttffont);
+							$ttffont = $this->realPathSafe($this->config_ttf_directory.DIRECTORY_SEPARATOR.$ttffont);
 						} else {
 							$ttffont = $this->ResolveFilenameToAbsolute($ttffont);
 						}
@@ -4288,13 +4328,13 @@ if (false) {
 	}
 
 	function InitializeTempDirSetting() {
-		$this->config_temp_directory = realpath($this->config_temp_directory ? $this->config_temp_directory : (getenv('TMPDIR') ? getenv('TMPDIR') : getenv('TMP')));
+		$this->config_temp_directory = $this->realPathSafe($this->config_temp_directory ? $this->config_temp_directory : (getenv('TMPDIR') ? getenv('TMPDIR') : getenv('TMP')));
 		return true;
 	}
 
 	function phpThumb_tempnam() {
 		$this->InitializeTempDirSetting();
-		$tempnam = realpath(tempnam($this->config_temp_directory, 'pThumb'));
+		$tempnam = $this->realPathSafe(tempnam($this->config_temp_directory, 'pThumb'));
 		$this->tempFilesToDelete[$tempnam] = $tempnam;
 		$this->DebugMessage('phpThumb_tempnam() returning "'.$tempnam.'"', __FILE__, __LINE__);
 		return $tempnam;

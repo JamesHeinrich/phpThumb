@@ -63,7 +63,7 @@ foreach ($thumbnail_widths as $thumbnail_width) {
 		if ($output_filename || $capture_raw_data) {
 			if ($capture_raw_data && $phpThumb->RenderOutput()) {
 				// RenderOutput renders the thumbnail data to $phpThumb->outputImageData, not to a file or the browser
-				mysql_query("INSERT INTO `table` (`thumbnail`) VALUES ('".mysql_escape_string($phpThumb->outputImageData)."') WHERE (`id` = '".$id."')");
+				$mysqli->query("INSERT INTO `table` (`thumbnail`) VALUES ('".mysqli_real_escape_string($phpThumb->outputImageData)."') WHERE (`id` = '".mysqli_real_escape_string($id)."')");
 			} elseif ($phpThumb->RenderToFile($output_filename)) {
 				// do something on success
 				echo 'Successfully rendered:<br><img src="'.$output_filename.'">';
