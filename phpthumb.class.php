@@ -211,7 +211,7 @@ class phpthumb {
 	var $iswindows  = null;
 	var $issafemode = null;
 
-	var $phpthumb_version = '1.7.14-201510091133';
+	var $phpthumb_version = '1.7.14-201510101328';
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -4328,7 +4328,11 @@ if (false) {
 	}
 
 	function InitializeTempDirSetting() {
-		$this->config_temp_directory = $this->realPathSafe($this->config_temp_directory ? $this->config_temp_directory : (getenv('TMPDIR') ? getenv('TMPDIR') : getenv('TMP')));
+		$this->config_temp_directory = ($this->config_temp_directory ? $this->config_temp_directory : (function_exists('sys_get_temp_dir') ? sys_get_temp_dir() : '')); // sys_get_temp_dir added in PHP v5.2.1
+		$this->config_temp_directory = ($this->config_temp_directory ? $this->config_temp_directory : getenv('TMPDIR'));
+		$this->config_temp_directory = ($this->config_temp_directory ? $this->config_temp_directory : getenv('TMP'));
+		$this->config_temp_directory = ($this->config_temp_directory ? $this->config_temp_directory : ini_get('upload_tmp_dir'));
+		$this->config_temp_directory = $this->realPathSafe($this->config_temp_directory);
 		return true;
 	}
 
