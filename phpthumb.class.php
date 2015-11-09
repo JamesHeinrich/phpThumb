@@ -211,7 +211,7 @@ class phpthumb {
 	var $iswindows  = null;
 	var $issafemode = null;
 
-	var $phpthumb_version = '1.7.14-201510101328';
+	var $phpthumb_version = '1.7.14-201511090917';
 
 	//////////////////////////////////////////////////////////////////////
 

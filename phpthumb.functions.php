@@ -640,7 +640,8 @@ class phpthumb_functions {
 			$errstr = 'fsockopen() unavailable';
 			return false;
 		}
-		if ($fp = @fsockopen($host, $port, $errno, $errstr, $timeout)) {
+		//if ($fp = @fsockopen($host, $port, $errno, $errstr, $timeout)) {
+		if ($fp = @fsockopen((($port == 443) ? 'ssl://' : '').$host, $port, $errno, $errstr, $timeout)) { // https://github.com/JamesHeinrich/phpThumb/issues/39
 			$out  = 'GET '.$file.' HTTP/1.0'."\r\n";
 			$out .= 'Host: '.$host."\r\n";
 			$out .= 'Connection: Close'."\r\n\r\n";
