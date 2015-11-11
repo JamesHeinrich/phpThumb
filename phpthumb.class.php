@@ -208,10 +208,11 @@ class phpthumb {
 	var $AlphaCapableFormats = array('png', 'ico', 'gif');
 	var $is_alpha = false;
 
-	var $iswindows  = null;
-	var $issafemode = null;
+	var $iswindows        = null;
+	var $issafemode       = null;
+	var $php_memory_limit = null;
 
-	var $phpthumb_version = '1.7.14-201511090917';
+	var $phpthumb_version = '1.7.14-201511101013';
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -219,7 +220,11 @@ class phpthumb {
 	function phpThumb() {
 		$this->DebugTimingMessage('phpThumb() constructor', __FILE__, __LINE__);
 		$this->DebugMessage('phpThumb() v'.$this->phpthumb_version, __FILE__, __LINE__);
-		$this->config_max_source_pixels = round(max(intval(ini_get('memory_limit')), intval(get_cfg_var('memory_limit'))) * 1048576 * 0.20); // 20% of memory_limit
+		if ($this->php_memory_limit = max(intval(ini_get('memory_limit')), intval(get_cfg_var('memory_limit')))) {
+			if ($this->php_memory_limit > 0) { // could be "-1" for "no limit"
+				$this->config_max_source_pixels = round($this->php_memory_limit * 1048576 * 0.20); // 20% of memory_limit
+			}
+		}
 		$this->iswindows  = (bool) (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN');
 		$this->issafemode = (bool) preg_match('#(1|ON)#i', ini_get('safe_mode'));
 		$this->config_document_root = (!empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT']   : $this->config_document_root);
@@ -3565,9 +3570,8 @@ if (false) {
 		if (!$this->config_max_source_pixels) {
 			return false;
 		}
-		if (function_exists('memory_get_usage')) {
-			$available_memory = max(intval(ini_get('memory_limit')), intval(get_cfg_var('memory_limit'))) * 1048576;
-			$available_memory -= memory_get_usage();
+		if ($this->php_memory_limit && function_exists('memory_get_usage')) {
+			$available_memory = $this->php_memory_limit - memory_get_usage();
 			return (bool) (($width * $height * 5) > $available_memory);
 		}
 		return (bool) (($width * $height) > $this->config_max_source_pixels);
