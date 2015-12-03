@@ -31,8 +31,7 @@ if (!include_once('../phpthumb.class.php')) {
 $phpThumb = new phpThumb();
 if (file_exists('../phpThumb.config.php') && include_once('../phpThumb.config.php')) {
 	foreach ($PHPTHUMB_CONFIG as $key => $value) {
-		$keyname = 'config_'.$key;
-		$phpThumb->setParameter($keyname, $value);
+		$phpThumb->setParameter('config_'.$key, $value);
 	}
 } else {
 	echo '<div style="color: red; border: 1px red dashed; font-weight: bold; padding: 10px; margin: 10px; display: inline-block;">Error reading ../phpThumb.config.php</div><br>';
@@ -92,7 +91,7 @@ foreach ($versions['raw'] as $key => $value) {
 	$versions['min'][$key]   = $min;
 	$versions['date'][$key]  = @mktime($hour, $min, 0, $month, $day, $year);
 }
-$downloadlatest = 'Download the latest version from <a href="http://phpthumb.sourceforge.net">http://phpthumb.sourceforge.net</a>';
+$downloadlatest = 'Download the latest version from <a href="https://github.com/JamesHeinrich/phpThumb/">https://github.com/JamesHeinrich/phpThumb/</a>';
 echo '<tr><th nowrap>Latest phpThumb version:</th><th colspan="2">'.$versions['raw']['latest'].'</th><td>'.$downloadlatest.'</td></tr>';
 echo '<tr><th nowrap>This phpThumb version:</th><th colspan="2" style="background-color: ';
 
@@ -141,6 +140,20 @@ if (file_exists('../phpThumb.config.php') && !file_exists('../phpThumb.config.ph
 	echo 'red;">"phpThumb.config.php" not found';
 }
 echo '</th><td>"phpThumb.config.php.default" that comes in the distribution must be renamed to "phpThumb.config.php" before phpThumb.php can be used. Avoid having both files present to minimize confusion.</td></tr>';
+
+
+echo '<tr><th>phpThumb.config.php<br>[disable_debug]</th>';
+echo '<th colspan="2" style="background-color: '.($PHPTHUMB_CONFIG['disable_debug'] ? 'lime' : 'red').'">'.($PHPTHUMB_CONFIG['disable_debug'] ? 'true' : 'false').'</th>';
+echo '<td>DO NOT DISABLE THIS ON ANY PUBLIC-ACCESSIBLE SERVER. Prevents phpThumb from displaying any information about your system. If true, phpThumbDebug and error messages will be disabled. If set to false (debug messages enabled) then debug mode will be FORCED -- ONLY debug output will be presented, no actual thumbnail (to avoid accidentally leaving debug mode enabled on a production server).</td></tr>';
+
+echo '<tr><th>phpThumb.config.php<br>[high_security_enabled]</th>';
+echo '<th colspan="2" style="background-color: '.($PHPTHUMB_CONFIG['high_security_enabled'] ? 'lime' : 'red').'">'.($PHPTHUMB_CONFIG['high_security_enabled'] ? 'true' : 'false').'</th>';
+echo '<td>DO NOT DISABLE THIS ON ANY PUBLIC-ACCESSIBLE SERVER. If disabled, your server is more vulnerable to hacking attempts, both on your server and via your server to other servers. When enabled, requires "high_security_password" set to be set and requires the use of phpThumbURL() function (at the bottom of phpThumb.config.php) to generate hashed URLs.</td></tr>';
+
+echo '<tr><th>phpThumb.config.php<br>[high_security_password]</th>';
+$password_complexity = phpthumb_functions::PasswordStrength($PHPTHUMB_CONFIG['high_security_password']);
+echo '<th colspan="2" style="background-color: '.(($password_complexity >= 20) ? 'lime' : ((strlen($PHPTHUMB_CONFIG['high_security_password']) > 0) ? 'orange' : 'red')).'">'.(($password_complexity >= 20) ? 'sufficiently complex' : ((strlen($PHPTHUMB_CONFIG['high_security_password']) > 0) ? 'not complex enough' : 'not set')).'</th>';
+echo '<td>DO NOT DISABLE THIS ON ANY PUBLIC-ACCESSIBLE SERVER. If disabled, your server is more vulnerable to hacking attempts, both on your server and via your server to other servers. When enabled, requires "high_security_password" set to be set and requires the use of phpThumbURL() function (at the bottom of phpThumb.config.php) to generate hashed URLs.</td></tr>';
 
 
 echo '<tr><th>cache directory:</th><th colspan="2">';

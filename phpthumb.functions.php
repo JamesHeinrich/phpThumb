@@ -900,6 +900,15 @@ class phpthumb_functions {
 		return $filename;
 	}
 
+	static function PasswordStrength($password) {
+		$strength = 0;
+		$strength += strlen(preg_replace('#[^a-z]#',       '', $password)) * 0.5; // lowercase characters are weak
+		$strength += strlen(preg_replace('#[^A-Z]#',       '', $password)) * 0.8; // uppercase characters are somewhat better
+		$strength += strlen(preg_replace('#[^0-9]#',       '', $password)) * 1.0; // numbers are somewhat better
+		$strength += strlen(preg_replace('#[a-zA-Z0-9]#',  '', $password)) * 2.0; // other non-alphanumeric characters are best
+		return $strength;
+	}
+
 }
 
 
