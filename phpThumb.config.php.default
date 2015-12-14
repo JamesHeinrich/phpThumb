@@ -189,7 +189,7 @@ $PHPTHUMB_CONFIG['ttf_directory'] = dirname(__FILE__).'/fonts'; // Base director
 // You may want to pull data from a database rather than a physical file
 // If so, modify the $PHPTHUMB_CONFIG['mysql_query'] line to suit your database structure
 // Note: the data retrieved must be the actual binary data of the image, not a URL or filename
-
+$PHPTHUMB_CONFIG['mysql_extension'] = 'mysqli'; // either "mysqli" or "mysql"
 
 $PHPTHUMB_CONFIG['mysql_query'] = '';
 //$PHPTHUMB_CONFIG['mysql_query'] = 'SELECT `picture` FROM `products` WHERE (`id` = \''.mysqli_real_escape_string(@$_GET['id']).'\')';

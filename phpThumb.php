@@ -273,33 +273,90 @@ if ($phpThumb->config_nohotlink_enabled && $phpThumb->config_nohotlink_erase_ima
 }
 
 if ($phpThumb->config_mysql_query) {
-	if ($cid = @mysql_connect($phpThumb->config_mysql_hostname, $phpThumb->config_mysql_username, $phpThumb->config_mysql_password)) {
-		if (@mysql_select_db($phpThumb->config_mysql_database, $cid)) {
-			if ($result = @mysql_query($phpThumb->config_mysql_query, $cid)) {
-				if ($row = @mysql_fetch_array($result)) {
+	if ($phpThumb->config_mysql_extension == 'mysqli') {
 
-					mysql_free_result($result);
-					mysql_close($cid);
-					$phpThumb->setSourceData($row[0]);
-					unset($row);
+		$found_missing_function = false;
+		foreach (array('mysqli_connect') as $required_mysqli_function) {
+			if (!function_exists($required_mysqli_function)) {
+				$found_missing_function = $required_mysqli_function;
+				break;
+			}
+		}
+		if ($found_missing_function) {
+			$phpThumb->ErrorImage('SQL function unavailable: '.$found_missing_function);
+		} else {
+			$mysqli = new mysqli($phpThumb->config_mysql_hostname, $phpThumb->config_mysql_username, $phpThumb->config_mysql_password, $phpThumb->config_mysql_database);
+			if ($mysqli->connect_error) {
+				$phpThumb->ErrorImage('MySQLi connect error ('.$mysqli->connect_errno.') '.$mysqli->connect_error);
+			} else {
+				if ($result = $mysqli->query($phpThumb->config_mysql_query)) {
+					if ($row = $result->fetch_array()) {
 
+						$result->free();
+						$mysqli->close();
+						$phpThumb->setSourceData($row[0]);
+						unset($row);
+
+					} else {
+						$result->free();
+						$mysqli->close();
+						$phpThumb->ErrorImage('no matching data in database.');
+					}
 				} else {
-					mysql_free_result($result);
-					mysql_close($cid);
-					$phpThumb->ErrorImage('no matching data in database.');
+					$mysqli->close();
+					$phpThumb->ErrorImage('Error in MySQL query: "'.$mysqli->error.'"');
 				}
 			} else {
-				mysql_close($cid);
-				$phpThumb->ErrorImage('Error in MySQL query: "'.mysql_error($cid).'"');
+				$phpThumb->ErrorImage('cannot connect to MySQL server');
 			}
-		} else {
-			mysql_close($cid);
-			$phpThumb->ErrorImage('cannot select MySQL database: "'.mysql_error($cid).'"');
+			unset($_GET['id']);
 		}
+
+	} elseif ($phpThumb->config_mysql_extension == 'mysql') {
+
+		$found_missing_function = false;
+		//foreach (array('mysql_connect', 'mysql_select_db', 'mysql_query', 'mysql_fetch_array', 'mysql_free_result', 'mysql_close', 'mysql_error') as $required_mysql_function) {
+		foreach (array('mysql_connect') as $required_mysql_function) {
+			if (!function_exists($required_mysql_function)) {
+				$found_missing_function = $required_mysql_function;
+				break;
+			}
+		}
+		if ($found_missing_function) {
+			$phpThumb->ErrorImage('SQL function unavailable: '.$found_missing_function);
+		} else {
+			if ($cid = @mysql_connect($phpThumb->config_mysql_hostname, $phpThumb->config_mysql_username, $phpThumb->config_mysql_password)) {
+				if (@mysql_select_db($phpThumb->config_mysql_database, $cid)) {
+					if ($result = @mysql_query($phpThumb->config_mysql_query, $cid)) {
+						if ($row = @mysql_fetch_array($result)) {
+
+							mysql_free_result($result);
+							mysql_close($cid);
+							$phpThumb->setSourceData($row[0]);
+							unset($row);
+
+						} else {
+							mysql_free_result($result);
+							mysql_close($cid);
+							$phpThumb->ErrorImage('no matching data in database.');
+						}
+					} else {
+						mysql_close($cid);
+						$phpThumb->ErrorImage('Error in MySQL query: "'.mysql_error($cid).'"');
+					}
+				} else {
+					mysql_close($cid);
+					$phpThumb->ErrorImage('cannot select MySQL database: "'.mysql_error($cid).'"');
+				}
+			} else {
+				$phpThumb->ErrorImage('cannot connect to MySQL server');
+			}
+			unset($_GET['id']);
+		}
+
 	} else {
-		$phpThumb->ErrorImage('cannot connect to MySQL server');
+		$phpThumb->ErrorImage('config_mysql_extension not supported');
 	}
-	unset($_GET['id']);
 }
 
 ////////////////////////////////////////////////////////////////

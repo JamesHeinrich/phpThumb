@@ -130,6 +130,7 @@ class phpthumb {
 	var $config_cache_prefix                         = '';    // default value set in the constructor below
 
 	// * MySQL
+	var $config_mysql_extension                      = null;
 	var $config_mysql_query                          = null;
 	var $config_mysql_hostname                       = null;
 	var $config_mysql_username                       = null;
@@ -212,7 +213,7 @@ class phpthumb {
 	var $issafemode       = null;
 	var $php_memory_limit = null;
 
-	var $phpthumb_version = '1.7.14-201512030243';
+	var $phpthumb_version = '1.7.14-201512141312';
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -220,7 +221,7 @@ class phpthumb {
 	function __construct() {
 		$this->phpThumb();
 	}
-	
+
 	function phpThumb() {
 		$this->DebugTimingMessage('phpThumb() constructor', __FILE__, __LINE__);
 		$this->DebugMessage('phpThumb() v'.$this->phpthumb_version, __FILE__, __LINE__);
