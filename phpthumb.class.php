@@ -213,11 +213,7 @@ class phpthumb {
 	var $issafemode       = null;
 	var $php_memory_limit = null;
 
-<<<<<<< HEAD
-	var $phpthumb_version = '1.7.14-201512141312';
-=======
-	var $phpthumb_version = '1.7.14-201512071121';
->>>>>>> origin/master
+	var $phpthumb_version = '1.7.14-201512180757';
 
 	//////////////////////////////////////////////////////////////////////
 
