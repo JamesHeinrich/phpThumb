@@ -306,8 +306,6 @@ if ($phpThumb->config_mysql_query) {
 					$mysqli->close();
 					$phpThumb->ErrorImage('Error in MySQL query: "'.$mysqli->error.'"');
 				}
-			} else {
-				$phpThumb->ErrorImage('cannot connect to MySQL server');
 			}
 			unset($_GET['id']);
 		}
