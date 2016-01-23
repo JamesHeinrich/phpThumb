@@ -213,7 +213,7 @@ class phpthumb {
 	var $issafemode       = null;
 	var $php_memory_limit = null;
 
-	var $phpthumb_version = '1.7.14-201512180757';
+	var $phpthumb_version = '1.7.14-201601231457';
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -225,11 +225,21 @@ class phpthumb {
 	function phpThumb() {
 		$this->DebugTimingMessage('phpThumb() constructor', __FILE__, __LINE__);
 		$this->DebugMessage('phpThumb() v'.$this->phpthumb_version, __FILE__, __LINE__);
-		if ($this->php_memory_limit = max(intval(ini_get('memory_limit')), intval(get_cfg_var('memory_limit')))) {
-			if ($this->php_memory_limit > 0) { // could be "-1" for "no limit"
-				$this->config_max_source_pixels = round($this->php_memory_limit * 1048576 * 0.20); // 20% of memory_limit
+
+		foreach (array(ini_get('memory_limit'), get_cfg_var('memory_limit')) as $php_config_memory_limit) {
+			if (strlen($php_config_memory_limit)) {
+				if (substr($php_config_memory_limit, -1, 1) == 'G') { // PHP memory limit expressed in Gigabytes
+					$php_config_memory_limit = intval(substr($php_config_memory_limit, 0, -1)) * 1073741824;
+				} elseif (substr($php_config_memory_limit, -1, 1) == 'M') { // PHP memory limit expressed in Megabytes
+					$php_config_memory_limit = intval(substr($php_config_memory_limit, 0, -1)) * 1048576;
+				}
+				$this->php_memory_limit = max($this->php_memory_limit, $php_config_memory_limit);
 			}
 		}
+		if ($this->php_memory_limit > 0) { // could be "-1" for "no limit"
+			$this->config_max_source_pixels = round($this->php_memory_limit * 0.20); // 20% of memory_limit
+		}
+
 		$this->iswindows  = (bool) (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN');
 		$this->issafemode = (bool) preg_match('#(1|ON)#i', ini_get('safe_mode'));
 		$this->config_document_root = (!empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT']   : $this->config_document_root);
