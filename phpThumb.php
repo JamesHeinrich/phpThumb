@@ -75,7 +75,7 @@ function RedirectToCachedFile() {
 
 		header('Cache-Control: private');
 		header('Pragma: private');
-		header('Expires: '.date(DATE_RFC822, strtotime(' 1 day')));
+		header('Expires: '.date(DATE_RFC822,  time() + $phpThumb->getParameter('config_cache_maxage')));
 		if (!empty($_SERVER['HTTP_IF_MODIFIED_SINCE']) && ($nModified == strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE'])) && !empty($_SERVER['SERVER_PROTOCOL'])) {
 			header('Last-Modified: '.gmdate('D, d M Y H:i:s', $nModified).' GMT');
 			header($_SERVER['SERVER_PROTOCOL'].' 304 Not Modified');
