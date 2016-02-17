@@ -73,15 +73,16 @@ function RedirectToCachedFile() {
 		}
 		SendSaveAsFileHeaderIfNeeded();
 
-		header('Cache-Control: private');
 		header('Pragma: private');
-		header('Expires: '.date(DATE_RFC822,  time() + $phpThumb->getParameter('config_cache_maxage')));
+		header('Cache-Control: max-age='.$phpThumb->getParameter('config_cache_maxage'));
+		header('Expires: '.date(DATE_RFC1123,  time() + $phpThumb->getParameter('config_cache_maxage')));
 		if (!empty($_SERVER['HTTP_IF_MODIFIED_SINCE']) && ($nModified == strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE'])) && !empty($_SERVER['SERVER_PROTOCOL'])) {
 			header('Last-Modified: '.gmdate('D, d M Y H:i:s', $nModified).' GMT');
 			header($_SERVER['SERVER_PROTOCOL'].' 304 Not Modified');
 			exit;
 		}
 		header('Last-Modified: '.gmdate('D, d M Y H:i:s', $nModified).' GMT');
+		header('ETag: "'.md5_file($phpThumb->cache_filename).'"');
 		if ($getimagesize = @GetImageSize($phpThumb->cache_filename)) {
 			header('Content-Type: '.phpthumb_functions::ImageTypeToMIMEtype($getimagesize[2]));
 		} elseif (preg_match('#\\.ico$#i', $phpThumb->cache_filename)) {
@@ -519,7 +520,7 @@ while ($CanPassThroughDirectly && $phpThumb->src) {
 				$phpThumb->ErrorImage('Headers already sent ('.basename(__FILE__).' line '.__LINE__.')');
 				exit;
 			}
-			if (@$_GET['phpThumbDebug']) {
+			if (!empty($_GET['phpThumbDebug'])) {
 				$phpThumb->DebugTimingMessage('skipped direct $SourceFilename passthru', __FILE__, __LINE__);
 				$phpThumb->DebugMessage('Would have passed "'.$SourceFilename.'" through directly, but skipping due to phpThumbDebug', __FILE__, __LINE__);
 				break;
