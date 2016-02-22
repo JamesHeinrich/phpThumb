@@ -258,7 +258,14 @@ function phpThumbURL($ParameterString, $path_to_phpThumb='phpThumb.php') {
 		parse_str($ParameterString, $ParameterStringArray);
 	}
 	foreach ($ParameterStringArray as $key => $value) {
-		$ParamterStringEncodedArray[] = $key.'='.rawurlencode($value);
+		if (is_array($value)) {
+			// e.g. fltr[] is passed as an array
+			foreach ($value as $subvalue) {
+				$ParamterStringEncodedArray[] = $key.'[]='.rawurlencode($subvalue);
+			}
+		} else {
+			$ParamterStringEncodedArray[] = $key.'='.rawurlencode($value);
+		}
 	}
 	$ParameterString = implode($PHPTHUMB_CONFIG['high_security_url_separator'], $ParamterStringEncodedArray);
 	return $path_to_phpThumb.'?'.$ParameterString.$PHPTHUMB_CONFIG['high_security_url_separator'].'hash='.md5($ParameterString.$PHPTHUMB_CONFIG['high_security_password']);
