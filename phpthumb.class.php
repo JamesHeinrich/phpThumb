@@ -2800,13 +2800,13 @@ if (false) {
 						}
 						break;
 
-					case 'elip': // Elipse cropping
+					case 'elip': // Ellipse cropping
 						if (phpthumb_functions::gd_version() < 2) {
-							$this->DebugMessage('Skipping Elipse() because gd_version is "'.phpthumb_functions::gd_version().'"', __FILE__, __LINE__);
+							$this->DebugMessage('Skipping Ellipse() because gd_version is "'.phpthumb_functions::gd_version().'"', __FILE__, __LINE__);
 							return false;
 						}
 						$this->is_alpha = true;
-						$phpthumbFilters->Elipse($this->gdimg_output);
+						$phpthumbFilters->Ellipse($this->gdimg_output);
 						break;
 
 					case 'ric': // RoundedImageCorners
