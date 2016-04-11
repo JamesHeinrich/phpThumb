@@ -76,47 +76,47 @@ function CrossBrowserResizeInnerWindowTo(newWidth, newHeight) {
 <script type="text/javascript" src="javascript_api.js"></script>
 
 <?php
-function SafeStripSlashes($string) {
-	return (get_magic_quotes_gpc() ? stripslashes($string) : $string);
-}
 require_once('../phpThumb.config.php');
+$allowedGETparameters = array('src','new','w','h','wp','hp','wl','hl','ws','hs','f','q','sx','sy','sw','sh','zc','bc','bg','bgt','fltr','xto','ra','ar','aoe','far','iar','maxb','hash','md5s','sfn','dpi','sia');
 
 $additionalparameters = array();
 foreach ($_GET as $key => $value) {
+	if (!in_array($key, $allowedGETparameters)) {
+		continue;
+	}
 	if (is_array($value)) {
+		if ($key != 'fltr') {
+			continue;
+		}
 		foreach ($value as $key2 => $value2) {
-			$additionalparameters[] = $key.'[]='.SafeStripSlashes($value2);
+			@$additionalparameters[$key][] = preg_replace('#[^A-Za-z0-9\\. _:/]#', '', $value2);
 		}
 	} else {
-		$additionalparameters[] = $key.'='.SafeStripSlashes($value);
+		$additionalparameters[$key] = preg_replace('#[^A-Za-z0-9\\. _:/]#', '', $value);
 	}
 }
-//$imagesrc = $phpThumbLocation.implode('&', $additionalparameters);
-$imagesrc = phpThumbURL(implode($PHPTHUMB_CONFIG['config_high_security_url_separator'], $additionalparameters), $phpThumbLocation);
+$imagesrc = phpThumbURL($additionalparameters, $phpThumbLocation);
 
 echo '<script type="text/javascript">';
-echo 'var ns4;';
-echo 'var op5;';
-echo 'function setBrowserWindowSizeToImage() {';
-echo 	'if (!document.getElementById("imageimg")) { return false; }';
-echo	'sniffBrowsers();';
-echo 	'var imageW = getImageWidth("imageimg");';
-echo 	'var imageH = getImageHeight("imageimg");';
+echo 'var ns4;'."\n";
+echo 'var op5;'."\n";
+echo 'function setBrowserWindowSizeToImage() {'."\n";
+echo 	'if (!document.getElementById("imageimg")) { return false; }'."\n";
+echo	'sniffBrowsers();'."\n";
+echo 	'var imageW = getImageWidth("imageimg");'."\n";
+echo 	'var imageH = getImageHeight("imageimg");'."\n";
 		// check for maximum dimensions to allow no-scrollbar window
 echo 	'if (((screen.width * 1.1) > imageW) || ((screen.height * 1.1) > imageH)) {'."\n";
 			// screen is large enough to fit whole picture on screen with 10% margin
 echo 		'CrossBrowserResizeInnerWindowTo(imageW, imageH);'."\n";
 echo 	'} else {'."\n";
 			// image is too large for screen: add scrollbars by putting the image inside an IFRAME
-echo 		'document.getElementById("showpicspan").innerHTML = "<iframe width=\"100%\" height=\"100%\" marginheight=\"0\" marginwidth=\"0\" frameborder=\"0\" scrolling=\"on\" src=\"'.$imagesrc.'\">Your browser does not support the IFRAME tag. Please use one that does (IE, Firefox, etc).<br><img src=\"'.$imagesrc.'\"><\/iframe>";';
+echo 		'document.getElementById("showpicspan").innerHTML = "<iframe width=\"100%\" height=\"100%\" marginheight=\"0\" marginwidth=\"0\" frameborder=\"0\" scrolling=\"on\" src=\"'.$imagesrc.'\">Your browser does not support the IFRAME tag. Please use one that does (Chrome, Firefox, etc).<br><img src=\"'.$imagesrc.'\"><\/iframe>";'."\n";
 echo 	'}'."\n";
 echo '}';
 echo '</script>';
-?>
 
-</head>
-
-<body style="margin: 0px;" onLoad="setBrowserWindowSizeToImage();"><div id="showpicspan"><?php
+echo '</head><body style="margin: 0px;" onLoad="setBrowserWindowSizeToImage();"><div id="showpicspan">';
 
 if (!empty($_GET['src'])) {
 
@@ -127,7 +127,7 @@ if (!empty($_GET['src'])) {
 } else {
 
 	echo '<pre>';
-	echo 'Usage:<br><br><b>'.$_SERVER['PHP_SELF'].'?src=<i>filename</i>&title=<i>Picture+Title</i></b>';
+	echo 'Usage:<br><br><b>'.basename(__FILE__).'?src=<i>filename</i>&amp;title=<i>Picture+Title</i></b>';
 	echo '</pre>';
 
 }
