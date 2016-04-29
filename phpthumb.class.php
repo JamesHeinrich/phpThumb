@@ -1337,7 +1337,9 @@ class phpthumb {
 		}
 		*/
 		if ($this->iswindows) {
-			$AbsoluteFilename = preg_replace('#^'.preg_quote($this->realPathSafe($this->config_document_root)).'#i', $this->realPathSafe($this->config_document_root), $AbsoluteFilename);
+			$AbsoluteFilename = function_exists('mb_ereg_replace')
+				? mb_ereg_replace('#^'.preg_quote($this->realPathSafe($this->config_document_root)).'#i', $this->realPathSafe($this->config_document_root), $AbsoluteFilename)
+				: preg_replace('#^'.preg_quote($this->realPathSafe($this->config_document_root)).'#i', $this->realPathSafe($this->config_document_root), $AbsoluteFilename);
 			$AbsoluteFilename = str_replace(DIRECTORY_SEPARATOR, '/', $AbsoluteFilename);
 		}
 		$AbsoluteFilename = $this->resolvePath($AbsoluteFilename, $this->config_additional_allowed_dirs);
