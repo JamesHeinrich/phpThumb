@@ -213,7 +213,7 @@ class phpthumb {
 	var $issafemode       = null;
 	var $php_memory_limit = null;
 
-	var $phpthumb_version = '1.7.14-201604151303';
+	var $phpthumb_version = '1.7.14-201605300732';
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -3082,7 +3082,7 @@ if (false) {
 							$phpthumbFilters->ApplyMask($gdimg_mask, $this->gdimg_output);
 							ImageDestroy($gdimg_mask);
 						} else {
-							$this->DebugMessage('SourceTransparentColorMask() failed for "'.$mask_filename.'"', __FILE__, __LINE__);
+							$this->DebugMessage('SourceTransparentColorMask() failed for "'.$hexcolor.','.$min_limit.','.$max_limit.'"', __FILE__, __LINE__);
 						}
 						break;
 				}
