@@ -213,7 +213,7 @@ class phpthumb {
 	var $issafemode       = null;
 	var $php_memory_limit = null;
 
-	var $phpthumb_version = '1.7.14-201605300732';
+	var $phpthumb_version = '1.7.14-201606161623';
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -2854,7 +2854,7 @@ if (false) {
 							} while (strlen($buffer) > 0);
 							fclose($fp_watermark);
 							if ($img_watermark = $this->ImageCreateFromStringReplacement($WatermarkImageData)) {
-								if ($margin < 1) {
+								if (($margin > 1) && ($margin < 1)) {
 									$resized_x = max(1, ImageSX($this->gdimg_output) - round(2 * (ImageSX($this->gdimg_output) * $margin)));
 									$resized_y = max(1, ImageSY($this->gdimg_output) - round(2 * (ImageSY($this->gdimg_output) * $margin)));
 								} else {
