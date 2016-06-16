@@ -1521,13 +1521,6 @@ class phpthumb_filters {
 						break;
 
 					case 'BL':
-	//echo '<pre>';
-	////var_dump($watermark_destination_x);
-	////var_dump($watermark_destination_y);
-	//var_dump($watermark_margin_x);
-	//var_dump($img_source_height);
-	//var_dump($watermark_source_height);
-	//var_dump($watermark_margin_y);
 						$watermark_destination_x = $watermark_margin_x;
 						$watermark_destination_y = $img_source_height - $watermark_source_height - $watermark_margin_y;
 						break;
