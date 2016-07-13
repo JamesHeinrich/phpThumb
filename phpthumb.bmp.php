@@ -44,7 +44,7 @@ class phpthumb_bmp
     function GD2BMPstring(&$gd_image)
     {
         $imageX = imagesx($gd_image);
-        $imageY = ImageSY($gd_image);
+        $imageY = imagesy($gd_image);
 
         $BMP = '';
         for ($y = ($imageY - 1); $y >= 0; $y--) {
@@ -228,7 +228,6 @@ class phpthumb_bmp
                 $thisfile_bmp_header_raw['color_encoding'] = $this->LittleEndian2Int(substr($BMPheader, $offset, 4));
                 $offset += 4;
                 $thisfile_bmp_header_raw['identifier'] = $this->LittleEndian2Int(substr($BMPheader, $offset, 4));
-                $offset += 4;
 
                 $thisfile_bmp_header['compression'] = $this->BMPcompressionOS2Lookup($thisfile_bmp_header_raw['compression']);
 
@@ -253,9 +252,9 @@ class phpthumb_bmp
             // DWORD  biClrUsed;
             // DWORD  biClrImportant;
 
-            $thisfile_bmp_header_raw['width'] = $this->LittleEndian2Int(substr($BMPheader, $offset, 4), true);
+            $thisfile_bmp_header_raw['width'] = $this->LittleEndian2Int(substr($BMPheader, $offset, 4));
             $offset += 4;
-            $thisfile_bmp_header_raw['height'] = $this->LittleEndian2Int(substr($BMPheader, $offset, 4), true);
+            $thisfile_bmp_header_raw['height'] = $this->LittleEndian2Int(substr($BMPheader, $offset, 4));
             $offset += 4;
             $thisfile_bmp_header_raw['planes'] = $this->LittleEndian2Int(substr($BMPheader, $offset, 2));
             $offset += 2;
@@ -265,9 +264,9 @@ class phpthumb_bmp
             $offset += 4;
             $thisfile_bmp_header_raw['bmp_data_size'] = $this->LittleEndian2Int(substr($BMPheader, $offset, 4));
             $offset += 4;
-            $thisfile_bmp_header_raw['resolution_h'] = $this->LittleEndian2Int(substr($BMPheader, $offset, 4), true);
+            $thisfile_bmp_header_raw['resolution_h'] = $this->LittleEndian2Int(substr($BMPheader, $offset, 4));
             $offset += 4;
-            $thisfile_bmp_header_raw['resolution_v'] = $this->LittleEndian2Int(substr($BMPheader, $offset, 4), true);
+            $thisfile_bmp_header_raw['resolution_v'] = $this->LittleEndian2Int(substr($BMPheader, $offset, 4));
             $offset += 4;
             $thisfile_bmp_header_raw['colors_used'] = $this->LittleEndian2Int(substr($BMPheader, $offset, 4));
             $offset += 4;
@@ -341,7 +340,6 @@ class phpthumb_bmp
                 $thisfile_bmp_header_raw['profile_data_size'] = $this->LittleEndian2Int(substr($BMPheader, $offset, 4));
                 $offset += 4;
                 $thisfile_bmp_header_raw['reserved3'] = $this->LittleEndian2Int(substr($BMPheader, $offset, 4));
-                $offset += 4;
             }
 
         } else {
@@ -360,7 +358,6 @@ class phpthumb_bmp
             }
             if ($PaletteEntries > 0) {
                 $BMPpalette = substr($BMPdata, $overalloffset, 4 * $PaletteEntries);
-                $overalloffset += 4 * $PaletteEntries;
 
                 $paletteoffset = 0;
                 for ($i = 0; $i < $PaletteEntries; $i++) {
@@ -386,7 +383,6 @@ class phpthumb_bmp
             $RowByteLength = ceil(($thisfile_bmp_header_raw['width'] * ($thisfile_bmp_header_raw['bits_per_pixel'] / 8)) / 4) * 4; // round up to nearest DWORD boundry
 
             $BMPpixelData = substr($BMPdata, $thisfile_bmp_header_raw['data_offset'], $thisfile_bmp_header_raw['height'] * $RowByteLength);
-            $overalloffset = $thisfile_bmp_header_raw['data_offset'] + ($thisfile_bmp_header_raw['height'] * $RowByteLength);
 
             $pixeldataoffset = 0;
             switch (@$thisfile_bmp_header_raw['compression']) {
@@ -592,6 +588,7 @@ class phpthumb_bmp
                                             // high- and low-order 4 bits, one color index for each pixel. In absolute mode,
                                             // each run must be aligned on a word boundary.
                                             unset($paletteindexes);
+                                            $paletteindexes = [];
                                             for ($i = 0; $i < ceil($secondbyte / 2); $i++) {
                                                 $paletteindexbyte = $this->LittleEndian2Int(substr($BMPpixelData, $pixeldataoffset++, 1));
                                                 $paletteindexes[] = ($paletteindexbyte & 0xF0) >> 4;
@@ -708,23 +705,23 @@ class phpthumb_bmp
 
         if ($truecolor) {
 
-            $gd = @ImageCreateTrueColor($imagewidth, $imageheight);
+            $gd = @imagecreatetruecolor($imagewidth, $imageheight);
 
         } else {
 
-            $gd = @ImageCreate($imagewidth, $imageheight);
+            $gd = @imagecreate($imagewidth, $imageheight);
             if (!empty($BMPdata['palette'])) {
                 // create GD palette from BMP palette
                 foreach ($BMPdata['palette'] as $dummy => $color) {
                     list($r, $g, $b) = $this->IntColor2RGB($color);
-                    ImageColorAllocate($gd, $r, $g, $b);
+                    imagecolorallocate($gd, $r, $g, $b);
                 }
             } else {
                 // create 216-color websafe palette
                 for ($r = 0x00; $r <= 0xFF; $r += 0x33) {
                     for ($g = 0x00; $g <= 0xFF; $g += 0x33) {
                         for ($b = 0x00; $b <= 0xFF; $b += 0x33) {
-                            ImageColorAllocate($gd, $r, $g, $b);
+                            imagecolorallocate($gd, $r, $g, $b);
                         }
                     }
                 }
@@ -742,11 +739,11 @@ class phpthumb_bmp
             foreach ($colarray as $col => $color) {
                 list($red, $green, $blue) = $this->IntColor2RGB($color);
                 if ($truecolor) {
-                    $pixelcolor = ImageColorAllocate($gd, $red, $green, $blue);
+                    $pixelcolor = imagecolorallocate($gd, $red, $green, $blue);
                 } else {
-                    $pixelcolor = ImageColorClosest($gd, $red, $green, $blue);
+                    $pixelcolor = imagecolorclosest($gd, $red, $green, $blue);
                 }
-                ImageSetPixel($gd, $col, $row, $pixelcolor);
+                imagesetpixel($gd, $col, $row, $pixelcolor);
             }
         }
         return $gd;
@@ -765,15 +762,13 @@ class phpthumb_bmp
         $im = $this->PlotPixelsGD($BMPinfo['bmp']);
         if (headers_sent()) {
             echo 'plotted ' . ($BMPinfo['resolution_x'] * $BMPinfo['resolution_y']) . ' pixels in ' . (time() - $starttime) . ' seconds<BR>';
-            ImageDestroy($im);
+            imagedestroy($im);
             exit;
-        } else {
-            header('Content-Type: image/png');
-            ImagePNG($im);
-            ImageDestroy($im);
-            return true;
         }
-        return false;
+        header('Content-Type: image/png');
+        imagepng($im);
+        imagedestroy($im);
+        return true;
     }
 
     function BMPcompressionWindowsLookup($compressionid)
