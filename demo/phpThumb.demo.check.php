@@ -222,7 +222,7 @@ if (phpthumb_functions::version_compare_replacement(phpversion(), '5.0.0', '>=')
 	echo 'red';
 }
 echo ';">'.phpversion();
-echo '</th><td>PHP5 is ideal (support for numerous built-in filters which are much faster than my code).<br>PHP v4.4.2 contains a bug in fopen over HTTP (phpThumb has a workaround)<br>PHP v4.3.2+ supports ImageSaveAlpha which is required for proper PNG/ICO output.<br>ImageRotate requires PHP v4.3.0+ (but buggy before v4.3.3).<br>EXIF thumbnail extraction requires PHP v4.2.0+.<br>Most things will work back to PHP v4.1.0, and mostly (perhaps buggy) back to v4.0.6, but no guarantees for any version older than that.</td></tr>';
+echo '</th><td>PHP5 is ideal (support for numerous built-in filters which are much faster than my code).<br>PHP v4.4.2 contains a bug in fopen over HTTP (phpThumb has a workaround)<br>PHP v4.3.2+ supports imagesavealpha which is required for proper PNG/ICO output.<br>imagerotate requires PHP v4.3.0+ (but buggy before v4.3.3).<br>EXIF thumbnail extraction requires PHP v4.2.0+.<br>Most things will work back to PHP v4.1.0, and mostly (perhaps buggy) back to v4.0.6, but no guarantees for any version older than that.</td></tr>';
 
 
 echo '<tr><th>GD version:</th><th colspan="2" style="background-color: ';
@@ -238,7 +238,7 @@ if ($ServerInfo['gd_numeric'] >= 2) {
 	echo 'red';
 }
 echo ';">'.(!empty($ServerInfo['gd_string']) ? $ServerInfo['gd_string'] : 'n/a');
-echo '</th><td>GD2-bundled version is ideal.<br>GD2 (non-bundled) is second choice, but there are a number of bugs in the non-bundled version. ImageRotate is only available in the bundled version of GD2.<br>GD1 will also (mostly) work, at much-reduced image quality and several features disabled. phpThumb can perform most operations with ImageMagick only, even if GD is not available.</td></tr>';
+echo '</th><td>GD2-bundled version is ideal.<br>GD2 (non-bundled) is second choice, but there are a number of bugs in the non-bundled version. imagerotate is only available in the bundled version of GD2.<br>GD1 will also (mostly) work, at much-reduced image quality and several features disabled. phpThumb can perform most operations with ImageMagick only, even if GD is not available.</td></tr>';
 
 
 $IMreleaseDate = 0;
@@ -399,7 +399,7 @@ echo '<tr style="background-color: #EEEEEE;"><th colspan="4">&nbsp;</th></tr>';
 echo '<tr style="background-color: #EEEEEE;"><th>function_exists:</th><th colspan="2">Value</th><th>Comments</th></tr>';
 
 $FunctionsExist = array(
-	'ImageRotate'           => array('orange',     'required for "ra" and "ar" filters.'),
+	'imagerotate'           => array('orange',     'required for "ra" and "ar" filters.'),
 	'exif_read_data'        => array('yellow',     'required for "ar" filter.'),
 	'exif_thumbnail'        => array('yellow',     'required to extract EXIF thumbnails.'),
 	'memory_get_usage'      => array('lightgreen', 'mostly used for troubleshooting.'),
@@ -408,15 +408,15 @@ $FunctionsExist = array(
 	'file_put_contents'     => array('darkgreen',  'available in PHP v5.0.0+, internal workaround available'),
 	'is_executable'         => array('yellow',     'available in PHP3, except only PHP5 for Windows. poor internal workaround available'),
 	'gd_info'               => array('olive',      'available in PHP v4.3.0+ (with bundled GD2), internal workaround available'),
-	'ImageTypes'            => array('red',        'required for GD image output.'),
+	'imagetypes'            => array('red',        'required for GD image output.'),
 	'ImageCreateFromJPEG'   => array('orange',     'required for JPEG source images using GD.'),
 	'ImageCreateFromGIF'    => array('yellow',     'useful for GIF source images using GD.'),
 	'ImageCreateFromPNG'    => array('orange',     'required for PNG source images using GD and other source image formats using ImageMagick.'),
 	'ImageCreateFromWBMP'   => array('yellow',     'required for WBMP source images using GD.'),
 	'ImageCreateFromString' => array('orange',     'required for HTTP and non-file image sources.'),
-	'ImageCreateTrueColor'  => array('orange',     'required for all non-ImageMagick filters.'),
-	'ImageIsTrueColor'      => array('olive',      'available in PHP v4.3.2+ with GD v2.0.1+'),
-	'ImageFilter'           => array('yellow',     'PHP5 only. Required for some filters (but most can use ImageMagick instead)'),
+	'imagecreatetruecolor'  => array('orange',     'required for all non-ImageMagick filters.'),
+	'imageistruecolor'      => array('olive',      'available in PHP v4.3.2+ with GD v2.0.1+'),
+	'imagefilter'           => array('yellow',     'PHP5 only. Required for some filters (but most can use ImageMagick instead)'),
 );
 foreach ($FunctionsExist as $function => $details) {
 	list($color, $description) = $details;

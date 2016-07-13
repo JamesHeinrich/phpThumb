@@ -242,9 +242,9 @@ class phpthumb_functions
     static function ImageColorAllocateAlphaSafe(&$gdimg_hexcolorallocate, $R, $G, $B, $alpha = false)
     {
         if (phpthumb_functions::version_compare_replacement(phpversion(), '4.3.2', '>=') && ($alpha !== false)) {
-            return ImageColorAllocateAlpha($gdimg_hexcolorallocate, $R, $G, $B, intval($alpha));
+            return imagecolorallocatealpha($gdimg_hexcolorallocate, $R, $G, $B, intval($alpha));
         } else {
-            return ImageColorAllocate($gdimg_hexcolorallocate, $R, $G, $B);
+            return imagecolorallocate($gdimg_hexcolorallocate, $R, $G, $B);
         }
     }
 
@@ -262,7 +262,7 @@ class phpthumb_functions
         if ($dieOnInvalid) {
             die('Invalid hex color string: "' . $HexColorString . '"');
         }
-        return ImageColorAllocate($gdimg_hexcolorallocate, 0x00, 0x00, 0x00);
+        return imagecolorallocate($gdimg_hexcolorallocate, 0x00, 0x00, 0x00);
     }
 
 
@@ -277,7 +277,7 @@ class phpthumb_functions
         if (!is_resource($img)) {
             return false;
         }
-        return @ImageColorsForIndex($img, @ImageColorAt($img, $x, $y));
+        return @imagecolorsforindex($img, @imagecolorat($img, $x, $y));
     }
 
 
@@ -345,7 +345,7 @@ class phpthumb_functions
         $scaleX2 = $scaleX / 2.0;
         $scaleY2 = $scaleY / 2.0;
 
-        $isTrueColor = ImageIsTrueColor($src_img);
+        $isTrueColor = imageistruecolor($src_img);
 
         for ($y = $src_y; $y < $src_y + $dst_h; $y++) {
             $sY = $y * $scaleY;
@@ -359,10 +359,10 @@ class phpthumb_functions
 
                 if ($isTrueColor) {
 
-                    $c1 = ImageColorAt($src_img, $siX, $siY2);
-                    $c2 = ImageColorAt($src_img, $siX, $siY);
-                    $c3 = ImageColorAt($src_img, $siX2, $siY2);
-                    $c4 = ImageColorAt($src_img, $siX2, $siY);
+                    $c1 = imagecolorat($src_img, $siX, $siY2);
+                    $c2 = imagecolorat($src_img, $siX, $siY);
+                    $c3 = imagecolorat($src_img, $siX2, $siY2);
+                    $c4 = imagecolorat($src_img, $siX2, $siY);
 
                     $r = (($c1 + $c2 + $c3 + $c4) >> 2) & 0xFF0000;
                     $g = ((($c1 & 0x00FF00) + ($c2 & 0x00FF00) + ($c3 & 0x00FF00) + ($c4 & 0x00FF00)) >> 2) & 0x00FF00;
@@ -370,17 +370,17 @@ class phpthumb_functions
 
                 } else {
 
-                    $c1 = ImageColorsForIndex($src_img, ImageColorAt($src_img, $siX, $siY2));
-                    $c2 = ImageColorsForIndex($src_img, ImageColorAt($src_img, $siX, $siY));
-                    $c3 = ImageColorsForIndex($src_img, ImageColorAt($src_img, $siX2, $siY2));
-                    $c4 = ImageColorsForIndex($src_img, ImageColorAt($src_img, $siX2, $siY));
+                    $c1 = imagecolorsforindex($src_img, imagecolorat($src_img, $siX, $siY2));
+                    $c2 = imagecolorsforindex($src_img, imagecolorat($src_img, $siX, $siY));
+                    $c3 = imagecolorsforindex($src_img, imagecolorat($src_img, $siX2, $siY2));
+                    $c4 = imagecolorsforindex($src_img, imagecolorat($src_img, $siX2, $siY));
 
                     $r = ($c1['red'] + $c2['red'] + $c3['red'] + $c4['red']) << 14;
                     $g = ($c1['green'] + $c2['green'] + $c3['green'] + $c4['green']) << 6;
                     $b = ($c1['blue'] + $c2['blue'] + $c3['blue'] + $c4['blue']) >> 2;
 
                 }
-                ImageSetPixel($dst_img, $dst_x + $x - $src_x, $dst_y + $y - $src_y, $r + $g + $b);
+                imagesetpixel($dst_img, $dst_x + $x - $src_x, $dst_y + $y - $src_y, $r + $g + $b);
             }
         }
         return true;
@@ -389,9 +389,9 @@ class phpthumb_functions
 
     static function ImageCreateFunction($x_size, $y_size)
     {
-        $ImageCreateFunction = 'ImageCreate';
+        $ImageCreateFunction = 'imagecreate';
         if (phpthumb_functions::gd_version() >= 2.0) {
-            $ImageCreateFunction = 'ImageCreateTrueColor';
+            $ImageCreateFunction = 'imagecreatetruecolor';
         }
         if (!function_exists($ImageCreateFunction)) {
             return phpthumb::ErrorImage($ImageCreateFunction . '() does not exist - no GD support?');
@@ -421,7 +421,7 @@ class phpthumb_functions
                     //$RealPixel['alpha']);
                     0);
 
-                ImageSetPixel($dst_im, $dst_x + $x, $dst_y + $y, $newcolor);
+                imagesetpixel($dst_im, $dst_x + $x, $dst_y + $y, $newcolor);
             }
         }
         return true;
@@ -499,7 +499,7 @@ class phpthumb_functions
 
                 case 'exec':
                     $output = array();
-                    $lastline = $execfunction($command, $output);
+                    $execfunction($command, $output);
                     $returnvalue = implode("\n", $output);
                     break;
 
@@ -697,7 +697,7 @@ class phpthumb_functions
                     $Data_body .= $line;
                 }
                 if (preg_match('#^HTTP/[\\.0-9]+ ([0-9]+) (.+)$#i', rtrim($line), $matches)) {
-                    list($dummy, $errno, $errstr) = $matches;
+                    list(, $errno, $errstr) = $matches;
                     $errno = intval($errno);
                 } elseif (preg_match('#^Location: (.*)$#i', rtrim($line), $matches)) {
                     $header_newlocation = $matches[1];
@@ -783,9 +783,11 @@ class phpthumb_functions
         return $parsedURL;
     }
 
-    static function SafeURLread($url, &$error, $timeout = 10, $followredirects = true)
+    static function SafeURLread($url, &$error, $timeout = 10)
     {
         $error = '';
+        $errstr = '';
+        $rawData = '';
 
         $parsed_url = phpthumb_functions::ParseURLbetter($url);
         $alreadyLookedAtURLs[trim($url)] = true;
@@ -880,7 +882,6 @@ class phpthumb_functions
                 break;
             }
         }
-        $i = $startoffset;
         $endoffset = count($directory_elements);
         for ($i = $startoffset; $i <= $endoffset; $i++) {
             $test_directory = implode(DIRECTORY_SEPARATOR, array_slice($directory_elements, 0, $i));
@@ -926,9 +927,7 @@ class phpthumb_functions
                             }
                             break;
                     }
-                } else {
-                    // ignore?
-                }
+                }// else ignore?
             }
             closedir($dirhandle);
         }
@@ -957,161 +956,3 @@ class phpthumb_functions
     }
 
 }
-
-
-////////////// END: class phpthumb_functions //////////////
-
-
-if (!function_exists('gd_info')) {
-    // built into PHP v4.3.0+ (with bundled GD2 library)
-    function gd_info()
-    {
-        static $gd_info = array();
-        if (empty($gd_info)) {
-            // based on code by johnschaefer at gmx dot de
-            // from PHP help on gd_info()
-            $gd_info = array(
-                'GD Version' => '',
-                'FreeType Support' => false,
-                'FreeType Linkage' => '',
-                'T1Lib Support' => false,
-                'GIF Read Support' => false,
-                'GIF Create Support' => false,
-                'JPG Support' => false,
-                'PNG Support' => false,
-                'WBMP Support' => false,
-                'XBM Support' => false
-            );
-            $phpinfo_array = phpthumb_functions::phpinfo_array();
-            foreach ($phpinfo_array as $line) {
-                $line = trim(strip_tags($line));
-                foreach ($gd_info as $key => $value) {
-                    //if (strpos($line, $key) !== false) {
-                    if (strpos($line, $key) === 0) {
-                        $newvalue = trim(str_replace($key, '', $line));
-                        $gd_info[$key] = $newvalue;
-                    }
-                }
-            }
-            if (empty($gd_info['GD Version'])) {
-                // probable cause: "phpinfo() disabled for security reasons"
-                if (function_exists('ImageTypes')) {
-                    $imagetypes = ImageTypes();
-                    if ($imagetypes & IMG_PNG) {
-                        $gd_info['PNG Support'] = true;
-                    }
-                    if ($imagetypes & IMG_GIF) {
-                        $gd_info['GIF Create Support'] = true;
-                    }
-                    if ($imagetypes & IMG_JPG) {
-                        $gd_info['JPG Support'] = true;
-                    }
-                    if ($imagetypes & IMG_WBMP) {
-                        $gd_info['WBMP Support'] = true;
-                    }
-                }
-                // to determine capability of GIF creation, try to use ImageCreateFromGIF on a 1px GIF
-                if (function_exists('ImageCreateFromGIF')) {
-                    if ($tempfilename = phpthumb::phpThumb_tempnam()) {
-                        if ($fp_tempfile = @fopen($tempfilename, 'wb')) {
-                            fwrite($fp_tempfile, base64_decode('R0lGODlhAQABAIAAAH//AP///ywAAAAAAQABAAACAUQAOw==')); // very simple 1px GIF file base64-encoded as string
-                            fclose($fp_tempfile);
-
-                            // if we can convert the GIF file to a GD image then GIF create support must be enabled, otherwise it's not
-                            $gd_info['GIF Read Support'] = (bool)@ImageCreateFromGIF($tempfilename);
-                        }
-                        unlink($tempfilename);
-                    }
-                }
-                if (function_exists('ImageCreateTrueColor') && @ImageCreateTrueColor(1, 1)) {
-                    $gd_info['GD Version'] = '2.0.1 or higher (assumed)';
-                } elseif (function_exists('ImageCreate') && @ImageCreate(1, 1)) {
-                    $gd_info['GD Version'] = '1.6.0 or higher (assumed)';
-                }
-            }
-        }
-        return $gd_info;
-    }
-}
-
-
-if (!function_exists('is_executable')) {
-    // in PHP v3+, but v5.0+ for Windows
-    function is_executable($filename)
-    {
-        // poor substitute, but better than nothing
-        return file_exists($filename);
-    }
-}
-
-
-if (!function_exists('preg_quote')) {
-    // included in PHP v3.0.9+, but may be unavailable if not compiled in
-    function preg_quote($string, $delimiter = '\\')
-    {
-        static $preg_quote_array = array();
-        if (empty($preg_quote_array)) {
-            $escapeables = '.\\+*?[^]$(){}=!<>|:';
-            for ($i = 0; $i < strlen($escapeables); $i++) {
-                $strtr_preg_quote[$escapeables{$i}] = $delimiter . $escapeables{$i};
-            }
-        }
-        return strtr($string, $strtr_preg_quote);
-    }
-}
-
-if (!function_exists('file_get_contents')) {
-    // included in PHP v4.3.0+
-    function file_get_contents($filename)
-    {
-        if (preg_match('#^(f|ht)tp\://#i', $filename)) {
-            return SafeURLread($filename, $error);
-        }
-        if ($fp = @fopen($filename, 'rb')) {
-            $rawData = '';
-            do {
-                $buffer = fread($fp, 8192);
-                $rawData .= $buffer;
-            } while (strlen($buffer) > 0);
-            fclose($fp);
-            return $rawData;
-        }
-        return false;
-    }
-}
-
-
-if (!function_exists('file_put_contents')) {
-    // included in PHP v5.0.0+
-    function file_put_contents($filename, $filedata)
-    {
-        if ($fp = @fopen($filename, 'wb')) {
-            fwrite($fp, $filedata);
-            fclose($fp);
-            return true;
-        }
-        return false;
-    }
-}
-
-if (!function_exists('imagealphablending')) {
-    // built-in function requires PHP v4.0.6+ *and* GD v2.0.1+
-    function imagealphablending(&$img, $blendmode = true)
-    {
-        // do nothing, this function is declared here just to
-        // prevent runtime errors if GD2 is not available
-        return true;
-    }
-}
-
-if (!function_exists('imagesavealpha')) {
-    // built-in function requires PHP v4.3.2+ *and* GD v2.0.1+
-    function imagesavealpha(&$img, $blendmode = true)
-    {
-        // do nothing, this function is declared here just to
-        // prevent runtime errors if GD2 is not available
-        return true;
-    }
-}
-
-?>
