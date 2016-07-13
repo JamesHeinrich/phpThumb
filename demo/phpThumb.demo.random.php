@@ -23,7 +23,7 @@ function SelectRandomImage($dirname='.', $portrait=true, $landscape=true, $squar
 	if ($dh = opendir($dirname)) {
 		while ($file = readdir($dh)) {
 			if (is_file($dirname.'/'.$file) && preg_match('#\\.(jpg|jpeg|gif|png|tiff|bmp)$#i', $file)) {
-				if ($gis = @GetImageSize($dirname.'/'.$file)) {
+				if ($gis = @getimagesize($dirname.'/'.$file)) {
 					if ($portrait && ($gis[0] < $gis[1])) {
 						// portrait
 						$possibleimages[] = $file;
