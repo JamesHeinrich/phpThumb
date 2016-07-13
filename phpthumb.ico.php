@@ -12,11 +12,6 @@
 
 class phpthumb_ico {
 
-	function phpthumb_ico() {
-		return true;
-	}
-
-
 	function GD2ICOstring(&$gd_image_array) {
 		foreach ($gd_image_array as $key => $gd_image) {
 

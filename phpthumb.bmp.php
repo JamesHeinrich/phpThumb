@@ -20,10 +20,6 @@
 
 class phpthumb_bmp {
 
-	function phpthumb_bmp() {
-		return true;
-	}
-
 	function phpthumb_bmp2gd(&$BMPdata, $truecolor=true) {
 		$ThisFileInfo = array();
 		if ($this->getid3_bmp($BMPdata, $ThisFileInfo, true, true)) {

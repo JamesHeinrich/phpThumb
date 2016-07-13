@@ -13,10 +13,6 @@ class phpthumb_filters {
 
 	var $phpThumbObject = null;
 
-	function phpthumb_filters() {
-		return true;
-	}
-
 	function DebugMessage($message, $file='', $line='') {
 		if (is_object($this->phpThumbObject)) {
 			return $this->phpThumbObject->DebugMessage($message, $file, $line);
@@ -96,7 +92,7 @@ class phpthumb_filters {
 
 
 	public function Blur(&$gdimg, $radius=0.5) {
-		// Taken from Torstein Hønsi's phpUnsharpMask (see phpthumb.unsharp.php)
+		// Taken from Torstein Hï¿½nsi's phpUnsharpMask (see phpthumb.unsharp.php)
 
 		$radius = round(max(0, min($radius, 50)) * 2);
 		if (!$radius) {
