@@ -366,7 +366,7 @@ class phpthumb_functions {
 
 
 	static function ImageCreateFunction($x_size, $y_size) {
-		$ImageCreateFunction = 'ImageCreate';
+		$ImageCreateFunction = 'imagecreate';
 		if (phpthumb_functions::gd_version() >= 2.0) {
 			$ImageCreateFunction = 'imagecreatetruecolor';
 		}
@@ -472,7 +472,7 @@ class phpthumb_functions {
 
 				case 'exec':
 					$output = array();
-					$lastline = $execfunction($command, $output);
+					$execfunction($command, $output);
 					$returnvalue = implode("\n", $output);
 					break;
 
@@ -659,7 +659,7 @@ class phpthumb_functions {
 					$Data_body .= $line;
 				}
 				if (preg_match('#^HTTP/[\\.0-9]+ ([0-9]+) (.+)$#i', rtrim($line), $matches)) {
-					list($dummy, $errno, $errstr) = $matches;
+					list(, $errno, $errstr) = $matches;
 					$errno = intval($errno);
 				} elseif (preg_match('#^Location: (.*)$#i', rtrim($line), $matches)) {
 					$header_newlocation = $matches[1];
@@ -743,8 +743,10 @@ class phpthumb_functions {
 		return $parsedURL;
 	}
 
-	static function SafeURLread($url, &$error, $timeout=10, $followredirects=true) {
+	static function SafeURLread($url, &$error, $timeout=10) {
 		$error = '';
+        $errstr = '';
+        $rawData = '';
 
 		$parsed_url = phpthumb_functions::ParseURLbetter($url);
 		$alreadyLookedAtURLs[trim($url)] = true;
@@ -838,7 +840,6 @@ class phpthumb_functions {
 				break;
 			}
 		}
-		$i = $startoffset;
 		$endoffset = count($directory_elements);
 		for ($i = $startoffset; $i <= $endoffset; $i++) {
 			$test_directory = implode(DIRECTORY_SEPARATOR, array_slice($directory_elements, 0, $i));
