@@ -483,6 +483,9 @@ class CGIFFILEHEADER
 	var $m_nTableSize;
 	var $m_nBgColor;
 	var $m_nPixelRatio;
+    /**
+     * @var CGIFCOLORTABLE
+     */
 	var $m_colorTable;
 
 	///////////////////////////////////////////////////////////////////////////
@@ -559,6 +562,9 @@ class CGIFIMAGEHEADER
 	var $m_bInterlace;
 	var $m_bSorted;
 	var $m_nTableSize;
+    /**
+     * @var CGIFCOLORTABLE
+     */
 	var $m_colorTable;
 
 	///////////////////////////////////////////////////////////////////////////
