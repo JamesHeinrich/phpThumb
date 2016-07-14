@@ -20,10 +20,10 @@ class phpthumb_ico {
 	function GD2ICOstring(&$gd_image_array) {
 		foreach ($gd_image_array as $key => $gd_image) {
 
-			$ImageWidths[$key]  = ImageSX($gd_image);
-			$ImageHeights[$key] = ImageSY($gd_image);
-	    	$bpp[$key]          = ImageIsTrueColor($gd_image) ? 32 : 24;
-	    	$totalcolors[$key]  = ImageColorsTotal($gd_image);
+			$ImageWidths[$key]  = imagesx($gd_image);
+			$ImageHeights[$key] = imagesy($gd_image);
+	    	$bpp[$key]          = imageistruecolor($gd_image) ? 32 : 24;
+	    	$totalcolors[$key]  = imagecolorstotal($gd_image);
 
 			$icXOR[$key] = '';
 			for ($y = $ImageHeights[$key] - 1; $y >= 0; $y--) {
@@ -116,5 +116,3 @@ class phpthumb_ico {
 	}
 
 }
-
-?>

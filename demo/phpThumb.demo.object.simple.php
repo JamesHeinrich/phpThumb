@@ -61,5 +61,3 @@ if ($phpThumb->GenerateThumbnail()) { // this line is VERY important, do not rem
 	// do something with debug/error messages
 	echo 'Failed:<pre>'.$phpThumb->fatalerror."\n\n".implode("\n\n", $phpThumb->debugmessages).'</pre>';
 }
-
-?>

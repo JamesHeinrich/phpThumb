@@ -58,8 +58,8 @@ foreach ($thumbnail_widths as $thumbnail_width) {
 	// generate & output thumbnail
 	$output_filename = './thumbnails/'.basename($_FILES['userfile']['name']).'_'.$thumbnail_width.'.'.$phpThumb->config_output_format;
 	if ($phpThumb->GenerateThumbnail()) { // this line is VERY important, do not remove it!
-		$output_size_x = ImageSX($phpThumb->gdimg_output);
-		$output_size_y = ImageSY($phpThumb->gdimg_output);
+		$output_size_x = imagesx($phpThumb->gdimg_output);
+		$output_size_y = imagesy($phpThumb->gdimg_output);
 		if ($output_filename || $capture_raw_data) {
 			if ($capture_raw_data && $phpThumb->RenderOutput()) {
 				// RenderOutput renders the thumbnail data to $phpThumb->outputImageData, not to a file or the browser
@@ -83,5 +83,3 @@ foreach ($thumbnail_widths as $thumbnail_width) {
 	}
 
 }
-
-?>

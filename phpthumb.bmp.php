@@ -43,8 +43,8 @@ class phpthumb_bmp {
 	}
 
 	function GD2BMPstring(&$gd_image) {
-		$imageX = ImageSX($gd_image);
-		$imageY = ImageSY($gd_image);
+		$imageX = imagesx($gd_image);
+		$imageY = imagesy($gd_image);
 
 		$BMP = '';
 		for ($y = ($imageY - 1); $y >= 0; $y--) {
@@ -706,23 +706,23 @@ class phpthumb_bmp {
 
 		if ($truecolor) {
 
-			$gd = @ImageCreateTrueColor($imagewidth, $imageheight);
+			$gd = @imagecreatetruecolor($imagewidth, $imageheight);
 
 		} else {
 
-			$gd = @ImageCreate($imagewidth, $imageheight);
+			$gd = @imagecreate($imagewidth, $imageheight);
 			if (!empty($BMPdata['palette'])) {
 				// create GD palette from BMP palette
 				foreach ($BMPdata['palette'] as $dummy => $color) {
 					list($r, $g, $b) = $this->IntColor2RGB($color);
-					ImageColorAllocate($gd, $r, $g, $b);
+					imagecolorallocate($gd, $r, $g, $b);
 				}
 			} else {
 				// create 216-color websafe palette
 				for ($r = 0x00; $r <= 0xFF; $r += 0x33) {
 					for ($g = 0x00; $g <= 0xFF; $g += 0x33) {
 						for ($b = 0x00; $b <= 0xFF; $b += 0x33) {
-							ImageColorAllocate($gd, $r, $g, $b);
+							imagecolorallocate($gd, $r, $g, $b);
 						}
 					}
 				}
@@ -740,11 +740,11 @@ class phpthumb_bmp {
 			foreach ($colarray as $col => $color) {
 				list($red, $green, $blue) = $this->IntColor2RGB($color);
 				if ($truecolor) {
-					$pixelcolor = ImageColorAllocate($gd, $red, $green, $blue);
+					$pixelcolor = imagecolorallocate($gd, $red, $green, $blue);
 				} else {
-					$pixelcolor = ImageColorClosest($gd, $red, $green, $blue);
+					$pixelcolor = imagecolorclosest($gd, $red, $green, $blue);
 				}
-				ImageSetPixel($gd, $col, $row, $pixelcolor);
+				imagesetpixel($gd, $col, $row, $pixelcolor);
 			}
 		}
 		return $gd;
@@ -762,12 +762,12 @@ class phpthumb_bmp {
 		$im = $this->PlotPixelsGD($BMPinfo['bmp']);
 		if (headers_sent()) {
 			echo 'plotted '.($BMPinfo['resolution_x'] * $BMPinfo['resolution_y']).' pixels in '.(time() - $starttime).' seconds<BR>';
-			ImageDestroy($im);
+			imagedestroy($im);
 			exit;
 		} else {
 			header('Content-Type: image/png');
-			ImagePNG($im);
-			ImageDestroy($im);
+			imagepng($im);
+			imagedestroy($im);
 			return true;
 		}
 		return false;
@@ -874,5 +874,3 @@ class phpthumb_bmp {
 	}
 
 }
-
-?>
