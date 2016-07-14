@@ -11,6 +11,9 @@
 
 class phpthumb_filters {
 
+    /**
+     * @var phpthumb
+     */
 	var $phpThumbObject = null;
 
 	function DebugMessage($message, $file='', $line='') {
