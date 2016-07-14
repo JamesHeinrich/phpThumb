@@ -213,7 +213,7 @@ class phpthumb {
 	var $issafemode       = null;
 	var $php_memory_limit = null;
 
-	var $phpthumb_version = '1.7.14-201607141321';
+	var $phpthumb_version = '1.7.14-201607141354';
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -1333,7 +1333,7 @@ class phpthumb {
 		}
 		*/
 		if ($this->iswindows) {
-			$AbsoluteFilename = preg_replace('#^'.preg_quote($this->realPathSafe($this->config_document_root)).'#i', $this->realPathSafe($this->config_document_root), $AbsoluteFilename);
+			$AbsoluteFilename = preg_replace('#^'.preg_quote($this->realPathSafe($this->config_document_root)).'#i', str_replace('\\', '\\\\', $this->realPathSafe($this->config_document_root)), $AbsoluteFilename);
 			$AbsoluteFilename = str_replace(DIRECTORY_SEPARATOR, '/', $AbsoluteFilename);
 		}
 		$AbsoluteFilename = $this->resolvePath($AbsoluteFilename, $this->config_additional_allowed_dirs);
