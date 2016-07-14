@@ -187,7 +187,7 @@ class phpthumb_filters {
 
 	public function Contrast(&$gdimg, $amount=0) {
 		if ($amount == 0) {
-			return true;
+			return;
 		}
 		$amount = max(-255, min(255, $amount));
 
@@ -195,7 +195,7 @@ class phpthumb_filters {
 			// imagefilter(IMG_FILTER_CONTRAST) has range +100 to -100 (positive numbers make it darker!)
 			$amount = ($amount / 255) * -100;
 			if (imagefilter($gdimg, IMG_FILTER_CONTRAST, $amount)) {
-				return true;
+				return;
 			}
 			$this->DebugMessage('FAILED: imagefilter($gdimg, IMG_FILTER_CONTRAST, '.$amount.')', __FILE__, __LINE__);
 			// fall through and try it the hard way
