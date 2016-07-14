@@ -2750,7 +2750,6 @@ if (false) {
 						$alignment = ($alignment ? $alignment : 'BR');
 						$opacity   = ($opacity   ? $opacity   :   50);
 						$margin_x  = ($margin_x  ? $margin_x  :    5);
-						$margin_y  = $margin_y; // just to note it wasn't forgotten, but let the value always pass unchanged
 						$phpthumbFilters->HistogramOverlay($this->gdimg_output, $bands, $colors, $width, $height, $alignment, $opacity, $margin_x, $margin_y);
 						break;
 
