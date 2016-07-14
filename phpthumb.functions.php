@@ -366,7 +366,7 @@ class phpthumb_functions {
 
 
 	static function ImageCreateFunction($x_size, $y_size) {
-		$ImageCreateFunction = 'ImageCreate';
+		$ImageCreateFunction = 'imagecreate';
 		if (phpthumb_functions::gd_version() >= 2.0) {
 			$ImageCreateFunction = 'imagecreatetruecolor';
 		}
@@ -659,7 +659,7 @@ class phpthumb_functions {
 					$Data_body .= $line;
 				}
 				if (preg_match('#^HTTP/[\\.0-9]+ ([0-9]+) (.+)$#i', rtrim($line), $matches)) {
-					list($dummy, $errno, $errstr) = $matches;
+					list( , $errno, $errstr) = $matches;
 					$errno = intval($errno);
 				} elseif (preg_match('#^Location: (.*)$#i', rtrim($line), $matches)) {
 					$header_newlocation = $matches[1];
@@ -744,7 +744,9 @@ class phpthumb_functions {
 	}
 
 	static function SafeURLread($url, &$error, $timeout=10, $followredirects=true) {
-		$error = '';
+		$error   = '';
+		$errstr  = '';
+		$rawData = '';
 
 		$parsed_url = phpthumb_functions::ParseURLbetter($url);
 		$alreadyLookedAtURLs[trim($url)] = true;
@@ -752,7 +754,7 @@ class phpthumb_functions {
 		while (true) {
 			$tryagain = false;
 			$rawData = phpthumb_functions::URLreadFsock(@$parsed_url['host'], @$parsed_url['path'].'?'.@$parsed_url['query'], $errstr, true, (@$parsed_url['port'] ? @$parsed_url['port'] : 80), $timeout);
-			if (preg_match('#302 [a-z ]+; Location\\: (http.*)#i', $errstr, $matches)) {
+			if ($followredirects && preg_match('#302 [a-z ]+; Location\\: (http.*)#i', $errstr, $matches)) {
 				$matches[1] = trim(@$matches[1]);
 				if (!@$alreadyLookedAtURLs[$matches[1]]) {
 					// loop through and examine new URL
@@ -786,6 +788,7 @@ class phpthumb_functions {
 			curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
 			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, (bool) $followredirects);
 			curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
 			$rawData = curl_exec($ch);
 			curl_close($ch);

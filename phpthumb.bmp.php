@@ -20,10 +20,6 @@
 
 class phpthumb_bmp {
 
-	function phpthumb_bmp() {
-		return true;
-	}
-
 	function phpthumb_bmp2gd(&$BMPdata, $truecolor=true) {
 		$ThisFileInfo = array();
 		if ($this->getid3_bmp($BMPdata, $ThisFileInfo, true, true)) {
@@ -85,11 +81,11 @@ class phpthumb_bmp {
 
 	function getid3_bmp(&$BMPdata, &$ThisFileInfo, $ExtractPalette=false, $ExtractData=false) {
 
-	    // shortcuts
-	    $ThisFileInfo['bmp']['header']['raw'] = array();
-	    $thisfile_bmp                         = &$ThisFileInfo['bmp'];
-	    $thisfile_bmp_header                  = &$thisfile_bmp['header'];
-	    $thisfile_bmp_header_raw              = &$thisfile_bmp_header['raw'];
+		// shortcuts
+		$ThisFileInfo['bmp']['header']['raw'] = array();
+		$thisfile_bmp                         = &$ThisFileInfo['bmp'];
+		$thisfile_bmp_header                  = &$thisfile_bmp['header'];
+		$thisfile_bmp_header_raw              = &$thisfile_bmp_header['raw'];
 
 		// BITMAPFILEHEADER [14 bytes] - http://msdn.microsoft.com/library/en-us/gdi/bitmaps_62uq.asp
 		// all versions
@@ -252,9 +248,9 @@ class phpthumb_bmp {
 			// DWORD  biClrUsed;
 			// DWORD  biClrImportant;
 
-			$thisfile_bmp_header_raw['width']            = $this->LittleEndian2Int(substr($BMPheader, $offset, 4), true);
+			$thisfile_bmp_header_raw['width']            = $this->LittleEndian2Int(substr($BMPheader, $offset, 4));
 			$offset += 4;
-			$thisfile_bmp_header_raw['height']           = $this->LittleEndian2Int(substr($BMPheader, $offset, 4), true);
+			$thisfile_bmp_header_raw['height']           = $this->LittleEndian2Int(substr($BMPheader, $offset, 4));
 			$offset += 4;
 			$thisfile_bmp_header_raw['planes']           = $this->LittleEndian2Int(substr($BMPheader, $offset, 2));
 			$offset += 2;
@@ -264,9 +260,9 @@ class phpthumb_bmp {
 			$offset += 4;
 			$thisfile_bmp_header_raw['bmp_data_size']    = $this->LittleEndian2Int(substr($BMPheader, $offset, 4));
 			$offset += 4;
-			$thisfile_bmp_header_raw['resolution_h']     = $this->LittleEndian2Int(substr($BMPheader, $offset, 4), true);
+			$thisfile_bmp_header_raw['resolution_h']     = $this->LittleEndian2Int(substr($BMPheader, $offset, 4));
 			$offset += 4;
-			$thisfile_bmp_header_raw['resolution_v']     = $this->LittleEndian2Int(substr($BMPheader, $offset, 4), true);
+			$thisfile_bmp_header_raw['resolution_v']     = $this->LittleEndian2Int(substr($BMPheader, $offset, 4));
 			$offset += 4;
 			$thisfile_bmp_header_raw['colors_used']      = $this->LittleEndian2Int(substr($BMPheader, $offset, 4));
 			$offset += 4;
@@ -591,7 +587,7 @@ class phpthumb_bmp {
 											// of color indexes that follow. Subsequent bytes contain color indexes in their
 											// high- and low-order 4 bits, one color index for each pixel. In absolute mode,
 											// each run must be aligned on a word boundary.
-											unset($paletteindexes);
+											$paletteindexes = array();
 											for ($i = 0; $i < ceil($secondbyte / 2); $i++) {
 												$paletteindexbyte = $this->LittleEndian2Int(substr($BMPpixelData, $pixeldataoffset++, 1));
 												$paletteindexes[] = ($paletteindexbyte & 0xF0) >> 4;
@@ -764,13 +760,11 @@ class phpthumb_bmp {
 			echo 'plotted '.($BMPinfo['resolution_x'] * $BMPinfo['resolution_y']).' pixels in '.(time() - $starttime).' seconds<BR>';
 			imagedestroy($im);
 			exit;
-		} else {
-			header('Content-Type: image/png');
-			imagepng($im);
-			imagedestroy($im);
-			return true;
 		}
-		return false;
+		header('Content-Type: image/png');
+		imagepng($im);
+		imagedestroy($im);
+		return true;
 	}
 
 	function BMPcompressionWindowsLookup($compressionid) {

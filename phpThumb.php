@@ -111,7 +111,7 @@ if (!include_once(dirname(__FILE__).'/phpthumb.class.php')) {
 ob_end_clean();
 $phpThumb = new phpThumb();
 $phpThumb->DebugTimingMessage('phpThumb.php start', __FILE__, __LINE__, $starttime);
-$phpThumb->SetParameter('config_error_die_on_error', true);
+$phpThumb->setParameter('config_error_die_on_error', true);
 
 if (!phpthumb_functions::FunctionIsDisabled('set_time_limit')) {
 	set_time_limit(60);  // shouldn't take nearly this long in most cases, but with many filters and/or a slow server...
@@ -229,6 +229,7 @@ if (empty($_SERVER['PATH_INFO']) && empty($_SERVER['QUERY_STRING'])) {
 }
 
 if (!empty($_GET['src']) && isset($_GET['md5s']) && empty($_GET['md5s'])) {
+	$md5s = '';
 	if (preg_match('#^([a-z0-9]+)://#i', $_GET['src'], $protocol_matches)) {
 		if (preg_match('#^(f|ht)tps?://#i', $_GET['src'])) {
 			if ($rawImageData = phpthumb_functions::SafeURLread($_GET['src'], $error, $phpThumb->config_http_fopen_timeout, $phpThumb->config_http_follow_redirect)) {
@@ -509,6 +510,7 @@ while ($CanPassThroughDirectly && $phpThumb->src) {
 
 		$ImageCreateFunctions = array(1=>'imagecreatefromgif', 2=>'imagecreatefromjpeg', 3=>'imagecreatefrompng');
 		$theImageCreateFunction = @$ImageCreateFunctions[$phpThumb->getimagesizeinfo[2]];
+		$dummyImage = false;
 		if ($phpThumb->config_disable_onlycreateable_passthru || (function_exists($theImageCreateFunction) && ($dummyImage = @$theImageCreateFunction($SourceFilename)))) {
 
 			// great

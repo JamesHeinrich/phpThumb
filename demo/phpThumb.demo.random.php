@@ -83,7 +83,8 @@ if (@$_REQUEST['dir']) {
 		exit;
 
 	} else {
-		die($_REQUEST['dir'].' is not a directory');
+		echo htmlentities($_REQUEST['dir']).' is not a directory';
+		exit;
 	}
 
 } else {
