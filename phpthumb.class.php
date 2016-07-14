@@ -3314,7 +3314,7 @@ if (false) {
 		$this->DebugMessage('starting ExtractEXIFgetImageSize()', __FILE__, __LINE__);
 
 		if (preg_match('#^http:#i', $this->src) && !$this->sourceFilename && $this->rawImageData) {
-			!$this->SourceDataToTempFile();
+			$this->SourceDataToTempFile();
 		}
 		if (is_null($this->getimagesizeinfo)) {
 			if ($this->sourceFilename) {
