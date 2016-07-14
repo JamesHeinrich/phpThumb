@@ -533,7 +533,6 @@ class phpthumb {
 				break;
 
 			case 'bmp':
-				$ImageOutFunction = '"builtin BMP output"';
 				if (!@include_once(dirname(__FILE__).'/phpthumb.bmp.php')) {
 					$this->DebugMessage('Error including "'.dirname(__FILE__).'/phpthumb.bmp.php" which is required for BMP format output', __FILE__, __LINE__);
 					ob_end_clean();
@@ -545,7 +544,6 @@ class phpthumb {
 				break;
 
 			case 'ico':
-				$ImageOutFunction = '"builtin ICO output"';
 				if (!@include_once(dirname(__FILE__).'/phpthumb.ico.php')) {
 					$this->DebugMessage('Error including "'.dirname(__FILE__).'/phpthumb.ico.php" which is required for ICO format output', __FILE__, __LINE__);
 					ob_end_clean();
