@@ -66,7 +66,7 @@ function gif_loadFileToGDimageResource($gifFilename, $bgColor = -1)
 
 function gif_outputAsBmp($gif, $lpszFileName, $bgColor = -1)
 {
-	if (!isSet($gif) || (@get_class($gif) <> 'cgif') || !$gif->loaded() || ($lpszFileName == '')) {
+	if (!isset($gif) || (@get_class($gif) <> 'cgif') || !$gif->loaded() || ($lpszFileName == '')) {
 		return false;
 	}
 
@@ -115,14 +115,14 @@ function gif_outputAsJpeg($gif, $lpszFileName, $bgColor = -1)
 
 		if (gif_outputAsBmp($gif, $lpszFileName.'.bmp', $bgColor)) {
 			exec('cjpeg '.$lpszFileName.'.bmp >'.$lpszFileName.' 2>/dev/null');
-			@unLink($lpszFileName.'.bmp');
+			@unlink($lpszFileName.'.bmp');
 
 			if (@file_exists($lpszFileName)) {
-				if (@fileSize($lpszFileName) > 0) {
+				if (@filesize($lpszFileName) > 0) {
 					return true;
 				}
 
-				@unLink($lpszFileName);
+				@unlink($lpszFileName);
 			}
 		}
 
@@ -170,7 +170,7 @@ class CGIFLZW
 	///////////////////////////////////////////////////////////////////////////
 
 	// CONSTRUCTOR
-	function CGIFLZW()
+	function __construct()
 	{
 		$this->MAX_LZW_BITS = 12;
 		unSet($this->Next);
@@ -384,7 +384,7 @@ class CGIFCOLORTABLE
 	///////////////////////////////////////////////////////////////////////////
 
 	// CONSTRUCTOR
-	function CGIFCOLORTABLE()
+	function __construct()
 	{
 		unSet($this->m_nColors);
 		unSet($this->m_arColors);
@@ -452,6 +452,7 @@ class CGIFCOLORTABLE
 		$g1   = ($rgb & 0x00FF00) >>  8;
 		$b1   = ($rgb & 0xFF0000) >> 16;
 		$idx  = -1;
+		$dif = 0;
 
 		for ($i = 0; $i < $this->m_nColors; $i++) {
 			$r2 = ($this->m_arColors[$i] & 0x000000FF);
@@ -482,12 +483,15 @@ class CGIFFILEHEADER
 	var $m_nTableSize;
 	var $m_nBgColor;
 	var $m_nPixelRatio;
+    /**
+     * @var CGIFCOLORTABLE
+     */
 	var $m_colorTable;
 
 	///////////////////////////////////////////////////////////////////////////
 
 	// CONSTRUCTOR
-	function CGIFFILEHEADER()
+	function __construct()
 	{
 		unSet($this->m_lpVer);
 		unSet($this->m_nWidth);
@@ -558,12 +562,15 @@ class CGIFIMAGEHEADER
 	var $m_bInterlace;
 	var $m_bSorted;
 	var $m_nTableSize;
+    /**
+     * @var CGIFCOLORTABLE
+     */
 	var $m_colorTable;
 
 	///////////////////////////////////////////////////////////////////////////
 
 	// CONSTRUCTOR
-	function CGIFIMAGEHEADER()
+	function __construct()
 	{
 		unSet($this->m_nLeft);
 		unSet($this->m_nTop);
@@ -633,7 +640,7 @@ class CGIFIMAGE
 
 	///////////////////////////////////////////////////////////////////////////
 
-	function CGIFIMAGE()
+	function __construct()
 	{
 		unSet($this->m_disp);
 		unSet($this->m_bUser);
@@ -677,7 +684,6 @@ class CGIFIMAGE
 				if (!($this->m_data = $this->m_lzw->deCompress($data, $len = 0))) {
 					return false;
 				}
-				$data = substr($data, $len);
 				$datLen += $len;
 
 				if ($this->m_gih->m_bInterlace) {
@@ -751,6 +757,7 @@ class CGIFIMAGE
 	{
 		$data = $this->m_data;
 
+		$y = $s = 0;
 		for ($i = 0; $i < 4; $i++) {
 			switch($i) {
 			case 0:
@@ -801,7 +808,7 @@ class CGIF
 	///////////////////////////////////////////////////////////////////////////
 
 	// CONSTRUCTOR
-	function CGIF()
+	function __construct()
 	{
 		$this->m_gfh     = new CGIFFILEHEADER();
 		$this->m_img     = new CGIFIMAGE();
@@ -821,7 +828,7 @@ class CGIF
 		if (!($fh = @fopen($lpszFileName, 'rb'))) {
 			return false;
 		}
-		$this->m_lpData = @fRead($fh, @fileSize($lpszFileName));
+		$this->m_lpData = @fread($fh, @filesize($lpszFileName));
 		fclose($fh);
 
 		// GET FILE HEADER
@@ -849,7 +856,7 @@ class CGIF
 		if (!($fh = @fopen($lpszFileName, 'rb'))) {
 			return false;
 		}
-		$data = @fRead($fh, @fileSize($lpszFileName));
+		$data = @fread($fh, @filesize($lpszFileName));
 		@fclose($fh);
 
 		$gfh = new CGIFFILEHEADER();
@@ -872,6 +879,7 @@ class CGIF
 			return false;
 		}
 
+		$rgbq = '';
 		// PREPARE COLOR TABLE (RGBQUADs)
 		if ($this->m_img->m_gih->m_bLocalClr) {
 			$nColors = $this->m_img->m_gih->m_nTableSize;
@@ -971,6 +979,7 @@ class CGIF
 			return false;
 		}
 
+		$pal = '';
 		// PREPARE COLOR TABLE (RGBQUADs)
 		if ($this->m_img->m_gih->m_bLocalClr) {
 			$nColors = $this->m_img->m_gih->m_nTableSize;
@@ -1084,6 +1093,7 @@ class CGIF
 
 		$PlottingIMG = imagecreate($this->m_gfh->m_nWidth, $this->m_gfh->m_nHeight);
 		$NumColorsInPal = floor(strlen($pal) / 3);
+        $ThisImageColor = [];
 		for ($i = 0; $i < $NumColorsInPal; $i++) {
 			$ThisImageColor[$i] = imagecolorallocate(
 									$PlottingIMG,

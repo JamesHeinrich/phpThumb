@@ -466,7 +466,7 @@ class phpthumb {
 		}
 
 		$this->DebugMessage('ImageInterlace($this->gdimg_output, '.intval($this->config_output_interlace).')', __FILE__, __LINE__);
-		ImageInterlace($this->gdimg_output, intval($this->config_output_interlace));
+        imageinterlace($this->gdimg_output, intval($this->config_output_interlace));
 
 		$this->DebugMessage('RenderOutput() attempting image'.strtolower(@$this->thumbnailFormat).'($this->gdimg_output)', __FILE__, __LINE__);
 		ob_start();
@@ -533,7 +533,6 @@ class phpthumb {
 				break;
 
 			case 'bmp':
-				$ImageOutFunction = '"builtin BMP output"';
 				if (!@include_once(dirname(__FILE__).'/phpthumb.bmp.php')) {
 					$this->DebugMessage('Error including "'.dirname(__FILE__).'/phpthumb.bmp.php" which is required for BMP format output', __FILE__, __LINE__);
 					ob_end_clean();
@@ -545,7 +544,6 @@ class phpthumb {
 				break;
 
 			case 'ico':
-				$ImageOutFunction = '"builtin ICO output"';
 				if (!@include_once(dirname(__FILE__).'/phpthumb.ico.php')) {
 					$this->DebugMessage('Error including "'.dirname(__FILE__).'/phpthumb.ico.php" which is required for ICO format output', __FILE__, __LINE__);
 					ob_end_clean();
@@ -619,7 +617,6 @@ class phpthumb {
 		}
 		if (headers_sent()) {
 			return $this->ErrorImage('OutputThumbnail() failed - headers already sent');
-			exit;
 		}
 
 		$downloadfilename = phpthumb_functions::SanitizeFilename(is_string($this->sia) ? $this->sia : ($this->down ? $this->down : 'phpThumb_generated_thumbnail'.'.'.$this->thumbnailFormat));
@@ -638,7 +635,7 @@ class phpthumb {
 		} else {
 
 			$this->DebugMessage('ImageInterlace($this->gdimg_output, '.intval($this->config_output_interlace).')', __FILE__, __LINE__);
-			ImageInterlace($this->gdimg_output, intval($this->config_output_interlace));
+			imageinterlace($this->gdimg_output, intval($this->config_output_interlace));
 			switch ($this->thumbnailFormat) {
 				case 'jpeg':
 					header('Content-Type: '.phpthumb_functions::ImageTypeToMIMEtype($this->thumbnailFormat));
@@ -1589,6 +1586,7 @@ class phpthumb {
 			}
 		}
 		$this->DebugMessage('$this->useRawIMoutput='.($this->useRawIMoutput ? 'true' : 'false').' after checking $UnAllowedParameters', __FILE__, __LINE__);
+		$ImageCreateFunction = '';
 		$outputFormat = $this->thumbnailFormat;
 		if (phpthumb_functions::gd_version()) {
 			if ($this->useRawIMoutput) {
@@ -1718,7 +1716,6 @@ class phpthumb {
 							$imAR = $this->source_width / $this->source_height;
 							$zcAR = (($wAll && $hAll) ? $wAll / $hAll : 1);
 							$side  = phpthumb_functions::nonempty_min($this->source_width, $this->source_height, max($wAll, $hAll));
-							$sideX = phpthumb_functions::nonempty_min($this->source_width,                       $wAll, round($hAll * $zcAR));
 							$sideY = phpthumb_functions::nonempty_min(                     $this->source_height, $hAll, round($wAll / $zcAR));
 
 							$thumbnailH = round(max($sideY, ($sideY * $zcAR) / $imAR));
@@ -2445,6 +2442,8 @@ if (false) {
 	function AntiOffsiteLinking() {
 		// Optional anti-offsite hijacking of the thumbnail script
 		$allow = true;
+		$erase = true;
+		$message = '';
 		if ($allow && $this->config_nooffsitelink_enabled && (@$_SERVER['HTTP_REFERER'] || $this->config_nooffsitelink_require_refer)) {
 			$this->DebugMessage('AntiOffsiteLinking() checking $_SERVER[HTTP_REFERER] "'.@$_SERVER['HTTP_REFERER'].'"', __FILE__, __LINE__);
 			foreach ($this->config_nooffsitelink_valid_domains as $key => $valid_domain) {
@@ -2491,7 +2490,7 @@ if (false) {
 		}
 		if ($erase) {
 
-			return $this->ErrorImage($message, $this->thumbnail_width, $this->thumbnail_height, $this->config_error_bgcolor, $this->config_error_textcolor, $this->config_error_fontsize);
+			return $this->ErrorImage($message, $this->thumbnail_width, $this->thumbnail_height);
 
 		} else {
 
@@ -2559,6 +2558,7 @@ if (false) {
 
 					if ($img_alpha_mixdown_dither = @imagecreatetruecolor(imagesx($this->gdimg_output), imagesy($this->gdimg_output))) {
 
+						$dither_color = [];
 						for ($i = 0; $i <= 255; $i++) {
 							$dither_color[$i] = imagecolorallocate($img_alpha_mixdown_dither, $i, $i, $i);
 						}
@@ -2582,7 +2582,6 @@ if (false) {
 						imagecolortransparent($this->gdimg_output, $TransparentColor);
 
 						// scan through alpha channel image and note pixels with >50% transparency
-						$TransparentPixels = array();
 						for ($x = 0; $x < $this->thumbnail_width; $x++) {
 							for ($y = 0; $y < $this->thumbnail_height; $y++) {
 								$AlphaChannelPixel = phpthumb_functions::GetPixelColor($img_alpha_mixdown_dither, $x, $y);
@@ -2751,7 +2750,6 @@ if (false) {
 						$alignment = ($alignment ? $alignment : 'BR');
 						$opacity   = ($opacity   ? $opacity   :   50);
 						$margin_x  = ($margin_x  ? $margin_x  :    5);
-						$margin_y  = $margin_y; // just to note it wasn't forgotten, but let the value always pass unchanged
 						$phpthumbFilters->HistogramOverlay($this->gdimg_output, $bands, $colors, $width, $height, $alignment, $opacity, $margin_x, $margin_y);
 						break;
 
@@ -3135,7 +3133,6 @@ if (false) {
 					$imgdata = ob_get_contents();
 					ob_end_clean();
 
-					$OriginalJPEGquality = $this->thumbnailQuality;
 					if (strlen($imgdata) > $this->maxb) {
 						for ($i = 3; $i < 20; $i++) {
 							$q = round(100 * (1 - log10($i / 2)));
@@ -3157,7 +3154,6 @@ if (false) {
 
 				default:
 					return false;
-					break;
 			}
 		}
 		return true;
@@ -3317,7 +3313,7 @@ if (false) {
 		$this->DebugMessage('starting ExtractEXIFgetImageSize()', __FILE__, __LINE__);
 
 		if (preg_match('#^http:#i', $this->src) && !$this->sourceFilename && $this->rawImageData) {
-			!$this->SourceDataToTempFile();
+			$this->SourceDataToTempFile();
 		}
 		if (is_null($this->getimagesizeinfo)) {
 			if ($this->sourceFilename) {
@@ -3507,7 +3503,6 @@ if (false) {
 		}
 
 		$this->cache_filename = '';
-		$broad_directory_name = '';
 		if ($this->new) {
 			$broad_directory_name = strtolower(md5($this->new));
 			$this->cache_filename .= '_new'.$broad_directory_name;
@@ -3594,7 +3589,7 @@ if (false) {
 		// rather than buffering to memory and creating with imagecreatefromstring
 		$ImageCreateWasAttempted = false;
 		$gd_image = false;
-
+		$ImageCreateFromFunctionName = '';
 		$this->DebugMessage('starting ImageCreateFromFilename('.$filename.')', __FILE__, __LINE__);
 		if ($filename && ($getimagesizeinfo = @getimagesize($filename))) {
 			if (!$this->SourceImageIsTooLarge($getimagesizeinfo[0], $getimagesizeinfo[1])) {
@@ -3901,7 +3896,6 @@ if (false) {
 			}
 
 			if (!$this->gdimg_source) {
-				$HeaderFourBytes = '';
 				if ($this->rawImageData) {
 					$HeaderFourBytes = substr($this->rawImageData, 0, 4);
 				} elseif ($this->sourceFilename) {
@@ -4212,7 +4206,6 @@ if (false) {
 			echo "\n".'**Failed to send graphical error image, dumping error message as text:**<br>'."\n\n".$text;
 		}
 		exit;
-		return true;
 	}
 
 	function ImageCreateFromStringReplacement(&$RawImageData, $DieOnErrors=false) {
@@ -4259,6 +4252,7 @@ if (false) {
 				return false;
 				break;
 		}
+		$ErrorMessage = '';
 		if ($tempnam = $this->phpThumb_tempnam()) {
 			if ($fp_tempnam = @fopen($tempnam, 'wb')) {
 				fwrite($fp_tempnam, $RawImageData);
