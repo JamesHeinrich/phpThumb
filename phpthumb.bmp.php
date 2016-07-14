@@ -757,13 +757,11 @@ class phpthumb_bmp {
 			echo 'plotted '.($BMPinfo['resolution_x'] * $BMPinfo['resolution_y']).' pixels in '.(time() - $starttime).' seconds<BR>';
 			imagedestroy($im);
 			exit;
-		} else {
-			header('Content-Type: image/png');
-			imagepng($im);
-			imagedestroy($im);
-			return true;
 		}
-		return false;
+		header('Content-Type: image/png');
+        imagepng($im);
+        imagedestroy($im);
+        return true;
 	}
 
 	function BMPcompressionWindowsLookup($compressionid) {
