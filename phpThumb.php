@@ -17,7 +17,7 @@ if (ini_get('magic_quotes_runtime')) {
 	die('"magic_quotes_runtime" is set in php.ini, cannot run phpThumb with this enabled');
 }
 // Set a default timezone if web server has not done already in php.ini
-if (empty(ini_get('date.timezone')) && function_exists('date_default_timezone_set')) { // PHP >= 5.1.0
+if (!ini_get('date.timezone') && function_exists('date_default_timezone_set')) { // PHP >= 5.1.0
     date_default_timezone_set('UTC');
 }
 $starttime = array_sum(explode(' ', microtime())); // could be called as microtime(true) for PHP 5.0.0+
