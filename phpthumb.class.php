@@ -146,6 +146,8 @@ class phpthumb {
 	var $config_allow_src_above_phpthumb             = true;
 	var $config_auto_allow_symlinks                  = true;    // allow symlink target directories without explicitly whitelisting them
 	var $config_additional_allowed_dirs              = array(); // additional directories to allow source images to be read from
+	var $config_file_create_mask                     = 0755;
+	var $config_dir_create_mask                      = 0755;
 
 	// * HTTP fopen
 	var $config_http_fopen_timeout                   = 10;
@@ -594,6 +596,7 @@ class phpthumb {
 
 		if ($this->RenderOutput()) {
 			if (file_put_contents($renderfilename, $this->outputImageData)) {
+				@chmod($renderfilename, $this->getParameter('config_file_create_mask'));
 				$this->DebugMessage('RenderToFile('.$renderfilename.') succeeded', __FILE__, __LINE__);
 				return true;
 			}
@@ -1382,6 +1385,7 @@ class phpthumb {
 				} else {
 					$WhichConvert = trim(phpthumb_functions::SafeExec('which convert'));
 					@file_put_contents($IMwhichConvertCacheFilename, $WhichConvert);
+					@chmod($IMwhichConvertCacheFilename, $this->getParameter('config_file_create_mask'));
 				}
 			}
 		}
@@ -1454,6 +1458,7 @@ class phpthumb {
 			}
 
 			@file_put_contents($IMcommandlineBaseCacheFilename, $commandline);
+			@chmod($IMcommandlineBaseCacheFilename, $this->getParameter('config_file_create_mask'));
 		}
 		return $commandline;
 	}
@@ -1489,6 +1494,7 @@ class phpthumb {
 				}
 
 				@file_put_contents($IMversionCacheFilename, $versionstring[0]."\n".$versionstring[1]);
+				@chmod($IMversionCacheFilename, $this->getParameter('config_file_create_mask'));
 
 			}
 		}
@@ -1553,6 +1559,7 @@ class phpthumb {
 			if ($fp_tempfile) {
 				fwrite($fp_tempfile, $this->rawImageData);
 				fclose($fp_tempfile);
+				@chmod($IMtempSourceFilename, $this->getParameter('config_file_create_mask'));
 				$this->sourceFilename = $IMtempSourceFilename;
 				$this->DebugMessage('ImageMagickThumbnailToGD() setting $this->sourceFilename to "'.$IMtempSourceFilename.'" from $this->rawImageData ('.strlen($this->rawImageData).' bytes)', __FILE__, __LINE__);
 			} else {
@@ -1665,6 +1672,7 @@ class phpthumb {
 					if ($fp_im_temp = @fopen($IMtempfilename, 'wb')) {
 						// erase temp image so ImageMagick logo doesn't get output if other processing fails
 						fclose($fp_im_temp);
+						@chmod($IMtempfilename, $this->getParameter('config_file_create_mask'));
 					}
 				}
 
@@ -3682,6 +3690,7 @@ if (false) {
 						} else {
 							$this->DebugMessage('ImageMagickThumbnailToGD() failed', __FILE__, __LINE__);
 						}
+						@chmod($tempnam, $this->getParameter('config_file_create_mask'));
 					} else {
 						$this->DebugMessage('failed to put $this->rawImageData into temp file "'.$tempnam.'"', __FILE__, __LINE__);
 					}
@@ -4250,6 +4259,7 @@ if (false) {
 			if ($fp_tempnam = @fopen($tempnam, 'wb')) {
 				fwrite($fp_tempnam, $RawImageData);
 				fclose($fp_tempnam);
+				@chmod($tempnam, $this->getParameter('config_file_create_mask'));
 				if (($ICFSreplacementFunctionName == 'imagecreatefromgif') && !function_exists($ICFSreplacementFunctionName)) {
 
 					// Need to create from GIF file, but imagecreatefromgif does not exist
