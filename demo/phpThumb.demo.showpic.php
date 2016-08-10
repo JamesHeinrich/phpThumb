@@ -31,6 +31,7 @@
 die('For security reasons, this demo is disabled by default. Please comment out line '.__LINE__.' in '.basename(__FILE__));
 
 $phpThumbLocation = '../phpThumb.php';
+require_once('../phpThumb.config.php');
 
 echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">';
 echo '<html><head>';
@@ -76,7 +77,6 @@ function CrossBrowserResizeInnerWindowTo(newWidth, newHeight) {
 <script type="text/javascript" src="javascript_api.js"></script>
 
 <?php
-require_once('../phpThumb.config.php');
 $allowedGETparameters = array('src','new','w','h','wp','hp','wl','hl','ws','hs','f','q','sx','sy','sw','sh','zc','bc','bg','bgt','fltr','xto','ra','ar','aoe','far','iar','maxb','hash','md5s','sfn','dpi','sia');
 
 $additionalparameters = array();

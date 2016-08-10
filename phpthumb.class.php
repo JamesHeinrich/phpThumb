@@ -215,7 +215,7 @@ class phpthumb {
 	var $issafemode       = null;
 	var $php_memory_limit = null;
 
-	var $phpthumb_version = '1.7.14-201607281445';
+	var $phpthumb_version = '1.7.14-201608100902';
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -1679,7 +1679,7 @@ class phpthumb {
 
 				if (!is_null($this->dpi) && $this->ImageMagickSwitchAvailable('density')) {
 					// for vector source formats only (WMF, PDF, etc)
-					//$commandline .= ' -flatten';
+					$commandline .= ' -flatten';
 					$commandline .= ' -density '.phpthumb_functions::escapeshellarg_replacement($this->dpi);
 				}
 				ob_start();
