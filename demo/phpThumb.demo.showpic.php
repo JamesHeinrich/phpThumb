@@ -94,6 +94,7 @@ foreach ($_GET as $key => $value) {
 	} else {
 		if ($key == 'src') {
 			// allow as passed
+			$additionalparameters[$key] = $value;
 		} else {
 			$additionalparameters[$key] = preg_replace('#[^A-Za-z0-9\\. _:/]#', '', $value);
 		}
