@@ -7,8 +7,29 @@
 ¤ = structure change or important new feature
 * = less important new feature or change
 
-v1.7.14 -
-  * Bugfix (G:25): escapeshellarg may exist but be disabled
+v1.7.14-201608101311
+  ¤ improved PHP7 compatability
+  * [bugfix: #1021] demo.gallery updates for phpThumbURL
+  * [bugfix: G65] PNG transparency
+  * [bugfix: G70] set a default timezone if one is not set
+  * [bugfix: G69] overlay margins
+  * [bugfix: G66] lowercase all PHP function names
+  * [bugfix: G64] Can't put thumbnail into a frame
+  * [bugfix: #1014] PDF thumbnail not rendered correctly
+  * [bugfix: #1008] phpThumbURL accept array parameters
+  * [bugfix: #988] mysqli support in demo
+  * [bugfix: G41] fail when memory_limit = -1
+  * [bugfix: G35] no temp directory set
+  * [bugfix: G33] realpath not working on some systems
+  * [bugfix: #991] ImprovedImageRotate not static
+  * set Last-Modified header on all requests
+  * [bugfix: G19] phpThumbURL() rawurlencode
+  * [bugfix: G26] ImageInterlace in RenderOutput()
+  * [bugfix: #775] file_exists_ignoreopenbasedir
+  * escapeshellarg disabled workaround
+  * [bugfix: #977] $PHPTHUMB_DEFAULTS not working
+  * [bugfix: G24] enable ImagePNG quality
+  * [bugfix: G25] escapeshellarg may exist but be disabled
 
 v1.7.13-201406261000 - June 26, 2014
   * Bugfix: incorrect variable name in phpThumb.php could prevent
