@@ -92,7 +92,11 @@ foreach ($_GET as $key => $value) {
 			@$additionalparameters[$key][] = preg_replace('#[^A-Za-z0-9\\. _:/]#', '', $value2);
 		}
 	} else {
-		$additionalparameters[$key] = preg_replace('#[^A-Za-z0-9\\. _:/]#', '', $value);
+		if ($key == 'src') {
+			// allow as passed
+		} else {
+			$additionalparameters[$key] = preg_replace('#[^A-Za-z0-9\\. _:/]#', '', $value);
+		}
 	}
 }
 $imagesrc = phpThumbURL($additionalparameters, $phpThumbLocation);
