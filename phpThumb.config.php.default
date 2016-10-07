@@ -23,7 +23,8 @@ ob_end_clean();
 
 /****************************************************************************************/
 /* START USER CONFIGURATION SECTION: */
-global $PHPTHUMB_CONFIG = array(); // declare as global to prevent scope issues (when including phpThumb.config.php inside functions inside included files, etc)
+global $PHPTHUMB_CONFIG;  // declare as global to prevent scope issues (when including phpThumb.config.php inside functions inside included files, etc)
+$PHPTHUMB_CONFIG = array();
 
 // * DocumentRoot configuration
 // phpThumb() depends on $_SERVER['DOCUMENT_ROOT'] to resolve path/filenames. This value is usually correct,
