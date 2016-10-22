@@ -230,9 +230,9 @@ class phpthumb {
 
 		foreach (array(ini_get('memory_limit'), get_cfg_var('memory_limit')) as $php_config_memory_limit) {
 			if (strlen($php_config_memory_limit)) {
-				if (substr($php_config_memory_limit, -1, 1) == 'G') { // PHP memory limit expressed in Gigabytes
+				if (strtoupper(substr($php_config_memory_limit, -1, 1)) == 'G') { // PHP memory limit expressed in Gigabytes
 					$php_config_memory_limit = intval(substr($php_config_memory_limit, 0, -1)) * 1073741824;
-				} elseif (substr($php_config_memory_limit, -1, 1) == 'M') { // PHP memory limit expressed in Megabytes
+				} elseif (strtoupper(substr($php_config_memory_limit, -1, 1)) == 'M') { // PHP memory limit expressed in Megabytes
 					$php_config_memory_limit = intval(substr($php_config_memory_limit, 0, -1)) * 1048576;
 				}
 				$this->php_memory_limit = max($this->php_memory_limit, $php_config_memory_limit);
