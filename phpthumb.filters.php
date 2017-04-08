@@ -603,7 +603,7 @@ class phpthumb_filters {
 
 		$range_scale = (($range_max == $range_min) ? 1 : (255 / ($range_max - $range_min)));
 		if (($range_min == 0) && ($range_max == 255)) {
-			// no adjustment neccesary - don't waste CPU time!
+			// no adjustment necessary - don't waste CPU time!
 			return true;
 		}
 
@@ -1271,7 +1271,7 @@ class phpthumb_filters {
 						case 'L':
 						case 'TL':
 						case 'BL':
-							// no change neccesary
+							// no change necessary
 							break;
 
 						case 'C':

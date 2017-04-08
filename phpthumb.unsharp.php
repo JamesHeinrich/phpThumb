@@ -37,7 +37,7 @@ difference in colour values that is allowed between the original and the mask. I
 this means that low-contrast areas of the picture are left unrendered whereas edges
 are treated normally. This is good for pictures of e.g. skin or blue skies.
 
-Any suggenstions for improvement of the algorithm, expecially regarding the speed
+Any suggenstions for improvement of the algorithm, especially regarding the speed
 and the roundoff errors in the Gaussian blur process, are welcome.
 */
 
