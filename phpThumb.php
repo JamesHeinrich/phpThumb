@@ -621,7 +621,7 @@ if ($phpThumb->rawImageData) {
 		$phpThumb->src = $cleanedupurl;
 		unset($cleanedupurl);
 		if ($rawImageData = phpthumb_functions::SafeURLread($phpThumb->src, $error, $phpThumb->config_http_fopen_timeout, $phpThumb->config_http_follow_redirect)) {
-			$phpThumb->DebugMessage('SafeURLread('.$phpThumb->src.') succeeded'.($error ? ' with messsages: "'.$error.'"' : ''), __FILE__, __LINE__);
+			$phpThumb->DebugMessage('SafeURLread('.$phpThumb->src.') succeeded'.($error ? ' with messages: "'.$error.'"' : ''), __FILE__, __LINE__);
 			$phpThumb->DebugMessage('Setting source data from URL "'.$phpThumb->src.'"', __FILE__, __LINE__);
 			$phpThumb->setSourceData($rawImageData, urlencode($phpThumb->src));
 		} else {

@@ -119,7 +119,7 @@ For example:
 <image> must be the last item. Dimensions must be the second-
 last item. As many key/value pairs for parameters can be
 passed before those last two items, with each pair joined by
-equals ("=") and seperated by semicolon (";")
+equals ("=") and separated by semicolon (";")
 
 
 ==============================================
@@ -230,11 +230,11 @@ fltr = filter system. Call as an array as follows:
        - "brit" (Brightness) [ex: &fltr[]=brit|<value>]
          where <value> is the amount +/- to adjust brightness
          (range -255 to 255)
-         Availble in PHP5 with bundled GD only.
+         Available in PHP5 with bundled GD only.
        - "cont" (Constrast) [ex: &fltr[]=cont|<value>]
          where <value> is the amount +/- to adjust contrast
          (range -255 to 255)
-         Availble in PHP5 with bundled GD only.
+         Available in PHP5 with bundled GD only.
        - "gam" (Gamma Correction) [ex: &fltr[]=gam|<value>]
          where <value> can be a number 0.01 to 10 (default 1.0)
          Must be >0 (zero gives no effect). There is no max,
@@ -278,13 +278,13 @@ fltr = filter system. Call as an array as follows:
        - "blur" (Blur) [ex: &fltr[]=blur|<radius>]
          where (0 < <radius> < 25) (default = 1)
        - "gblr" (Gaussian Blur) [ex: &fltr[]=gblr]
-         Availble in PHP5 with bundled GD only.
+         Available in PHP5 with bundled GD only.
        - "sblr" (Selective Blur) [ex: &fltr[]=gblr]
-         Availble in PHP5 with bundled GD only.
+         Available in PHP5 with bundled GD only.
        - "smth" (Smooth) [ex: &fltr[]=smth|<value>]
          where <value> is the weighting value for the matrix
          (range -10 to 10, default 6)
-         Availble in PHP5 with bundled GD only.
+         Available in PHP5 with bundled GD only.
        - "lvl" (Levels)
          [ex: &fltr[]=lvl|<channel>|<method>|<threshold>
          where <channel> can be one of 'r', 'g', 'b', 'a' (for
@@ -319,7 +319,7 @@ fltr = filter system. Call as an array as follows:
          Where <b> is the color band(s) to display, from back
          to front (one or more of "rgba*" for Red Green Blue
          Alpha and Grayscale respectively);
-         <c> is a semicolon-seperated list of hex colors to
+         <c> is a semicolon-separated list of hex colors to
          use for each graph band (defaults to FF0000, 00FF00,
          0000FF, 999999, FFFFFF respectively);
          <w> and <h> are the width and height of the overlaid
@@ -465,7 +465,7 @@ fltr = filter system. Call as an array as follows:
          to stretch (if 1) or resize proportionately (0, default)
          <x> and <y> will be interpreted as percentage of current
          output image size if values are (0 < X < 1)
-         NOTE: do NOT use this filter unless absolutely neccesary.
+         NOTE: do NOT use this filter unless absolutely necessary.
          It is only provided for cases where other filters need to
          have absolute positioning based on source image and the
          resultant image should be resized after other filters are
@@ -482,13 +482,13 @@ fltr = filter system. Call as an array as follows:
          the two thresholds will be partially transparent.
 md5s = MD5 hash of the source image -- if this parameter is
        passed with the hash of the source image then the
-       source image is not checked for existance or
+       source image is not checked for existence or
        modification and the cached file is used (if
        available). If 'md5s' is passed an empty string then
        phpThumb.php dies and outputs the correct MD5 hash
        value.  This parameter is the single-file equivalent
        of 'cache_source_filemtime_ignore_*' configuration
-       paramters
+       parameters
  xto = EXIF Thumbnail Only - set to only extract EXIF
        thumbnail and not do any additional processing
   ra = Rotate by Angle: angle of rotation in degrees

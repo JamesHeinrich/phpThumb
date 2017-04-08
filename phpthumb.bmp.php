@@ -378,7 +378,7 @@ class phpthumb_bmp {
 		}
 
 		if ($ExtractData) {
-			$RowByteLength = ceil(($thisfile_bmp_header_raw['width'] * ($thisfile_bmp_header_raw['bits_per_pixel'] / 8)) / 4) * 4; // round up to nearest DWORD boundry
+			$RowByteLength = ceil(($thisfile_bmp_header_raw['width'] * ($thisfile_bmp_header_raw['bits_per_pixel'] / 8)) / 4) * 4; // round up to nearest DWORD boundary
 
 			$BMPpixelData = substr($BMPdata, $thisfile_bmp_header_raw['data_offset'], $thisfile_bmp_header_raw['height'] * $RowByteLength);
 			$overalloffset = $thisfile_bmp_header_raw['data_offset'] + ($thisfile_bmp_header_raw['height'] * $RowByteLength);
