@@ -108,9 +108,9 @@ function RedirectToCachedFile() {
 
 // instantiate a new phpThumb() object
 ob_start();
-if (!include_once(dirname(__FILE__).'/phpthumb.class.php')) {
+if (!include_once( __DIR__ .'/phpthumb.class.php')) {
 	ob_end_flush();
-	die('failed to include_once("'.realpath(dirname(__FILE__).'/phpthumb.class.php').'")');
+	die('failed to include_once("'.realpath( __DIR__ .'/phpthumb.class.php').'")');
 }
 ob_end_clean();
 $phpThumb = new phpThumb();
@@ -124,22 +124,22 @@ if (!phpthumb_functions::FunctionIsDisabled('set_time_limit')) {
 // phpThumbDebug[0] used to be here, but may reveal too much
 // info when high_security_mode should be enabled (not set yet)
 
-if (file_exists(dirname(__FILE__).'/phpThumb.config.php')) {
+if (file_exists( __DIR__ .'/phpThumb.config.php')) {
 	ob_start();
-	if (include_once(dirname(__FILE__).'/phpThumb.config.php')) {
+	if (include_once( __DIR__ .'/phpThumb.config.php')) {
 		// great
 	} else {
 		ob_end_flush();
 		$phpThumb->config_disable_debug = false; // otherwise error message won't print
-		$phpThumb->ErrorImage('failed to include_once('.dirname(__FILE__).'/phpThumb.config.php) - realpath="'.realpath(dirname(__FILE__).'/phpThumb.config.php').'"');
+		$phpThumb->ErrorImage('failed to include_once('. __DIR__ .'/phpThumb.config.php) - realpath="'.realpath( __DIR__ .'/phpThumb.config.php').'"');
 	}
 	ob_end_clean();
-} elseif (file_exists(dirname(__FILE__).'/phpThumb.config.php.default')) {
+} elseif (file_exists( __DIR__ .'/phpThumb.config.php.default')) {
 	$phpThumb->config_disable_debug = false; // otherwise error message won't print
 	$phpThumb->ErrorImage('Please rename "phpThumb.config.php.default" to "phpThumb.config.php"');
 } else {
 	$phpThumb->config_disable_debug = false; // otherwise error message won't print
-	$phpThumb->ErrorImage('failed to include_once('.dirname(__FILE__).'/phpThumb.config.php) - realpath="'.realpath(dirname(__FILE__).'/phpThumb.config.php').'"');
+	$phpThumb->ErrorImage('failed to include_once('. __DIR__ .'/phpThumb.config.php) - realpath="'.realpath( __DIR__ .'/phpThumb.config.php').'"');
 }
 
 if (!empty($PHPTHUMB_CONFIG)) {
