@@ -121,7 +121,7 @@ echo 	'}'."\n";
 echo '}';
 echo '</script>';
 
-echo '</head><body style="margin: 0px;" onLoad="setBrowserWindowSizeToImage();"><div id="showpicspan">';
+echo '</head><body style="margin: 0;" onLoad="setBrowserWindowSizeToImage();"><div id="showpicspan">';
 
 if (!empty($_GET['src'])) {
 

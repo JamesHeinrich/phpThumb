@@ -20,10 +20,10 @@ while ($file = readdir($dh)) {
 		switch ($file) {
 			case 'phpThumb.demo.object.simple.php':
 			case 'phpThumb.demo.object.php':
-				echo '<tt>'.str_replace(' ', '&nbsp;', str_pad(filesize($file), 10, ' ', STR_PAD_LEFT)).'</tt> '.$file.' (cannot work as a live demo)<br>';
+				echo '<code>'.str_replace(' ', '&nbsp;', str_pad(filesize($file), 10, ' ', STR_PAD_LEFT)).'</code> '.$file.' (cannot work as a live demo)<br>';
 				break;
 			default:
-				echo '<tt>'.str_replace(' ', '&nbsp;', str_pad(filesize($file), 10, ' ', STR_PAD_LEFT)).'</tt> <a href="'.$file.'">'.$file.'</a><br>';
+				echo '<code>'.str_replace(' ', '&nbsp;', str_pad(filesize($file), 10, ' ', STR_PAD_LEFT)).'</code> <a href="'.$file.'">'.$file.'</a><br>';
 				break;
 		}
 	}
