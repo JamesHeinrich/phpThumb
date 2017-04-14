@@ -14,7 +14,7 @@
     "keywords": ["thumbnail", "thumb", "GD", "ImageMagick", "image", "magic"],
     "homepage": "http://phpthumb.sourceforge.net/",
     "require": {
-        "php": ">=4.3.3"
+        "php": ">=5.3.0"
     },
     "suggest": {
         "ext-gd": "PHP GD library",
