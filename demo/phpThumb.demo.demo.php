@@ -72,7 +72,7 @@ if ($ServerInfo['gd_numeric'] >= 2) {
 	The following images have the textured background behind them to illustrate transparency effects.
 	Note that some browsers, notably Internet Explorer v6 and older, are incapable of displaying alpha-channel PNGs.
 	See my page on the <a href="http://www.silisoftware.com/png_alpha_transparency/" target="_blank">PNG transparency problem</a>.
-	All current browsers (2010 and newer) display alpha-transparent PNGs with no problems.</b>
+	All current browsers (2010 and newer) display alpha-transparent PNGs with no problems.
 </div>
 <br>
 <script type="text/javascript" defer="defer">
