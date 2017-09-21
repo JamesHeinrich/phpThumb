@@ -215,7 +215,7 @@ class phpthumb {
 	var $issafemode       = null;
 	var $php_memory_limit = null;
 
-	var $phpthumb_version = '1.7.15-201704271708';
+	var $phpthumb_version = '1.7.15-201709210910';
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -1655,6 +1655,7 @@ class phpthumb {
 
 		$commandline = $this->ImageMagickCommandlineBase();
 		if ($commandline) {
+			$commandline .= ' '.phpthumb_functions::escapeshellarg_replacement(preg_replace('#[/\\\\]#', DIRECTORY_SEPARATOR, $this->sourceFilename).(($outputFormat == 'gif') ? '' : '['.intval($this->sfn).']')); // [0] means first frame of (GIF) animation, can be ignored
 			if ($IMtempfilename = $this->phpThumb_tempnam()) {
 				$IMtempfilename = $this->realPathSafe($IMtempfilename);
 
@@ -2242,7 +2243,6 @@ if (false) {
 						}
 					}
 				}
-				$commandline .= ' '.phpthumb_functions::escapeshellarg_replacement(preg_replace('#[/\\\\]#', DIRECTORY_SEPARATOR, $this->sourceFilename).(($outputFormat == 'gif') ? '' : '['.intval($this->sfn).']')); // [0] means first frame of (GIF) animation, can be ignored
 				$commandline .= ' '.$outputFormat.':'.phpthumb_functions::escapeshellarg_replacement($IMtempfilename);
 				if (!$this->iswindows) {
 					$commandline .= ' 2>&1';
