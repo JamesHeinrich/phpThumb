@@ -251,6 +251,7 @@ $PHPTHUMB_DEFAULTS_DISABLEGETPARAMS  = false; // if true, GETstring parameters w
 //   require_once('phpThumb/phpThumb.config.php');
 //   echo '<img src="'.htmlspecialchars(phpThumbURL('src=/images/pic.jpg&w=50', '/phpThumb/phpThumb.php')).'">';
 
+$GLOBALS['PHPTHUMB_CONFIG'] = $PHPTHUMB_CONFIG;
 function phpThumbURL($ParameterString, $path_to_phpThumb='phpThumb.php') {
 	global $PHPTHUMB_CONFIG;
 	if (is_array($ParameterString)) {
