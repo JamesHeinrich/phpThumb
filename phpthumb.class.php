@@ -114,7 +114,7 @@ class phpthumb {
 
 	var $config_max_source_pixels                    = null;
 	var $config_use_exif_thumbnail_for_speed         = false;
-	var $allow_local_http_src                        = false;
+	var $config_allow_local_http_src                 = false;
 
 	var $config_imagemagick_path                     = null;
 	var $config_prefer_imagemagick                   = true;
