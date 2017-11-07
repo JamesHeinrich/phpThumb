@@ -3366,10 +3366,6 @@ if (false) {
 
 		}
 
-		if (is_null($this->getimagesizeinfo)) {
-			$this->getimagesizeinfo = @getimagesize($this->sourceFilename);
-		}
-
 		if (!empty($this->getimagesizeinfo)) {
 			// great
 			$this->getimagesizeinfo['filesize'] = @filesize($this->sourceFilename);
