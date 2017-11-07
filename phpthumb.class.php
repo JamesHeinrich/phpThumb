@@ -114,7 +114,7 @@ class phpthumb {
 
 	var $config_max_source_pixels                    = null;
 	var $config_use_exif_thumbnail_for_speed         = false;
-	var $allow_local_http_src                        = false;
+	var $config_allow_local_http_src                 = false;
 
 	var $config_imagemagick_path                     = null;
 	var $config_prefer_imagemagick                   = true;
@@ -3364,10 +3364,6 @@ if (false) {
 				$this->DebugMessage('bypassing EXIF and getimagesize sections because $this->rawImageData is set, and $this->sourceFilename is not set, and source image is not too large for GD ('.$this->source_width.'x'.$this->source_width.'='.($this->source_width * $this->source_height * 5).'MB)', __FILE__, __LINE__);
 			}
 
-		}
-
-		if (is_null($this->getimagesizeinfo)) {
-			$this->getimagesizeinfo = @getimagesize($this->sourceFilename);
 		}
 
 		if (!empty($this->getimagesizeinfo)) {
