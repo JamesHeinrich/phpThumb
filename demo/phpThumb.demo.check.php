@@ -303,11 +303,12 @@ if ($ServerInfo['im_version']) {
 						$feature = $alternate_feature_name;
 						break;
 					}
+					echo '| <span style="background-color: '.($foundOneThatWorks ? 'lime' : $missingcolor).';">'.htmlspecialchars($alternate_feature_name).'</span> |';
 				}
 			} else {
 				$foundOneThatWorks = $phpThumb->ImageMagickSwitchAvailable($feature);
+				echo '| <span style="background-color: '.($foundOneThatWorks ? 'lime' : $missingcolor).';">'.htmlspecialchars($feature).'</span> |';
 			}
-			echo '| <span style="background-color: '.($foundOneThatWorks ? 'lime' : $missingcolor).';">'.htmlspecialchars($feature).'</span> |';
 		}
 	}
 	echo '|</th>';
