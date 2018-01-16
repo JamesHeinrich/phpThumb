@@ -215,7 +215,7 @@ class phpthumb {
 	var $issafemode       = null;
 	var $php_memory_limit = null;
 
-	var $phpthumb_version = '1.7.15-201709210936';
+	var $phpthumb_version = '1.7.15-201801160958';
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -2148,9 +2148,9 @@ if (false) {
 						case 'usm':
 							if ($this->ImageMagickSwitchAvailable('unsharp')) {
 								@list($amount, $radius, $threshold) = explode('|', $parameter);
-								$amount    = ($amount            ? min(max(intval($radius), 0), 255) : 80);
-								$radius    = ($radius            ? min(max(intval($radius), 0), 10)  : 0.5);
-								$threshold = (strlen($threshold) ? min(max(intval($radius), 0), 50)  : 3);
+								$amount    = ($amount            ? min(max(intval($amount),    0), 255) : 80);
+								$radius    = ($radius            ? min(max(intval($radius),    0),  10) : 0.5);
+								$threshold = (strlen($threshold) ? min(max(intval($threshold), 0),  50) : 3);
 								$commandline .= ' -unsharp '.phpthumb_functions::escapeshellarg_replacement(number_format(($radius * 2) - 1, 2, '.', '').'x1+'.number_format($amount / 100, 2, '.', '').'+'.number_format($threshold / 100, 2, '.', ''));
 								$successfullyProcessedFilters[] = $filterkey;
 							}
