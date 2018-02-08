@@ -230,9 +230,9 @@ class phpthumb {
 
 		foreach (array(ini_get('memory_limit'), get_cfg_var('memory_limit')) as $php_config_memory_limit) {
 			if (strlen($php_config_memory_limit)) {
-				if (strtoupper(substr($php_config_memory_limit, -1, 1)) == 'G') { // PHP memory limit expressed in Gigabytes
+				if (strtoupper($php_config_memory_limit[ strlen($php_config_memory_limit) - 1 ]) == 'G') { // PHP memory limit expressed in Gigabytes
 					$php_config_memory_limit = intval(substr($php_config_memory_limit, 0, -1)) * 1073741824;
-				} elseif (strtoupper(substr($php_config_memory_limit, -1, 1)) == 'M') { // PHP memory limit expressed in Megabytes
+				} elseif (strtoupper($php_config_memory_limit[ strlen($php_config_memory_limit) - 1 ]) == 'M') { // PHP memory limit expressed in Megabytes
 					$php_config_memory_limit = intval(substr($php_config_memory_limit, 0, -1)) * 1048576;
 				}
 				$this->php_memory_limit = max($this->php_memory_limit, $php_config_memory_limit);
@@ -333,10 +333,10 @@ class phpthumb {
 		} elseif (@is_array($this->$param)) {
 			if (is_array($value)) {
 				foreach ($value as $arraykey => $arrayvalue) {
-					array_push($this->$param, $arrayvalue);
+					$this->$param[] = $arrayvalue;
 				}
 			} else {
-				array_push($this->$param, $value);
+				$this->$param[] = $value;
 			}
 		} else {
 			$this->$param = $value;
@@ -1003,7 +1003,7 @@ class phpthumb {
 	function setCacheDirectory() {
 		// resolve cache directory to absolute pathname
 		$this->DebugMessage('setCacheDirectory() starting with config_cache_directory = "'.$this->config_cache_directory.'"', __FILE__, __LINE__);
-		if (substr($this->config_cache_directory, 0, 1) == '.') {
+		if ($this->config_cache_directory[ 0 ] == '.') {
 			if (preg_match('#^(f|ht)tps?\://#i', $this->src)) {
 				if (!$this->config_cache_disable_warning) {
 					$this->ErrorImage('$this->config_cache_directory ('.$this->config_cache_directory.') cannot be used for remote images. Adjust "cache_directory" or "cache_disable_warning" in phpThumb.config.php');
@@ -1162,7 +1162,7 @@ class phpthumb {
 			// do not use "cleaner" foreach version of this loop as later code relies on both $segments and $i
 			// http://support.silisoftware.com/phpBB3/viewtopic.php?t=964
 			$segments = explode(DIRECTORY_SEPARATOR, $path);
-			for ($i = 0; $i < count($segments); $i++) {
+			for ($i = 0, $iMax = count($segments); $i < $iMax; $i++) {
 				$this->applyPathSegment($parts, $segments[$i]);
 				$thispart = implode(DIRECTORY_SEPARATOR, $parts);
 				if ($this->isInOpenBasedir($thispart)) {

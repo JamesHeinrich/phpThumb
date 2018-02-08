@@ -364,9 +364,9 @@ class phpthumb_bmp {
 					// BYTE    rgbGreen;
 					// BYTE    rgbRed;
 					// BYTE    rgbReserved;
-					$blue  = $this->LittleEndian2Int(substr($BMPpalette, $paletteoffset++, 1));
-					$green = $this->LittleEndian2Int(substr($BMPpalette, $paletteoffset++, 1));
-					$red   = $this->LittleEndian2Int(substr($BMPpalette, $paletteoffset++, 1));
+					$blue  = $this->LittleEndian2Int($BMPpalette[ $paletteoffset++ ]);
+					$green = $this->LittleEndian2Int($BMPpalette[ $paletteoffset++ ]);
+					$red   = $this->LittleEndian2Int($BMPpalette[ $paletteoffset++ ]);
 					if (($thisfile_bmp['type_os'] == 'OS/2') && ($thisfile_bmp['type_version'] == 1)) {
 						// no padding byte
 					} else {
@@ -477,8 +477,8 @@ class phpthumb_bmp {
 						case 8:
 							$pixelcounter = 0;
 							while ($pixeldataoffset < strlen($BMPpixelData)) {
-								$firstbyte  = $this->LittleEndian2Int(substr($BMPpixelData, $pixeldataoffset++, 1));
-								$secondbyte = $this->LittleEndian2Int(substr($BMPpixelData, $pixeldataoffset++, 1));
+								$firstbyte  = $this->LittleEndian2Int($BMPpixelData[ $pixeldataoffset++ ]);
+								$secondbyte = $this->LittleEndian2Int($BMPpixelData[ $pixeldataoffset++ ]);
 								if ($firstbyte == 0) {
 
 									// escaped/absolute mode - the first byte of the pair can be set to zero to
@@ -499,8 +499,8 @@ class phpthumb_bmp {
 											// delta - The 2 bytes following the escape contain unsigned values
 											// indicating the horizontal and vertical offsets of the next pixel
 											// from the current position.
-											$colincrement = $this->LittleEndian2Int(substr($BMPpixelData, $pixeldataoffset++, 1));
-											$rowincrement = $this->LittleEndian2Int(substr($BMPpixelData, $pixeldataoffset++, 1));
+											$colincrement = $this->LittleEndian2Int($BMPpixelData[ $pixeldataoffset++ ]);
+											$rowincrement = $this->LittleEndian2Int($BMPpixelData[ $pixeldataoffset++ ]);
 											$col = ($pixelcounter % $thisfile_bmp_header_raw['width']) + $colincrement;
 											$row = ($thisfile_bmp_header_raw['height'] - 1 - (($pixelcounter - $col) / $thisfile_bmp_header_raw['width'])) - $rowincrement;
 											$pixelcounter = ($row * $thisfile_bmp_header_raw['width']) + $col;
@@ -512,7 +512,7 @@ class phpthumb_bmp {
 											// number of bytes that follow, each of which contains the color index
 											// of a single pixel. Each run must be aligned on a word boundary.
 											for ($i = 0; $i < $secondbyte; $i++) {
-												$paletteindex = $this->LittleEndian2Int(substr($BMPpixelData, $pixeldataoffset++, 1));
+												$paletteindex = $this->LittleEndian2Int($BMPpixelData[ $pixeldataoffset++ ]);
 												$col = $pixelcounter % $thisfile_bmp_header_raw['width'];
 												$row = $thisfile_bmp_header_raw['height'] - 1 - (($pixelcounter - $col) / $thisfile_bmp_header_raw['width']);
 												$thisfile_bmp['data'][$row][$col] = $thisfile_bmp['palette'][$paletteindex];
@@ -553,8 +553,8 @@ class phpthumb_bmp {
 						case 4:
 							$pixelcounter = 0;
 							while ($pixeldataoffset < strlen($BMPpixelData)) {
-								$firstbyte  = $this->LittleEndian2Int(substr($BMPpixelData, $pixeldataoffset++, 1));
-								$secondbyte = $this->LittleEndian2Int(substr($BMPpixelData, $pixeldataoffset++, 1));
+								$firstbyte  = $this->LittleEndian2Int($BMPpixelData[ $pixeldataoffset++ ]);
+								$secondbyte = $this->LittleEndian2Int($BMPpixelData[ $pixeldataoffset++ ]);
 								if ($firstbyte == 0) {
 
 									// escaped/absolute mode - the first byte of the pair can be set to zero to
@@ -575,8 +575,8 @@ class phpthumb_bmp {
 											// delta - The 2 bytes following the escape contain unsigned values
 											// indicating the horizontal and vertical offsets of the next pixel
 											// from the current position.
-											$colincrement = $this->LittleEndian2Int(substr($BMPpixelData, $pixeldataoffset++, 1));
-											$rowincrement = $this->LittleEndian2Int(substr($BMPpixelData, $pixeldataoffset++, 1));
+											$colincrement = $this->LittleEndian2Int($BMPpixelData[ $pixeldataoffset++ ]);
+											$rowincrement = $this->LittleEndian2Int($BMPpixelData[ $pixeldataoffset++ ]);
 											$col = ($pixelcounter % $thisfile_bmp_header_raw['width']) + $colincrement;
 											$row = ($thisfile_bmp_header_raw['height'] - 1 - (($pixelcounter - $col) / $thisfile_bmp_header_raw['width'])) - $rowincrement;
 											$pixelcounter = ($row * $thisfile_bmp_header_raw['width']) + $col;
@@ -588,8 +588,8 @@ class phpthumb_bmp {
 											// high- and low-order 4 bits, one color index for each pixel. In absolute mode,
 											// each run must be aligned on a word boundary.
 											$paletteindexes = array();
-											for ($i = 0; $i < ceil($secondbyte / 2); $i++) {
-												$paletteindexbyte = $this->LittleEndian2Int(substr($BMPpixelData, $pixeldataoffset++, 1));
+											for ($i = 0, $iMax = ceil($secondbyte / 2); $i < $iMax; $i++) {
+												$paletteindexbyte = $this->LittleEndian2Int($BMPpixelData[ $pixeldataoffset++ ]);
 												$paletteindexes[] = ($paletteindexbyte & 0xF0) >> 4;
 												$paletteindexes[] = ($paletteindexbyte & 0x0F);
 											}
@@ -846,8 +846,8 @@ class phpthumb_bmp {
 			$binstring = substr($binstring, 1);
 		}
 		$decvalue = 0;
-		for ($i = 0; $i < strlen($binstring); $i++) {
-			$decvalue += ((int) substr($binstring, strlen($binstring) - $i - 1, 1)) * pow(2, $i);
+		for ($i = 0, $iMax = strlen($binstring); $i < $iMax; $i++) {
+			$decvalue += ((int) $binstring[ strlen($binstring) - $i - 1 ]) * pow(2, $i);
 		}
 		return $this->CastAsInt($decvalue * $signmult);
 	}
