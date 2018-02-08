@@ -231,9 +231,9 @@ class phpthumb {
 		foreach (array(ini_get('memory_limit'), get_cfg_var('memory_limit')) as $php_config_memory_limit) {
 			if (strlen($php_config_memory_limit)) {
 				if (strtoupper($php_config_memory_limit[ strlen($php_config_memory_limit) - 1 ]) == 'G') { // PHP memory limit expressed in Gigabytes
-					$php_config_memory_limit = intval(substr($php_config_memory_limit, 0, -1)) * 1073741824;
+					$php_config_memory_limit = (int) substr($php_config_memory_limit, 0, -1) * 1073741824;
 				} elseif (strtoupper($php_config_memory_limit[ strlen($php_config_memory_limit) - 1 ]) == 'M') { // PHP memory limit expressed in Megabytes
-					$php_config_memory_limit = intval(substr($php_config_memory_limit, 0, -1)) * 1048576;
+					$php_config_memory_limit = (int) substr($php_config_memory_limit, 0, -1) * 1048576;
 				}
 				$this->php_memory_limit = max($this->php_memory_limit, $php_config_memory_limit);
 			}
@@ -249,14 +249,14 @@ class phpthumb {
 
 		$this->purgeTempFiles(); // purge existing temp files if re-initializing object
 
-		$php_sapi_name = strtolower(function_exists('php_sapi_name') ? php_sapi_name() : '');
+		$php_sapi_name = strtolower(function_exists('php_sapi_name') ? PHP_SAPI : '');
 		if ($php_sapi_name == 'cli') {
 			$this->config_allow_src_above_docroot = true;
 		}
 
 		if (!$this->config_disable_debug) {
 			// if debug mode is enabled, force phpThumbDebug output, do not allow normal thumbnails to be generated
-			$this->phpThumbDebug = (is_null($this->phpThumbDebug) ? 9 : max(1, intval($this->phpThumbDebug)));
+			$this->phpThumbDebug = (null === $this->phpThumbDebug ? 9 : max(1, (int) $this->phpThumbDebug));
 		}
 	}
 
@@ -282,7 +282,7 @@ class phpthumb {
 		//$this->rawImageData   = null;
 		$this->sourceFilename = $sourceFilename;
 		$this->src            = $sourceFilename;
-		if (is_null($this->config_output_format)) {
+		if (null === $this->config_output_format) {
 			$sourceFileExtension = strtolower(substr(strrchr($sourceFilename, '.'), 1));
 			if (preg_match('#^[a-z]{3,4}$#', $sourceFileExtension)) {
 				$this->config_output_format = $sourceFileExtension;
@@ -467,8 +467,8 @@ class phpthumb {
 			$builtin_formats['png']  = (bool) ($imagetypes & IMG_PNG);
 		}
 
-		$this->DebugMessage('imageinterlace($this->gdimg_output, '.intval($this->config_output_interlace).')', __FILE__, __LINE__);
-		imageinterlace($this->gdimg_output, intval($this->config_output_interlace));
+		$this->DebugMessage('imageinterlace($this->gdimg_output, '. (int) $this->config_output_interlace .')', __FILE__, __LINE__);
+		imageinterlace($this->gdimg_output, (int) $this->config_output_interlace);
 
 		$this->DebugMessage('RenderOutput() attempting image'.strtolower(@$this->thumbnailFormat).'($this->gdimg_output)', __FILE__, __LINE__);
 		ob_start();
@@ -500,7 +500,7 @@ class phpthumb {
 					ob_end_clean();
 					return false;
 				}
-				if (phpthumb_functions::version_compare_replacement(phpversion(), '5.1.2', '>=')) {
+				if (phpthumb_functions::version_compare_replacement(PHP_VERSION, '5.1.2', '>=')) {
 					// https://github.com/JamesHeinrich/phpThumb/issues/24
 
 					/* http://php.net/manual/en/function.imagepng.php:
@@ -637,8 +637,8 @@ class phpthumb {
 
 		} else {
 
-			$this->DebugMessage('imageinterlace($this->gdimg_output, '.intval($this->config_output_interlace).')', __FILE__, __LINE__);
-			imageinterlace($this->gdimg_output, intval($this->config_output_interlace));
+			$this->DebugMessage('imageinterlace($this->gdimg_output, '. (int) $this->config_output_interlace .')', __FILE__, __LINE__);
+			imageinterlace($this->gdimg_output, (int) $this->config_output_interlace);
 			switch ($this->thumbnailFormat) {
 				case 'jpeg':
 					header('Content-Type: '.phpthumb_functions::ImageTypeToMIMEtype($this->thumbnailFormat));
@@ -709,7 +709,7 @@ class phpthumb {
 
 	// public:
 	function CleanUpCacheDirectory() {
-		$this->DebugMessage('CleanUpCacheDirectory() set to purge ('.(is_null($this->config_cache_maxage) ? 'NULL' : number_format($this->config_cache_maxage / 86400, 1)).' days; '.(is_null($this->config_cache_maxsize) ? 'NULL' : number_format($this->config_cache_maxsize / 1048576, 2)).' MB; '.(is_null($this->config_cache_maxfiles) ? 'NULL' : number_format($this->config_cache_maxfiles)).' files)', __FILE__, __LINE__);
+		$this->DebugMessage('CleanUpCacheDirectory() set to purge ('.(null === $this->config_cache_maxage ? 'NULL' : number_format($this->config_cache_maxage / 86400, 1)).' days; '.(null === $this->config_cache_maxsize ? 'NULL' : number_format($this->config_cache_maxsize / 1048576, 2)).' MB; '.(null === $this->config_cache_maxfiles ? 'NULL' : number_format($this->config_cache_maxfiles)).' files)', __FILE__, __LINE__);
 
 		if (!is_writable($this->config_cache_directory)) {
 			$this->DebugMessage('CleanUpCacheDirectory() skipped because "'.$this->config_cache_directory.'" is not writable', __FILE__, __LINE__);
@@ -993,7 +993,7 @@ class phpthumb {
 		// for JPEG images, quality 1 (worst) to 99 (best)
 		// quality < 25 is nasty, with not much size savings - not recommended
 		// problems with 100 - invalid JPEG?
-		$this->thumbnailQuality = max(1, min(99, ($this->q ? intval($this->q) : 75)));
+		$this->thumbnailQuality = max(1, min(99, ($this->q ? (int) $this->q : 75)));
 		$this->DebugMessage('$this->thumbnailQuality set to "'.$this->thumbnailQuality.'"', __FILE__, __LINE__);
 
 		return true;
@@ -1061,11 +1061,11 @@ class phpthumb {
 		}
 		if ($segment == '') {
 			$test = array_pop($segments);
-			if (is_null($test)) {
+			if (null === $test) {
 				$segments[] = $segment; // keep the first empty block
 			} elseif ($test == '') {
 				$test = array_pop($segments);
-				if (is_null($test)) {
+				if (null === $test) {
 					$segments[] = $test;
 					$segments[] = $segment; // keep the second one too
 				} else { // put both back and ignore segment
@@ -1078,7 +1078,7 @@ class phpthumb {
 		} else {
 			if ($segment == '..') {
 				$test = array_pop($segments);
-				if (is_null($test)) {
+				if (null === $test) {
 					$segments[] = $segment;
 				} elseif ($test == '..') {
 					$segments[] = $test;
@@ -1121,7 +1121,7 @@ class phpthumb {
 	// http://support.silisoftware.com/phpBB3/viewtopic.php?t=961
 	function isInOpenBasedir($path) {
 		static $open_basedirs = null;
-		if (is_null($open_basedirs)) {
+		if (null === $open_basedirs) {
 			$ini_text = ini_get('open_basedir');
 			$this->DebugMessage('open_basedir: "'.$ini_text.'"', __FILE__, __LINE__);
 			$open_basedirs = array();
@@ -1356,7 +1356,7 @@ class phpthumb {
 		static $open_basedirs = null;
 		static $file_exists_cache = array();
 		if (!$cached || !isset($file_exists_cache[$filename])) {
-			if (is_null($open_basedirs)) {
+			if (null === $open_basedirs) {
 				$open_basedirs = preg_split('#[;:]#', ini_get('open_basedir'));
 			}
 			if (empty($open_basedirs) || in_array(dirname($filename), $open_basedirs)) {
@@ -1375,7 +1375,7 @@ class phpthumb {
 
 	function ImageMagickWhichConvert() {
 		static $WhichConvert = null;
-		if (is_null($WhichConvert)) {
+		if (null === $WhichConvert) {
 			if ($this->iswindows) {
 				$WhichConvert = false;
 			} else {
@@ -1395,7 +1395,7 @@ class phpthumb {
 
 	function ImageMagickCommandlineBase() {
 		static $commandline = null;
-		if (is_null($commandline)) {
+		if (null === $commandline) {
 			if ($this->issafemode) {
 				$commandline = '';
 				return $commandline;
@@ -1406,7 +1406,7 @@ class phpthumb {
 				return $commandline;
 			}
 
-			$commandline = (!is_null($this->config_imagemagick_path) ? $this->config_imagemagick_path : '');
+			$commandline = (null !== $this->config_imagemagick_path ? $this->config_imagemagick_path : '');
 
 			if ($this->config_imagemagick_path && ($this->config_imagemagick_path != $this->realPathSafe($this->config_imagemagick_path))) {
 				if (@is_executable($this->realPathSafe($this->config_imagemagick_path))) {
@@ -1416,10 +1416,10 @@ class phpthumb {
 					$this->DebugMessage('Leaving $this->config_imagemagick_path as ('.$this->config_imagemagick_path.') because !is_execuatable($this->realPathSafe($this->config_imagemagick_path)) ('.$this->realPathSafe($this->config_imagemagick_path).')', __FILE__, __LINE__);
 				}
 			}
-			$this->DebugMessage('                  file_exists('.$this->config_imagemagick_path.') = '.intval(                        @file_exists($this->config_imagemagick_path)), __FILE__, __LINE__);
-			$this->DebugMessage('file_exists_ignoreopenbasedir('.$this->config_imagemagick_path.') = '.intval($this->file_exists_ignoreopenbasedir($this->config_imagemagick_path)), __FILE__, __LINE__);
-			$this->DebugMessage('                      is_file('.$this->config_imagemagick_path.') = '.intval(                            @is_file($this->config_imagemagick_path)), __FILE__, __LINE__);
-			$this->DebugMessage('                is_executable('.$this->config_imagemagick_path.') = '.intval(                      @is_executable($this->config_imagemagick_path)), __FILE__, __LINE__);
+			$this->DebugMessage('                  file_exists('.$this->config_imagemagick_path.') = '. (int) (@file_exists($this->config_imagemagick_path)), __FILE__, __LINE__);
+			$this->DebugMessage('file_exists_ignoreopenbasedir('.$this->config_imagemagick_path.') = '. (int) $this->file_exists_ignoreopenbasedir($this->config_imagemagick_path), __FILE__, __LINE__);
+			$this->DebugMessage('                      is_file('.$this->config_imagemagick_path.') = '. (int) (@is_file($this->config_imagemagick_path)), __FILE__, __LINE__);
+			$this->DebugMessage('                is_executable('.$this->config_imagemagick_path.') = '. (int) (@is_executable($this->config_imagemagick_path)), __FILE__, __LINE__);
 
 			if ($this->file_exists_ignoreopenbasedir($this->config_imagemagick_path)) {
 
@@ -1466,7 +1466,7 @@ class phpthumb {
 
 	function ImageMagickVersion($returnRAW=false) {
 		static $versionstring = null;
-		if (is_null($versionstring)) {
+		if (null === $versionstring) {
 			$versionstring = array(0=>false, 1=>false);
 
 			$IMversionCacheFilename = $this->config_cache_directory.DIRECTORY_SEPARATOR.'phpThumbCacheIMversion.txt';
@@ -1479,7 +1479,7 @@ class phpthumb {
 			} else {
 
 				$commandline = $this->ImageMagickCommandlineBase();
-				$commandline = (!is_null($commandline) ? $commandline : '');
+				$commandline = (null !== $commandline ? $commandline : '');
 				if ($commandline) {
 					$commandline .= ' --version';
 					$this->DebugMessage('ImageMagick version checked with "'.$commandline.'"', __FILE__, __LINE__);
@@ -1498,16 +1498,16 @@ class phpthumb {
 
 			}
 		}
-		return $versionstring[intval($returnRAW)];
+		return $versionstring[ (int) $returnRAW ];
 	}
 
 
 	function ImageMagickSwitchAvailable($switchname) {
 		static $IMoptions = null;
-		if (is_null($IMoptions)) {
+		if (null === $IMoptions) {
 			$IMoptions = array();
 			$commandline = $this->ImageMagickCommandlineBase();
-			if (!is_null($commandline)) {
+			if (null !== $commandline) {
 				$commandline .= ' -help';
 				$IMhelp_lines = explode("\n", phpthumb_functions::SafeExec($commandline));
 				foreach ($IMhelp_lines as $line) {
@@ -1525,10 +1525,10 @@ class phpthumb {
 					break;
 				}
 			}
-			$this->DebugMessage('ImageMagickSwitchAvailable('.implode(';', $switchname).') = '.intval($allOK).'', __FILE__, __LINE__);
+			$this->DebugMessage('ImageMagickSwitchAvailable('.implode(';', $switchname).') = '. (int) $allOK .'', __FILE__, __LINE__);
 		} else {
 			$allOK = isset($IMoptions[$switchname]);
-			$this->DebugMessage('ImageMagickSwitchAvailable('.$switchname.') = '.intval($allOK).'', __FILE__, __LINE__);
+			$this->DebugMessage('ImageMagickSwitchAvailable('.$switchname.') = '. (int) $allOK .'', __FILE__, __LINE__);
 		}
 		return $allOK;
 	}
@@ -1536,10 +1536,10 @@ class phpthumb {
 
 	function ImageMagickFormatsList() {
 		static $IMformatsList = null;
-		if (is_null($IMformatsList)) {
+		if (null === $IMformatsList) {
 			$IMformatsList = '';
 			$commandline = $this->ImageMagickCommandlineBase();
-			if (!is_null($commandline)) {
+			if (null !== $commandline) {
 				$commandline = dirname($commandline).DIRECTORY_SEPARATOR.str_replace('convert', 'identify', basename($commandline));
 				$commandline .= ' -list format';
 				$IMformatsList = phpthumb_functions::SafeExec($commandline);
@@ -1655,7 +1655,7 @@ class phpthumb {
 
 		$commandline = $this->ImageMagickCommandlineBase();
 		if ($commandline) {
-			$commandline .= ' '.phpthumb_functions::escapeshellarg_replacement(preg_replace('#[/\\\\]#', DIRECTORY_SEPARATOR, $this->sourceFilename).(($outputFormat == 'gif') ? '' : '['.intval($this->sfn).']')); // [0] means first frame of (GIF) animation, can be ignored
+			$commandline .= ' '.phpthumb_functions::escapeshellarg_replacement(preg_replace('#[/\\\\]#', DIRECTORY_SEPARATOR, $this->sourceFilename).(($outputFormat == 'gif') ? '' : '['. (int) $this->sfn .']')); // [0] means first frame of (GIF) animation, can be ignored
 			if ($IMtempfilename = $this->phpThumb_tempnam()) {
 				$IMtempfilename = $this->realPathSafe($IMtempfilename);
 
@@ -1669,7 +1669,7 @@ class phpthumb {
 					$commandline_test = $this->ImageMagickCommandlineBase().' logo: -resize 1x '.phpthumb_functions::escapeshellarg_replacement($IMtempfilename).' 2>&1';
 					$IMresult_test = phpthumb_functions::SafeExec($commandline_test);
 					$IMuseExplicitImageOutputDimensions = preg_match('#image dimensions are zero#i', $IMresult_test);
-					$this->DebugMessage('IMuseExplicitImageOutputDimensions = '.intval($IMuseExplicitImageOutputDimensions), __FILE__, __LINE__);
+					$this->DebugMessage('IMuseExplicitImageOutputDimensions = '. (int) $IMuseExplicitImageOutputDimensions, __FILE__, __LINE__);
 					if ($fp_im_temp = @fopen($IMtempfilename, 'wb')) {
 						// erase temp image so ImageMagick logo doesn't get output if other processing fails
 						fclose($fp_im_temp);
@@ -1687,7 +1687,7 @@ class phpthumb {
 				} else {
 					$this->DebugMessage('getimagesize('.$this->sourceFilename.') FAILED with error "'.$GetImageSizeError.'"', __FILE__, __LINE__);
 				}
-				if (!is_null($this->dpi) && $this->ImageMagickSwitchAvailable('density')) {
+				if (null !== $this->dpi && $this->ImageMagickSwitchAvailable('density')) {
 					// for vector source formats only (WMF, PDF, etc)
 					if (is_array($getimagesize) && isset($getimagesize[2]) && ($getimagesize[2] == IMAGETYPE_PNG)) {
 						// explicitly exclude PNG from "-flatten" to make sure transparency is preserved
@@ -1726,8 +1726,8 @@ class phpthumb {
 									}
 								}
 							}
-							$wAll = intval(max($this->w, $this->wp, $this->wl, $this->ws)) - (2 * $borderThickness);
-							$hAll = intval(max($this->h, $this->hp, $this->hl, $this->hs)) - (2 * $borderThickness);
+							$wAll = (int) max($this->w, $this->wp, $this->wl, $this->ws) - (2 * $borderThickness);
+							$hAll = (int) max($this->h, $this->hp, $this->hl, $this->hs) - (2 * $borderThickness);
 							$imAR = $this->source_width / $this->source_height;
 							$zcAR = (($wAll && $hAll) ? $wAll / $hAll : 1);
 							$side  = phpthumb_functions::nonempty_min($this->source_width, $this->source_height, max($wAll, $hAll));
@@ -1819,14 +1819,14 @@ if (false) {
 
 						} else {
 
-							if ($this->iar && (intval($this->w) > 0) && (intval($this->h) > 0)) {
+							if ($this->iar && ((int) $this->w > 0) && ((int) $this->h > 0)) {
 
 								list($nw, $nh) = phpthumb_functions::TranslateWHbyAngle($this->w, $this->h, $this->ra);
 								$nw = ((round($nw) != 0) ? round($nw) : '');
 								$nh = ((round($nh) != 0) ? round($nh) : '');
 								$commandline .= ' -'.$IMresizeParameter.' '.phpthumb_functions::escapeshellarg_replacement($nw.'x'.$nh.'!');
 
-							} elseif ($this->far && (intval($this->w) > 0) && (intval($this->h) > 0)) {
+							} elseif ($this->far && ((int) $this->w > 0) && ((int) $this->h > 0)) {
 
 								$commandline .= ' -'.$IMresizeParameter.' '.phpthumb_functions::escapeshellarg_replacement(phpthumb_functions::nonempty_min($this->w, $getimagesize[0]).'x'.phpthumb_functions::nonempty_min($this->h, $getimagesize[1]));
 								$commandline .= ' -gravity center';
@@ -1859,7 +1859,7 @@ if (false) {
 
 					$this->DebugMessage('getimagesize('.$this->sourceFilename.') failed', __FILE__, __LINE__);
 					if ($this->w || $this->h) {
-						$exactDimensionsBang = (($this->iar && (intval($this->w) > 0) && (intval($this->h) > 0)) ? '!' : '');
+						$exactDimensionsBang = (($this->iar && ((int) $this->w > 0) && ((int) $this->h > 0)) ? '!' : '');
 						if ($IMuseExplicitImageOutputDimensions) {
 							// unknown source aspect ratio, just put large number and hope IM figures it out
 							$commandline .= ' -'.$IMresizeParameter.' '.phpthumb_functions::escapeshellarg_replacement(($this->w ? $this->w : '9999').'x'.($this->h ? $this->h : '9999').$exactDimensionsBang);
@@ -1871,7 +1871,7 @@ if (false) {
 				}
 
 				if ($this->ra) {
-					$this->ra = intval($this->ra);
+					$this->ra = (int) $this->ra;
 					if ($this->ImageMagickSwitchAvailable('rotate')) {
 						if (!preg_match('#('.implode('|', $this->AlphaCapableFormats).')#i', $outputFormat) || phpthumb_functions::version_compare_replacement($this->ImageMagickVersion(), '6.3.7', '>=')) {
 							$this->DebugMessage('Using ImageMagick rotate', __FILE__, __LINE__);
@@ -1899,14 +1899,14 @@ if (false) {
 					switch ($command) {
 						case 'brit':
 							if ($this->ImageMagickSwitchAvailable('modulate')) {
-								$commandline .= ' -modulate '.phpthumb_functions::escapeshellarg_replacement((100 + intval($parameter)).',100,100');
+								$commandline .= ' -modulate '.phpthumb_functions::escapeshellarg_replacement((100 + (int) $parameter).',100,100');
 								$successfullyProcessedFilters[] = $filterkey;
 							}
 							break;
 
 						case 'cont':
 							if ($this->ImageMagickSwitchAvailable('contrast')) {
-								$contDiv10 = round(intval($parameter) / 10);
+								$contDiv10 = round((int) $parameter / 10);
 								if ($contDiv10 > 0) {
 									$contDiv10 = min($contDiv10, 100);
 									for ($i = 0; $i < $contDiv10; $i++) {
@@ -1930,7 +1930,7 @@ if (false) {
 									$commandline .= ' -colorspace GRAY';
 									$commandline .= ' -modulate 100,0,100';
 								} else {
-									$commandline .= ' -modulate '.phpthumb_functions::escapeshellarg_replacement('100,'.(100 - intval($parameter)).',100');
+									$commandline .= ' -modulate '.phpthumb_functions::escapeshellarg_replacement('100,'.(100 - (int) $parameter).',100');
 								}
 								$successfullyProcessedFilters[] = $filterkey;
 							}
@@ -1942,7 +1942,7 @@ if (false) {
 									$commandline .= ' -colorspace GRAY';
 									$commandline .= ' -modulate 100,0,100';
 								} else {
-									$commandline .= ' -modulate '.phpthumb_functions::escapeshellarg_replacement('100,'.(100 + intval($parameter)).',100');
+									$commandline .= ' -modulate '.phpthumb_functions::escapeshellarg_replacement('100,'.(100 + (int) $parameter).',100');
 								}
 								$successfullyProcessedFilters[] = $filterkey;
 							}
@@ -1960,7 +1960,7 @@ if (false) {
 							if ($this->ImageMagickSwitchAvailable(array('fill', 'colorize'))) {
 								@list($amount, $color) = explode('|', $parameter);
 								$commandline .= ' -fill '.phpthumb_functions::escapeshellarg_replacement('#'.preg_replace('#[^0-9A-F]#i', '', $color));
-								$commandline .= ' -colorize '.phpthumb_functions::escapeshellarg_replacement(min(max(intval($amount), 0), 100));
+								$commandline .= ' -colorize '.phpthumb_functions::escapeshellarg_replacement(min(max((int) $amount, 0), 100));
 							}
 							break;
 
@@ -1969,7 +1969,7 @@ if (false) {
 								@list($amount, $color) = explode('|', $parameter);
 								$amount = ($amount ? $amount : 80);
 								if (!$color) {
-									$commandline .= ' -sepia-tone '.phpthumb_functions::escapeshellarg_replacement(min(max(intval($amount), 0), 100).'%');
+									$commandline .= ' -sepia-tone '.phpthumb_functions::escapeshellarg_replacement(min(max((int) $amount, 0), 100).'%');
 									$successfullyProcessedFilters[] = $filterkey;
 								}
 							}
@@ -1977,7 +1977,7 @@ if (false) {
 
 						case 'gam':
 							@list($amount) = explode('|', $parameter);
-							$amount = min(max(floatval($amount), 0.001), 10);
+							$amount = min(max((float) $amount, 0.001), 10);
 							if (number_format($amount, 3) != '1.000') {
 								if ($this->ImageMagickSwitchAvailable('gamma')) {
 									$commandline .= ' -gamma '.phpthumb_functions::escapeshellarg_replacement($amount);
@@ -1996,7 +1996,7 @@ if (false) {
 						case 'th':
 							@list($amount) = explode('|', $parameter);
 							if ($this->ImageMagickSwitchAvailable(array('threshold', 'dither', 'monochrome'))) {
-								$commandline .= ' -threshold '.phpthumb_functions::escapeshellarg_replacement(round(min(max(intval($amount), 0), 255) / 2.55).'%');
+								$commandline .= ' -threshold '.phpthumb_functions::escapeshellarg_replacement(round(min(max((int) $amount, 0), 255) / 2.55).'%');
 								$commandline .= ' -dither';
 								$commandline .= ' -monochrome';
 								$successfullyProcessedFilters[] = $filterkey;
@@ -2029,7 +2029,7 @@ if (false) {
 						case 'edge':
 							if ($this->ImageMagickSwitchAvailable('edge')) {
 								$parameter = (!empty($parameter) ? $parameter : 2);
-								$commandline .= ' -edge '.phpthumb_functions::escapeshellarg_replacement(!empty($parameter) ? intval($parameter) : 1);
+								$commandline .= ' -edge '.phpthumb_functions::escapeshellarg_replacement(!empty($parameter) ? (int) $parameter : 1);
 								$successfullyProcessedFilters[] = $filterkey;
 							}
 							break;
@@ -2037,7 +2037,7 @@ if (false) {
 						case 'emb':
 							if ($this->ImageMagickSwitchAvailable(array('emboss', 'negate'))) {
 								$parameter = (!empty($parameter) ? $parameter : 2);
-								$commandline .= ' -emboss '.phpthumb_functions::escapeshellarg_replacement(intval($parameter));
+								$commandline .= ' -emboss '.phpthumb_functions::escapeshellarg_replacement((int) $parameter);
 								if ($parameter < 2) {
 									$commandline .= ' -negate'; // ImageMagick negates the image for some reason with '-emboss 1';
 								}
@@ -2048,8 +2048,8 @@ if (false) {
 						case 'lvl':
 							@list($band, $method, $threshold) = explode('|', $parameter);
 							$band      = ($band ? preg_replace('#[^RGBA\\*]#', '', strtoupper($band))       : '*');
-							$method    = ((strlen($method) > 0)    ? intval($method)                        :   2);
-							$threshold = ((strlen($threshold) > 0) ? min(max(floatval($threshold), 0), 100) : 0.1);
+							$method    = ((strlen($method) > 0)    ? (int) $method :   2);
+							$threshold = ((strlen($threshold) > 0) ? min(max((float) $threshold, 0), 100) : 0.1);
 
 							$band = preg_replace('#[^RGBA\\*]#', '', strtoupper($band));
 
@@ -2110,7 +2110,7 @@ if (false) {
 						case 'wb':
 							if ($this->ImageMagickSwitchAvailable(array('channel', 'contrast-stretch'))) {
 								@list($threshold) = explode('|', $parameter);
-								$threshold = (!empty($threshold) ? min(max(floatval($threshold), 0), 100) : 0.1);
+								$threshold = (!empty($threshold) ? min(max((float) $threshold, 0), 100) : 0.1);
 								$threshold = preg_replace('#[^0-9\\.]#', '', $threshold); // should be unneccesary, but just to be double-sure
 								//$commandline .= ' -channel R -contrast-stretch '.phpthumb_functions::escapeshellarg_replacement($threshold.'%'); // doesn't work on Windows because most versions of PHP do not properly
 								//$commandline .= ' -channel G -contrast-stretch '.phpthumb_functions::escapeshellarg_replacement($threshold.'%'); // escape special characters (such as %) and just replace them with spaces
@@ -2126,7 +2126,7 @@ if (false) {
 						case 'blur':
 							if ($this->ImageMagickSwitchAvailable('blur')) {
 								@list($radius) = explode('|', $parameter);
-								$radius = (!empty($radius) ? min(max(intval($radius), 0), 25) : 1);
+								$radius = (!empty($radius) ? min(max((int) $radius, 0), 25) : 1);
 								$commandline .= ' -blur '.phpthumb_functions::escapeshellarg_replacement($radius);
 								$successfullyProcessedFilters[] = $filterkey;
 							}
@@ -2134,7 +2134,7 @@ if (false) {
 
 						case 'gblr':
 							@list($radius) = explode('|', $parameter);
-							$radius = (!empty($radius) ? min(max(intval($radius), 0), 25) : 1);
+							$radius = (!empty($radius) ? min(max((int) $radius, 0), 25) : 1);
 							// "-gaussian" changed to "-gaussian-blur" sometime around 2009
 							if ($this->ImageMagickSwitchAvailable('gaussian-blur')) {
 								$commandline .= ' -gaussian-blur '.phpthumb_functions::escapeshellarg_replacement($radius);
@@ -2148,9 +2148,9 @@ if (false) {
 						case 'usm':
 							if ($this->ImageMagickSwitchAvailable('unsharp')) {
 								@list($amount, $radius, $threshold) = explode('|', $parameter);
-								$amount    = ($amount            ? min(max(intval($amount),    0), 255) : 80);
-								$radius    = ($radius            ? min(max(intval($radius),    0),  10) : 0.5);
-								$threshold = (strlen($threshold) ? min(max(intval($threshold), 0),  50) : 3);
+								$amount    = ($amount            ? min(max((int) $amount,    0), 255) : 80);
+								$radius    = ($radius            ? min(max((int) $radius,    0),  10) : 0.5);
+								$threshold = (strlen($threshold) ? min(max((int) $threshold, 0),  50) : 3);
 								$commandline .= ' -unsharp '.phpthumb_functions::escapeshellarg_replacement(number_format(($radius * 2) - 1, 2, '.', '').'x1+'.number_format($amount / 100, 2, '.', '').'+'.number_format($threshold / 100, 2, '.', ''));
 								$successfullyProcessedFilters[] = $filterkey;
 							}
@@ -2160,14 +2160,14 @@ if (false) {
 							if ($this->ImageMagickSwitchAvailable(array('border', 'bordercolor', 'thumbnail', 'crop'))) {
 								if (!$this->zc) {
 									@list($width, $rX, $rY, $color) = explode('|', $parameter);
-									$width = intval($width);
-									$rX    = intval($rX);
-									$rY    = intval($rY);
+									$width = (int) $width;
+									$rX    = (int) $rX;
+									$rY    = (int) $rY;
 									if ($width && !$rX && !$rY) {
 										if (!phpthumb_functions::IsHexColor($color)) {
 											$color = ((!empty($this->bc) && phpthumb_functions::IsHexColor($this->bc)) ? $this->bc : '000000');
 										}
-										$commandline .= ' -border '.phpthumb_functions::escapeshellarg_replacement(intval($width));
+										$commandline .= ' -border '.phpthumb_functions::escapeshellarg_replacement((int) $width);
 										$commandline .= ' -bordercolor '.phpthumb_functions::escapeshellarg_replacement('#'.$color);
 
 										if (preg_match('# \\-crop "([0-9]+)x([0-9]+)\\+0\\+0" #', $commandline, $matches)) {
@@ -2336,12 +2336,12 @@ if (false) {
 			$rotate_angle = 0;
 			if ($this->ra) {
 
-				$rotate_angle = floatval($this->ra);
+				$rotate_angle = (float) $this->ra;
 
 			} else {
 
 				if ($this->ar == 'x') {
-					if (phpthumb_functions::version_compare_replacement(phpversion(), '4.2.0', '>=')) {
+					if (phpthumb_functions::version_compare_replacement(PHP_VERSION, '4.2.0', '>=')) {
 						if ($this->sourceFilename) {
 							if (function_exists('exif_read_data')) {
 								if ($exif_data = @exif_read_data($this->sourceFilename, 'IFD0')) {
@@ -2379,7 +2379,7 @@ if (false) {
 							return false;
 						}
 					} else {
-						$this->DebugMessage('Cannot auto-rotate from EXIF data because PHP is less than v4.2.0 ('.phpversion().')', __FILE__, __LINE__);
+						$this->DebugMessage('Cannot auto-rotate from EXIF data because PHP is less than v4.2.0 ('. PHP_VERSION .')', __FILE__, __LINE__);
 						return false;
 					}
 				} elseif (($this->ar == 'l') && ($this->source_height > $this->source_width)) {
@@ -2751,8 +2751,8 @@ if (false) {
 					case 'lvl': // autoLevels
 						@list($band, $method, $threshold) = explode('|', $parameter, 3);
 						$band      = ($band ? preg_replace('#[^RGBA\\*]#', '', strtoupper($band)) : '*');
-						$method    = ((strlen($method) > 0)    ? intval($method)                  :   2);
-						$threshold = ((strlen($threshold) > 0) ? floatval($threshold)             : 0.1);
+						$method    = ((strlen($method) > 0)    ? (int) $method :   2);
+						$threshold = ((strlen($threshold) > 0) ? (float) $threshold : 0.1);
 
 						$phpthumbFilters->HistogramStretch($this->gdimg_output, $band, $method, $threshold);
 						break;
@@ -2808,7 +2808,7 @@ if (false) {
 							} while (strlen($buffer) > 0);
 							fclose($fp_mask);
 							if ($gdimg_mask = $this->ImageCreateFromStringReplacement($MaskImageData)) {
-								if ($invert && phpthumb_functions::version_compare_replacement(phpversion(), '5.0.0', '>=') && phpthumb_functions::gd_is_bundled()) {
+								if ($invert && phpthumb_functions::version_compare_replacement(PHP_VERSION, '5.0.0', '>=') && phpthumb_functions::gd_is_bundled()) {
 									imagefilter($gdimg_mask, IMG_FILTER_NEGATE);
 								}
 								$this->is_alpha = true;
@@ -2931,8 +2931,8 @@ if (false) {
 						@list($filename, $alignment, $opacity, $margin['x'], $margin['y'], $rotate_angle) = explode('|', $parameter, 6);
 						// $margin can be pixel margin or percent margin if $alignment is text, or max width/height if $alignment is position like "50x75"
 						$alignment    = ($alignment            ? $alignment            : 'BR');
-						$opacity      = (strlen($opacity)      ? intval($opacity)      : 50);
-						$rotate_angle = (strlen($rotate_angle) ? intval($rotate_angle) : 0);
+						$opacity      = (strlen($opacity)      ? (int) $opacity : 50);
+						$rotate_angle = (strlen($rotate_angle) ? (int) $rotate_angle : 0);
 						if (!preg_match('#^([0-9\\.\\-]*)x([0-9\\.\\-]*)$#i', $alignment, $matches)) {
 							$margins = array('x', 'y');
 							foreach ($margins as $xy) {
@@ -2952,8 +2952,8 @@ if (false) {
 									$phpthumbFilters->ImprovedImageRotate($img_watermark, $rotate_angle, 'FFFFFF', null, $this);
 								}
 								if (preg_match('#^([0-9\\.\\-]*)x([0-9\\.\\-]*)$#i', $alignment, $matches)) {
-									$watermark_max_width  = intval($margin['x'] ? $margin['x'] : imagesx($img_watermark));
-									$watermark_max_height = intval($margin['y'] ? $margin['y'] : imagesy($img_watermark));
+									$watermark_max_width  = (int) ($margin[ 'x'] ? $margin[ 'x'] : imagesx($img_watermark));
+									$watermark_max_height = (int) ($margin[ 'y'] ? $margin[ 'y'] : imagesy($img_watermark));
 									$scale = phpthumb_functions::ScaleToFitInBox(imagesx($img_watermark), imagesy($img_watermark), $watermark_max_width, $watermark_max_height, true, true);
 									$this->DebugMessage('Scaling watermark by a factor of '.number_format($scale, 4), __FILE__, __LINE__);
 									if (($scale > 1) || ($scale < 1)) {
@@ -3326,7 +3326,7 @@ if (false) {
 		}
 		//$this->w = round($this->w ? $this->w : (($this->h && $this->source_height) ? $this->h * $this->source_width  / $this->source_height : $this->w));
 		//$this->h = round($this->h ? $this->h : (($this->w && $this->source_width)  ? $this->w * $this->source_height / $this->source_width  : $this->h));
-		$this->DebugMessage('SetOrientationDependantWidthHeight() setting w="'.intval($this->w).'", h="'.intval($this->h).'"', __FILE__, __LINE__);
+		$this->DebugMessage('SetOrientationDependantWidthHeight() setting w="'. (int) $this->w .'", h="'. (int) $this->h .'"', __FILE__, __LINE__);
 		return true;
 	}
 
@@ -3336,7 +3336,7 @@ if (false) {
 		if (preg_match('#^http:#i', $this->src) && !$this->sourceFilename && $this->rawImageData) {
 			$this->SourceDataToTempFile();
 		}
-		if (is_null($this->getimagesizeinfo)) {
+		if (null === $this->getimagesizeinfo) {
 			if ($this->sourceFilename) {
 				$this->getimagesizeinfo = @getimagesize($this->sourceFilename);
 				$this->source_width  = $this->getimagesizeinfo[0];
@@ -3385,7 +3385,7 @@ if (false) {
 
 		$this->SetOrientationDependantWidthHeight();
 
-		if (phpthumb_functions::version_compare_replacement(phpversion(), '4.2.0', '>=') && function_exists('exif_read_data')) {
+		if (phpthumb_functions::version_compare_replacement(PHP_VERSION, '4.2.0', '>=') && function_exists('exif_read_data')) {
 			switch ($this->getimagesizeinfo[2]) {
 				case IMAGETYPE_JPEG:
 				case IMAGETYPE_TIFF_II:
@@ -3402,7 +3402,7 @@ if (false) {
 			$this->exif_thumbnail_type   = '';
 
 			// The parameters width, height and imagetype are available since PHP v4.3.0
-			if (phpthumb_functions::version_compare_replacement(phpversion(), '4.3.0', '>=')) {
+			if (phpthumb_functions::version_compare_replacement(PHP_VERSION, '4.3.0', '>=')) {
 
 				$this->exif_thumbnail_data = @exif_thumbnail($this->sourceFilename, $this->exif_thumbnail_width, $this->exif_thumbnail_height, $this->exif_thumbnail_type);
 
@@ -3434,7 +3434,7 @@ if (false) {
 
 		}
 
-		$this->DebugMessage('EXIF thumbnail extraction: (size='.strlen($this->exif_thumbnail_data).'; type="'.$this->exif_thumbnail_type.'"; '.intval($this->exif_thumbnail_width).'x'.intval($this->exif_thumbnail_height).')', __FILE__, __LINE__);
+		$this->DebugMessage('EXIF thumbnail extraction: (size='.strlen($this->exif_thumbnail_data).'; type="'.$this->exif_thumbnail_type.'"; '. (int) $this->exif_thumbnail_width .'x'. (int) $this->exif_thumbnail_height .')', __FILE__, __LINE__);
 
 		// see if EXIF thumbnail can be used directly with no processing
 		if ($this->config_use_exif_thumbnail_for_speed && $this->exif_thumbnail_data) {
@@ -3488,11 +3488,11 @@ if (false) {
 
 
 	function SetCacheFilename() {
-		if (!is_null($this->cache_filename)) {
+		if (null !== $this->cache_filename) {
 			$this->DebugMessage('$this->cache_filename already set, skipping SetCacheFilename()', __FILE__, __LINE__);
 			return true;
 		}
-		if (is_null($this->config_cache_directory)) {
+		if (null === $this->config_cache_directory) {
 			$this->setCacheDirectory();
 			if (!$this->config_cache_directory) {
 				$this->DebugMessage('SetCacheFilename() failed because $this->config_cache_directory is empty', __FILE__, __LINE__);
@@ -3559,12 +3559,12 @@ if (false) {
 		$FilenameParameters2 = array('h', 'w', 'wl', 'wp', 'ws', 'hp', 'hs', 'xto', 'ra', 'iar', 'aoe', 'maxb', 'sfn', 'dpi');
 		foreach ($FilenameParameters2 as $key) {
 			if ($this->$key) {
-				$ParametersString .= '_'.$key.intval($this->$key);
+				$ParametersString .= '_'.$key. (int) $this->$key;
 			}
 		}
 		if ($this->thumbnailFormat == 'jpeg') {
 			// only JPEG output has variable quality option
-			$ParametersString .= '_q'.intval($this->thumbnailQuality);
+			$ParametersString .= '_q'. (int) $this->thumbnailQuality;
 		}
 		$this->DebugMessage('SetCacheFilename() _par set from md5('.$ParametersString.')', __FILE__, __LINE__);
 		$this->cache_filename .= '_par'.strtolower(md5($ParametersString));
@@ -3574,9 +3574,9 @@ if (false) {
 			// do not source image modification date --
 			// cached image will be used even if file was modified or removed
 		} elseif (!$this->config_cache_source_filemtime_ignore_remote && preg_match('#^(f|ht)tps?\://#i', $this->src)) {
-			$this->cache_filename .= '_dat'.intval(phpthumb_functions::filedate_remote($this->src));
+			$this->cache_filename .= '_dat'. (int) phpthumb_functions::filedate_remote($this->src);
 		} elseif (!$this->config_cache_source_filemtime_ignore_local && $this->src && !$this->rawImageData) {
-			$this->cache_filename .= '_dat'.intval(@filemtime($this->sourceFilename));
+			$this->cache_filename .= '_dat'. (int) (@filemtime($this->sourceFilename));
 		}
 
 		$this->cache_filename .= '.'.strtolower($this->thumbnailFormat);
@@ -3962,7 +3962,7 @@ if (false) {
 
 
 	function phpThumbDebugVarDump($var) {
-		if (is_null($var)) {
+		if (null === $var) {
 			return 'NULL';
 		} elseif (is_bool($var)) {
 			return ($var ? 'TRUE' : 'FALSE');
@@ -3997,7 +3997,7 @@ if (false) {
 
 		$DebugOutput = array();
 		$DebugOutput[] = 'phpThumb() version          = '.$this->phpthumb_version;
-		$DebugOutput[] = 'phpversion()                = '.@phpversion();
+		$DebugOutput[] = 'phpversion()                = '.@PHP_VERSION;
 		$DebugOutput[] = 'PHP_OS                      = '.PHP_OS;
 		$DebugOutput[] = '$_SERVER[SERVER_SOFTWARE]   = '.@$_SERVER['SERVER_SOFTWARE'];
 		$DebugOutput[] = '__FILE__                    = '.__FILE__;
@@ -4126,7 +4126,7 @@ if (false) {
 	}
 
 	function FatalError($text) {
-		if (is_null($this->fatalerror)) {
+		if (null === $this->fatalerror) {
 			$this->fatalerror = $text;
 		}
 		return true;
@@ -4183,7 +4183,7 @@ if (false) {
 
 		$headers_file = '';
 		$headers_line = '';
-		if (phpthumb_functions::version_compare_replacement(phpversion(), '4.3.0', '>=') && headers_sent($headers_file, $headers_line)) {
+		if (phpthumb_functions::version_compare_replacement(PHP_VERSION, '4.3.0', '>=') && headers_sent($headers_file, $headers_line)) {
 
 			echo "\n".'**Headers already sent in file "'.$headers_file.'" on line "'.$headers_line.'", dumping error message as text:**<br><pre>'."\n\n".$text."\n".'</pre>';
 

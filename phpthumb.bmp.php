@@ -104,7 +104,7 @@ class phpthumb_bmp {
 		$offset += 2;
 
 		if ($thisfile_bmp_header_raw['identifier'] != 'BM') {
-			$ThisFileInfo['error'][] = 'Expecting "BM" at offset '.intval(@$ThisFileInfo['avdataoffset']).', found "'.$thisfile_bmp_header_raw['identifier'].'"';
+			$ThisFileInfo['error'][] = 'Expecting "BM" at offset '. (int) (@$ThisFileInfo[ 'avdataoffset']) .', found "'. $thisfile_bmp_header_raw[ 'identifier'].'"';
 			unset($ThisFileInfo['fileformat']);
 			unset($ThisFileInfo['bmp']);
 			return false;
@@ -661,9 +661,9 @@ class phpthumb_bmp {
 									$pixelvalue = $this->LittleEndian2Int(substr($BMPpixelData, $pixeldataoffset, $thisfile_bmp_header_raw['bits_per_pixel'] / 8));
 									$pixeldataoffset += $thisfile_bmp_header_raw['bits_per_pixel'] / 8;
 
-									$red   = intval(round(((($pixelvalue & $thisfile_bmp_header_raw['red_mask'])   >> $redshift)   / ($thisfile_bmp_header_raw['red_mask']   >> $redshift))   * 255));
-									$green = intval(round(((($pixelvalue & $thisfile_bmp_header_raw['green_mask']) >> $greenshift) / ($thisfile_bmp_header_raw['green_mask'] >> $greenshift)) * 255));
-									$blue  = intval(round(((($pixelvalue & $thisfile_bmp_header_raw['blue_mask'])  >> $blueshift)  / ($thisfile_bmp_header_raw['blue_mask']  >> $blueshift))  * 255));
+									$red   = (int) round(((($pixelvalue & $thisfile_bmp_header_raw[ 'red_mask'])   >> $redshift)   / ($thisfile_bmp_header_raw[ 'red_mask']   >> $redshift))   * 255);
+									$green = (int) round(((($pixelvalue & $thisfile_bmp_header_raw[ 'green_mask']) >> $greenshift) / ($thisfile_bmp_header_raw[ 'green_mask'] >> $greenshift)) * 255);
+									$blue  = (int) round(((($pixelvalue & $thisfile_bmp_header_raw[ 'blue_mask'])  >> $blueshift)  / ($thisfile_bmp_header_raw[ 'blue_mask']  >> $blueshift))  * 255);
 									$thisfile_bmp['data'][$row][$col] = (($red << 16) | ($green << 8) | ($blue));
 								}
 								while (($pixeldataoffset % 4) != 0) {
@@ -753,7 +753,7 @@ class phpthumb_bmp {
 			return false;
 		}
 		if (!phpthumb_functions::FunctionIsDisabled('set_time_limit')) {
-			set_time_limit(intval(round($BMPinfo['resolution_x'] * $BMPinfo['resolution_y'] / 10000)));
+			set_time_limit((int) round($BMPinfo[ 'resolution_x'] * $BMPinfo[ 'resolution_y'] / 10000));
 		}
 		$im = $this->PlotPixelsGD($BMPinfo['bmp']);
 		if (headers_sent()) {

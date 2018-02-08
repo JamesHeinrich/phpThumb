@@ -42,7 +42,7 @@ function SelectRandomImage($dirname='.', $portrait=true, $landscape=true, $squar
 	if (empty($possibleimages)) {
 		return false;
 	}
-	if (phpversion() < '4.2.0') {
+	if (PHP_VERSION < '4.2.0') {
 		mt_srand(time());
 	}
 	$randkey = mt_rand(0, count($possibleimages) - 1);
