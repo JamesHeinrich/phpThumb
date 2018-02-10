@@ -12,7 +12,7 @@
 
 class phpthumb_ico {
 
-	function GD2ICOstring(&$gd_image_array) {
+	public function GD2ICOstring(&$gd_image_array) {
 		$ImageWidths  = array();
 		$ImageHeights = array();
 		$bpp          = array();

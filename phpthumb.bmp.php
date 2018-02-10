@@ -20,7 +20,7 @@
 
 class phpthumb_bmp {
 
-	function phpthumb_bmp2gd(&$BMPdata, $truecolor=true) {
+	public function phpthumb_bmp2gd(&$BMPdata, $truecolor=true) {
 		$ThisFileInfo = array();
 		if ($this->getid3_bmp($BMPdata, $ThisFileInfo, true, true)) {
 			$gd = $this->PlotPixelsGD($ThisFileInfo['bmp'], $truecolor);
@@ -29,7 +29,7 @@ class phpthumb_bmp {
 		return false;
 	}
 
-	function phpthumb_bmpfile2gd($filename, $truecolor=true) {
+	public function phpthumb_bmpfile2gd($filename, $truecolor=true) {
 		if ($fp = @fopen($filename, 'rb')) {
 			$BMPdata = fread($fp, filesize($filename));
 			fclose($fp);
@@ -38,7 +38,7 @@ class phpthumb_bmp {
 		return false;
 	}
 
-	function GD2BMPstring(&$gd_image) {
+	public function GD2BMPstring(&$gd_image) {
 		$imageX = imagesx($gd_image);
 		$imageY = imagesy($gd_image);
 
@@ -79,7 +79,7 @@ class phpthumb_bmp {
 		return $BITMAPFILEHEADER.$BITMAPINFOHEADER.$BMP;
 	}
 
-	function getid3_bmp(&$BMPdata, &$ThisFileInfo, $ExtractPalette=false, $ExtractData=false) {
+	public function getid3_bmp(&$BMPdata, &$ThisFileInfo, $ExtractPalette=false, $ExtractData=false) {
 
 		// shortcuts
 		$ThisFileInfo['bmp']['header']['raw'] = array();
@@ -689,14 +689,14 @@ class phpthumb_bmp {
 		return true;
 	}
 
-	function IntColor2RGB($color) {
+	public function IntColor2RGB($color) {
 		$red   = ($color & 0x00FF0000) >> 16;
 		$green = ($color & 0x0000FF00) >> 8;
 		$blue  = ($color & 0x000000FF);
 		return array($red, $green, $blue);
 	}
 
-	function PlotPixelsGD(&$BMPdata, $truecolor=true) {
+	public function PlotPixelsGD(&$BMPdata, $truecolor=true) {
 		$imagewidth  = $BMPdata['header']['raw']['width'];
 		$imageheight = $BMPdata['header']['raw']['height'];
 
@@ -746,7 +746,7 @@ class phpthumb_bmp {
 		return $gd;
 	}
 
-	function PlotBMP(&$BMPinfo) {
+	public function PlotBMP(&$BMPinfo) {
 		$starttime = time();
 		if (!isset($BMPinfo['bmp']['data']) || !is_array($BMPinfo['bmp']['data'])) {
 			echo 'ERROR: no pixel data<BR>';
@@ -767,7 +767,7 @@ class phpthumb_bmp {
 		return true;
 	}
 
-	function BMPcompressionWindowsLookup($compressionid) {
+	public function BMPcompressionWindowsLookup($compressionid) {
 		static $BMPcompressionWindowsLookup = array(
 			0 => 'BI_RGB',
 			1 => 'BI_RLE8',
@@ -779,7 +779,7 @@ class phpthumb_bmp {
 		return (isset($BMPcompressionWindowsLookup[$compressionid]) ? $BMPcompressionWindowsLookup[$compressionid] : 'invalid');
 	}
 
-	function BMPcompressionOS2Lookup($compressionid) {
+	public function BMPcompressionOS2Lookup($compressionid) {
 		static $BMPcompressionOS2Lookup = array(
 			0 => 'BI_RGB',
 			1 => 'BI_RLE8',
@@ -793,7 +793,7 @@ class phpthumb_bmp {
 
 	// from getid3.lib.php
 
-	function trunc($floatnumber) {
+	public function trunc($floatnumber) {
 		// truncates a floating-point number at the decimal point
 		// returns int (if possible, otherwise float)
 		if ($floatnumber >= 1) {
@@ -809,7 +809,7 @@ class phpthumb_bmp {
 		return $truncatednumber;
 	}
 
-	function LittleEndian2Int($byteword) {
+	public function LittleEndian2Int($byteword) {
 		$intvalue = 0;
 		$byteword = strrev($byteword);
 		$bytewordlen = strlen($byteword);
@@ -819,11 +819,11 @@ class phpthumb_bmp {
 		return $intvalue;
 	}
 
-	function BigEndian2Int($byteword) {
+	public function BigEndian2Int($byteword) {
 		return $this->LittleEndian2Int(strrev($byteword));
 	}
 
-	function BigEndian2Bin($byteword) {
+	public function BigEndian2Bin($byteword) {
 		$binvalue = '';
 		$bytewordlen = strlen($byteword);
 		for ($i = 0; $i < $bytewordlen; $i++) {
@@ -832,12 +832,12 @@ class phpthumb_bmp {
 		return $binvalue;
 	}
 
-	function FixedPoint2_30($rawdata) {
+	public function FixedPoint2_30($rawdata) {
 		$binarystring = $this->BigEndian2Bin($rawdata);
 		return $this->Bin2Dec(substr($binarystring, 0, 2)) + (float) ($this->Bin2Dec(substr($binarystring, 2, 30)) / 1073741824);
 	}
 
-	function Bin2Dec($binstring, $signed=false) {
+	public function Bin2Dec($binstring, $signed=false) {
 		$signmult = 1;
 		if ($signed) {
 			if ($binstring{0} == '1') {
@@ -852,7 +852,7 @@ class phpthumb_bmp {
 		return $this->CastAsInt($decvalue * $signmult);
 	}
 
-	function CastAsInt($floatnum) {
+	public function CastAsInt($floatnum) {
 		// convert to float if not already
 		$floatnum = (float) $floatnum;
 
