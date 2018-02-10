@@ -15,10 +15,10 @@ class phpthumb_filters {
 	* @var phpthumb
 	*/
 
-	var $phpThumbObject = null;
+	public $phpThumbObject = null;
 
 
-	function DebugMessage($message, $file='', $line='') {
+	public function DebugMessage($message, $file='', $line='') {
 		if (is_object($this->phpThumbObject)) {
 			return $this->phpThumbObject->DebugMessage($message, $file, $line);
 		}
@@ -75,7 +75,7 @@ class phpthumb_filters {
 	}
 
 
-    function Bevel(&$gdimg, $width, $hexcolor1, $hexcolor2) {
+    public function Bevel(&$gdimg, $width, $hexcolor1, $hexcolor2) {
         $width     = ($width     ? $width     : 5);
         $hexcolor1 = ($hexcolor1 ? $hexcolor1 : 'FFFFFF');
         $hexcolor2 = ($hexcolor2 ? $hexcolor2 : '000000');
