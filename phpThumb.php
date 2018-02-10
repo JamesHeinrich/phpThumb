@@ -152,7 +152,7 @@ if (!empty($PHPTHUMB_CONFIG)) {
 	}
 	if (!$phpThumb->config_disable_debug) {
 		// if debug mode is enabled, force phpThumbDebug output, do not allow normal thumbnails to be generated
-		$_GET['phpThumbDebug'] = (!empty($_GET['phpThumbDebug']) ? max(1, intval($_GET['phpThumbDebug'])) : 9);
+		$_GET['phpThumbDebug'] = (!empty($_GET['phpThumbDebug']) ? max(1, (int) $_GET[ 'phpThumbDebug']) : 9);
 		$phpThumb->setParameter('phpThumbDebug', $_GET['phpThumbDebug']);
 	}
 } else {
@@ -474,7 +474,7 @@ if (isset($_GET['phpThumbDebug']) && ($_GET['phpThumbDebug'] == '4')) {
 }
 ////////////////////////////////////////////////////////////////
 
-$phpThumb->DebugMessage('$CanPassThroughDirectly="'.intval($CanPassThroughDirectly).'" && $phpThumb->src="'.$phpThumb->src.'"', __FILE__, __LINE__);
+$phpThumb->DebugMessage('$CanPassThroughDirectly="'. (int) $CanPassThroughDirectly .'" && $phpThumb->src="'.$phpThumb->src.'"', __FILE__, __LINE__);
 while ($CanPassThroughDirectly && $phpThumb->src) {
 	// no parameters set, passthru
 

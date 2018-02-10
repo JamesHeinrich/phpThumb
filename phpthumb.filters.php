@@ -31,7 +31,7 @@ class phpthumb_filters {
 			$this->DebugMessage('Skipping ApplyMask() because gd_version is "'.phpthumb_functions::gd_version().'"', __FILE__, __LINE__);
 			return false;
 		}
-		if (phpthumb_functions::version_compare_replacement(phpversion(), '4.3.2', '>=')) {
+		if (phpthumb_functions::version_compare_replacement(PHP_VERSION, '4.3.2', '>=')) {
 
 			$this->DebugMessage('Using alpha ApplyMask() technique', __FILE__, __LINE__);
 			if ($gdimg_mask_resized = phpthumb_functions::ImageCreateFunction(imagesx($gdimg_image), imagesy($gdimg_image))) {
@@ -69,7 +69,7 @@ class phpthumb_filters {
 
 		} else {
 			// alpha merging requires PHP v4.3.2+
-			$this->DebugMessage('Skipping ApplyMask() technique because PHP is v"'.phpversion().'"', __FILE__, __LINE__);
+			$this->DebugMessage('Skipping ApplyMask() technique because PHP is v"'. PHP_VERSION .'"', __FILE__, __LINE__);
 		}
 		return true;
 	}
@@ -132,7 +132,7 @@ class phpthumb_filters {
 
 
 	public function BlurGaussian(&$gdimg) {
-		if (phpthumb_functions::version_compare_replacement(phpversion(), '5.0.0', '>=') && phpthumb_functions::gd_is_bundled()) {
+		if (phpthumb_functions::version_compare_replacement(PHP_VERSION, '5.0.0', '>=') && phpthumb_functions::gd_is_bundled()) {
 			if (imagefilter($gdimg, IMG_FILTER_GAUSSIAN_BLUR)) {
 				return true;
 			}
@@ -145,7 +145,7 @@ class phpthumb_filters {
 
 
 	public function BlurSelective(&$gdimg) {
-		if (phpthumb_functions::version_compare_replacement(phpversion(), '5.0.0', '>=') && phpthumb_functions::gd_is_bundled()) {
+		if (phpthumb_functions::version_compare_replacement(PHP_VERSION, '5.0.0', '>=') && phpthumb_functions::gd_is_bundled()) {
 			if (imagefilter($gdimg, IMG_FILTER_SELECTIVE_BLUR)) {
 				return true;
 			}
@@ -164,7 +164,7 @@ class phpthumb_filters {
 		}
 		$amount = max(-255, min(255, $amount));
 
-		if (phpthumb_functions::version_compare_replacement(phpversion(), '5.0.0', '>=') && phpthumb_functions::gd_is_bundled()) {
+		if (phpthumb_functions::version_compare_replacement(PHP_VERSION, '5.0.0', '>=') && phpthumb_functions::gd_is_bundled()) {
 			if (imagefilter($gdimg, IMG_FILTER_BRIGHTNESS, $amount)) {
 				return true;
 			}
@@ -195,7 +195,7 @@ class phpthumb_filters {
 		}
 		$amount = max(-255, min(255, $amount));
 
-		if (phpthumb_functions::version_compare_replacement(phpversion(), '5.0.0', '>=') && phpthumb_functions::gd_is_bundled()) {
+		if (phpthumb_functions::version_compare_replacement(PHP_VERSION, '5.0.0', '>=') && phpthumb_functions::gd_is_bundled()) {
 			// imagefilter(IMG_FILTER_CONTRAST) has range +100 to -100 (positive numbers make it darker!)
 			$amount = ($amount / 255) * -100;
 			if (imagefilter($gdimg, IMG_FILTER_CONTRAST, $amount)) {
@@ -234,7 +234,7 @@ class phpthumb_filters {
 			return true;
 		}
 
-		if (phpthumb_functions::version_compare_replacement(phpversion(), '5.0.0', '>=') && phpthumb_functions::gd_is_bundled()) {
+		if (phpthumb_functions::version_compare_replacement(PHP_VERSION, '5.0.0', '>=') && phpthumb_functions::gd_is_bundled()) {
 			if ($targetColor == 'gray') {
 				$targetColor = '808080';
 			}
@@ -395,7 +395,7 @@ class phpthumb_filters {
 
 
 	public function EdgeDetect(&$gdimg) {
-		if (phpthumb_functions::version_compare_replacement(phpversion(), '5.0.0', '>=') && phpthumb_functions::gd_is_bundled()) {
+		if (phpthumb_functions::version_compare_replacement(PHP_VERSION, '5.0.0', '>=') && phpthumb_functions::gd_is_bundled()) {
 			if (imagefilter($gdimg, IMG_FILTER_EDGEDETECT)) {
 				return true;
 			}
@@ -436,7 +436,7 @@ class phpthumb_filters {
 
 
 	public function Emboss(&$gdimg) {
-		if (phpthumb_functions::version_compare_replacement(phpversion(), '5.0.0', '>=') && phpthumb_functions::gd_is_bundled()) {
+		if (phpthumb_functions::version_compare_replacement(PHP_VERSION, '5.0.0', '>=') && phpthumb_functions::gd_is_bundled()) {
 			if (imagefilter($gdimg, IMG_FILTER_EMBOSS)) {
 				return true;
 			}
@@ -513,7 +513,7 @@ class phpthumb_filters {
 
 
 	public function Grayscale(&$gdimg) {
-		if (phpthumb_functions::version_compare_replacement(phpversion(), '5.0.0', '>=') && phpthumb_functions::gd_is_bundled()) {
+		if (phpthumb_functions::version_compare_replacement(PHP_VERSION, '5.0.0', '>=') && phpthumb_functions::gd_is_bundled()) {
 			if (imagefilter($gdimg, IMG_FILTER_GRAYSCALE)) {
 				return true;
 			}
@@ -568,7 +568,7 @@ class phpthumb_filters {
 		// pixel in the image could throw off the whole system. Instead, count up/down
 		// from the limit and allow <threshold> (default = 0.1%) of brightest/darkest
 		// pixels to be clipped to min/max
-		$threshold = floatval($threshold) / 100;
+		$threshold = (float) $threshold / 100;
 		$clip_threshold = imagesx($gdimg) * imagesx($gdimg) * $threshold;
 
 		$countsum  = 0;
@@ -631,7 +631,7 @@ class phpthumb_filters {
 
 
 	public function HistogramOverlay(&$gdimg, $bands='*', $colors='', $width=0.25, $height=0.25, $alignment='BR', $opacity=50, $margin_x=5, $margin_y=null) {
-		$margin_y = (is_null($margin_y) ? $margin_x : $margin_y);
+		$margin_y = (null === $margin_y ? $margin_x : $margin_y);
 
 		$Analysis = phpthumb_filters::HistogramAnalysis($gdimg, true);
 		$histW = round(($width > 1) ? min($width, imagesx($gdimg)) : imagesx($gdimg) * $width);
@@ -850,7 +850,7 @@ class phpthumb_filters {
 
 
 	public function MeanRemoval(&$gdimg) {
-		if (phpthumb_functions::version_compare_replacement(phpversion(), '5.0.0', '>=') && phpthumb_functions::gd_is_bundled()) {
+		if (phpthumb_functions::version_compare_replacement(PHP_VERSION, '5.0.0', '>=') && phpthumb_functions::gd_is_bundled()) {
 			if (imagefilter($gdimg, IMG_FILTER_MEAN_REMOVAL)) {
 				return true;
 			}
@@ -864,7 +864,7 @@ class phpthumb_filters {
 
 
 	public function Negative(&$gdimg) {
-		if (phpthumb_functions::version_compare_replacement(phpversion(), '5.0.0', '>=') && phpthumb_functions::gd_is_bundled()) {
+		if (phpthumb_functions::version_compare_replacement(PHP_VERSION, '5.0.0', '>=') && phpthumb_functions::gd_is_bundled()) {
 			if (imagefilter($gdimg, IMG_FILTER_NEGATE)) {
 				return true;
 			}
@@ -939,7 +939,7 @@ class phpthumb_filters {
 			return true;
 		}
 
-		if (phpthumb_functions::version_compare_replacement(phpversion(), '5.0.0', '>=') && phpthumb_functions::gd_is_bundled()) {
+		if (phpthumb_functions::version_compare_replacement(PHP_VERSION, '5.0.0', '>=') && phpthumb_functions::gd_is_bundled()) {
 			if (imagefilter($gdimg, IMG_FILTER_GRAYSCALE)) {
 
 				$r = round($amountPct * hexdec(substr($targetColor, 0, 2)));
@@ -992,7 +992,7 @@ class phpthumb_filters {
 		if ($amount == 0) {
 			return true;
 		}
-		if (phpthumb_functions::version_compare_replacement(phpversion(), '5.0.0', '>=') && phpthumb_functions::gd_is_bundled()) {
+		if (phpthumb_functions::version_compare_replacement(PHP_VERSION, '5.0.0', '>=') && phpthumb_functions::gd_is_bundled()) {
 			if (imagefilter($gdimg, IMG_FILTER_SMOOTH, $amount)) {
 				return true;
 			}
@@ -1117,8 +1117,8 @@ class phpthumb_filters {
 		imagealphablending($gdimg, true);
 
 		if (preg_match('#^([0-9\\.\\-]*)x([0-9\\.\\-]*)(@[LCR])?$#i', $alignment, $matches)) {
-			$originOffsetX = intval($matches[1]);
-			$originOffsetY = intval($matches[2]);
+			$originOffsetX = (int) $matches[ 1];
+			$originOffsetY = (int) $matches[ 2];
 			$alignment = (@$matches[4] ? $matches[4] : 'L');
 			$margin = 0;
 		} else {
@@ -1147,7 +1147,7 @@ class phpthumb_filters {
 
 		if (@is_readable($ttffont) && is_file($ttffont)) {
 
-			$opacity = 100 - intval(max(min($opacity, 100), 0));
+			$opacity = 100 - (int) max(min($opacity, 100), 0);
 			$letter_color_text = phpthumb_functions::ImageHexColorAllocate($gdimg, $hex_color, false, $opacity * 1.27);
 
 			$this->DebugMessage('Using TTF font "'.$ttffont.'"', __FILE__, __LINE__);
@@ -1429,14 +1429,14 @@ class phpthumb_filters {
 			$watermark_source_width    = imagesx($img_watermark);
 			$watermark_source_height   = imagesy($img_watermark);
 			$watermark_opacity_percent = max(0, min(100, $opacity));
-			$margin_y = (is_null($margin_y) ? $margin_x : $margin_y);
+			$margin_y = (null === $margin_y ? $margin_x : $margin_y);
 			$watermark_margin_x = ((($margin_x > 0) && ($margin_x < 1)) ? round((1 - $margin_x) * $img_source_width)  : $margin_x);
 			$watermark_margin_y = ((($margin_y > 0) && ($margin_y < 1)) ? round((1 - $margin_y) * $img_source_height) : $margin_y);
 			$watermark_destination_x = 0;
 			$watermark_destination_y = 0;
 			if (preg_match('#^([0-9\\.\\-]*)x([0-9\\.\\-]*)$#i', $alignment, $matches)) {
-				$watermark_destination_x = intval($matches[1]);
-				$watermark_destination_y = intval($matches[2]);
+				$watermark_destination_x = (int) $matches[ 1];
+				$watermark_destination_y = (int) $matches[ 2];
 			} else {
 				switch ($alignment) {
 					case '*':

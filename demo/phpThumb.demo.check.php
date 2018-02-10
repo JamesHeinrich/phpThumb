@@ -114,7 +114,7 @@ if (!$versions['base']['latest']) {
 } elseif ($versions['huge']['latest'].$versions['major']['latest'] == $versions['huge']['this'].$versions['major']['this']) {
 	echo 'olive';
 	$message = 'One (or more) minor version(s) have been released since this version.<br>'.$downloadlatest;
-} elseif (floatval($versions['huge']['latest'].str_pad($versions['major']['latest'], 2, '0', STR_PAD_LEFT)) < floatval($versions['huge']['this'].str_pad($t_major, 2, '0', STR_PAD_LEFT))) {
+} elseif ((float) ($versions[ 'huge'][ 'latest'].str_pad($versions[ 'major'][ 'latest'], 2, '0', STR_PAD_LEFT)) < (float) ($versions[ 'huge'][ 'this'].str_pad($t_major, 2, '0', STR_PAD_LEFT))) {
 	echo 'yellow';
 	$message = 'One (or more) major version(s) have been released since this version, you really should upgrade.<br>'.$downloadlatest;
 } else {
@@ -206,22 +206,22 @@ echo '</th><td>Original: "'.htmlspecialchars($orig_config_temp_directory).'"<br>
 
 
 echo '<tr><th>PHP version:</th><th colspan="2" style="background-color: ';
-if (phpthumb_functions::version_compare_replacement(phpversion(), '5.0.0', '>=')) {
+if (phpthumb_functions::version_compare_replacement(PHP_VERSION, '5.0.0', '>=')) {
 	echo 'lime';
-} elseif (phpthumb_functions::version_compare_replacement(phpversion(), '4.4.2', '=')) {
+} elseif (phpthumb_functions::version_compare_replacement(PHP_VERSION, '4.4.2', '=')) {
 	echo 'darkgreen';
-} elseif (phpthumb_functions::version_compare_replacement(phpversion(), '4.3.3', '>=')) {
+} elseif (phpthumb_functions::version_compare_replacement(PHP_VERSION, '4.3.3', '>=')) {
 	echo 'lightgreen';
-} elseif (phpthumb_functions::version_compare_replacement(phpversion(), '4.2.0', '>=')) {
+} elseif (phpthumb_functions::version_compare_replacement(PHP_VERSION, '4.2.0', '>=')) {
 	echo 'green';
-} elseif (phpthumb_functions::version_compare_replacement(phpversion(), '4.1.0', '>=')) {
+} elseif (phpthumb_functions::version_compare_replacement(PHP_VERSION, '4.1.0', '>=')) {
 	echo 'yellow';
-} elseif (phpthumb_functions::version_compare_replacement(phpversion(), '4.0.6', '>=')) {
+} elseif (phpthumb_functions::version_compare_replacement(PHP_VERSION, '4.0.6', '>=')) {
 	echo 'orange';
 } else {
 	echo 'red';
 }
-echo ';">'.phpversion();
+echo ';">'. PHP_VERSION;
 echo '</th><td>PHP5 is ideal (support for numerous built-in filters which are much faster than my code).<br>PHP v4.4.2 contains a bug in fopen over HTTP (phpThumb has a workaround)<br>PHP v4.3.2+ supports imagesavealpha which is required for proper PNG/ICO output.<br>imagerotate requires PHP v4.3.0+ (but buggy before v4.3.3).<br>EXIF thumbnail extraction requires PHP v4.2.0+.<br>Most things will work back to PHP v4.1.0, and mostly (perhaps buggy) back to v4.0.6, but no guarantees for any version older than that.</td></tr>';
 
 
@@ -275,11 +275,11 @@ if ($ServerInfo['im_version']) {
 }
 echo ';">';
 echo '<div style="color: navy; font-family: monospace;">'.htmlspecialchars($phpThumb->config_imagemagick_path);
-echo ' <span style="cursor: help;" title="file_exists"                  >['.intval(                            @file_exists($phpThumb->config_imagemagick_path)).']</span> ';
-echo ' <span style="cursor: help;" title="file_exists_ignoreopenbasedir">['.intval($phpThumb->file_exists_ignoreopenbasedir($phpThumb->config_imagemagick_path)).']</span> ';
-echo ' <span style="cursor: help;" title="is_file"                      >['.intval(                                @is_file($phpThumb->config_imagemagick_path)).']</span> ';
-echo ' <span style="cursor: help;" title="is_readable"                  >['.intval(                            @is_readable($phpThumb->config_imagemagick_path)).']</span> ';
-echo ' <span style="cursor: help;" title="is_executable"                >['.intval(                          @is_executable($phpThumb->config_imagemagick_path)).']</span> ';
+echo ' <span style="cursor: help;" title="file_exists"                  >['. (int) (@file_exists($phpThumb->config_imagemagick_path)) .']</span> ';
+echo ' <span style="cursor: help;" title="file_exists_ignoreopenbasedir">['. (int) $phpThumb->file_exists_ignoreopenbasedir($phpThumb->config_imagemagick_path) .']</span> ';
+echo ' <span style="cursor: help;" title="is_file"                      >['. (int) (@is_file($phpThumb->config_imagemagick_path)) .']</span> ';
+echo ' <span style="cursor: help;" title="is_readable"                  >['. (int) (@is_readable($phpThumb->config_imagemagick_path)) .']</span> ';
+echo ' <span style="cursor: help;" title="is_executable"                >['. (int) (@is_executable($phpThumb->config_imagemagick_path)) .']</span> ';
 echo '</div>';
 echo '<div style="color: blue; font-family: monospace;">'.htmlspecialchars($phpThumb->ImageMagickCommandlineBase()).'</div>';
 echo ($ServerInfo['im_version'] ? $ServerInfo['im_version'] : 'n/a');
@@ -350,7 +350,7 @@ echo '</th><td>EXIF extension required for auto-rotate images. Also required to 
 
 
 echo '<tr><th>php_sapi_name()</th><th colspan="2" style="background-color: ';
-$php_sapi_name = strtolower(function_exists('php_sapi_name') ? php_sapi_name() : '');
+$php_sapi_name = strtolower(function_exists('php_sapi_name') ? PHP_SAPI : '');
 if (!$php_sapi_name || (preg_match('#~#', dirname($_SERVER['PHP_SELF'])) && ($php_sapi_name != 'apache'))) {
 	echo 'red';
 } elseif ($php_sapi_name == 'cgi-fcgi') {
