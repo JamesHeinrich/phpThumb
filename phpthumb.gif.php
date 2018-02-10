@@ -519,13 +519,13 @@ class CGIFFILEHEADER
 			return false;
 		}
 
-		$b = ord(substr($lpData, 10, 1));
+		$b = ord($lpData[ 10 ]);
 		$this->m_bGlobalClr  = ($b & 0x80) ? true : false;
 		$this->m_nColorRes   = ($b & 0x70) >> 4;
 		$this->m_bSorted     = ($b & 0x08) ? true : false;
 		$this->m_nTableSize  = 2 << ($b & 0x07);
-		$this->m_nBgColor    = ord(substr($lpData, 11, 1));
-		$this->m_nPixelRatio = ord(substr($lpData, 12, 1));
+		$this->m_nBgColor    = ord($lpData[ 11 ]);
+		$this->m_nPixelRatio = ord($lpData[ 12 ]);
 		$hdrLen = 13;
 
 		if ($this->m_bGlobalClr) {
@@ -543,7 +543,7 @@ class CGIFFILEHEADER
 
 	public function w2i($str)
 	{
-		return ord(substr($str, 0, 1)) + (ord(substr($str, 1, 1)) << 8);
+		return ord($str[ 0 ]) + (ord($str[ 1 ]) << 8);
 	}
 }
 
@@ -614,7 +614,7 @@ class CGIFIMAGEHEADER
 
 	public function w2i($str)
 	{
-		return ord(substr($str, 0, 1)) + (ord(substr($str, 1, 1)) << 8);
+		return ord($str[ 0 ]) + (ord($str[ 1 ]) << 8);
 	}
 }
 
@@ -743,7 +743,7 @@ class CGIFIMAGE
 
 	public function w2i($str)
 	{
-		return ord(substr($str, 0, 1)) + (ord(substr($str, 1, 1)) << 8);
+		return ord($str[ 0 ]) + (ord($str[ 1 ]) << 8);
 	}
 
 	///////////////////////////////////////////////////////////////////////////

@@ -55,7 +55,7 @@ class phpthumb_ico {
 			}
 			$icAND[$key] = '';
 			foreach ($icANDmask[$key] as $y => $scanlinemaskbits) {
-				for ($i = 0; $i < strlen($scanlinemaskbits); $i += 8) {
+				for ($i = 0, $iMax = strlen($scanlinemaskbits); $i < $iMax; $i += 8) {
 					$icAND[$key] .= chr(bindec(str_pad(substr($scanlinemaskbits, $i, 8), 8, '0', STR_PAD_LEFT)));
 				}
 			}

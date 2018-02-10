@@ -1008,7 +1008,7 @@ if (!function_exists('preg_quote')) {
 		static $preg_quote_array = array();
 		if (empty($preg_quote_array)) {
 			$escapeables = '.\\+*?[^]$(){}=!<>|:';
-			for ($i = 0; $i < strlen($escapeables); $i++) {
+			for ($i = 0, $iMax = strlen($escapeables); $i < $iMax; $i++) {
 				$strtr_preg_quote[$escapeables{$i}] = $delimiter.$escapeables{$i};
 			}
 		}
