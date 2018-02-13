@@ -840,7 +840,7 @@ class phpthumb_functions {
 		$open_basedirs = preg_split('#[;:]#', ini_get('open_basedir'));
 		foreach ($open_basedirs as $key => $open_basedir) {
 			if (preg_match('#^'.preg_quote($open_basedir).'#', $dirname) && (strlen($dirname) > strlen($open_basedir))) {
-				$startoffset = count(explode(DIRECTORY_SEPARATOR, $open_basedir));
+				$startoffset = substr_count($open_basedir, DIRECTORY_SEPARATOR) + 1;
 				break;
 			}
 		}

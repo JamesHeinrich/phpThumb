@@ -590,7 +590,7 @@ if ($phpThumb->rawImageData) {
 	if (!phpthumb_functions::IsHexColor($bghexcolor)) {
 		$phpThumb->ErrorImage('BGcolor parameter for "new" is not valid');
 	}
-	$opacity = (strlen($opacity) ? $opacity : 100);
+	$opacity = ('' !== $opacity ? $opacity : 100);
 	if ($phpThumb->gdimg_source = phpthumb_functions::ImageCreateFunction($phpThumb->w, $phpThumb->h)) {
 		$alpha = (100 - min(100, max(0, $opacity))) * 1.27;
 		if ($alpha) {
