@@ -227,7 +227,7 @@ echo '</th><td>PHP5 is ideal (support for numerous built-in filters which are mu
 
 echo '<tr><th>GD version:</th><th colspan="2" style="background-color: ';
 if ($ServerInfo['gd_numeric'] >= 2) {
-	if (!empty($ServerInfo['gd_string']) && preg_match('#bundled#i', $ServerInfo['gd_string'])) {
+	if (!empty($ServerInfo['gd_string']) && false !== stripos($ServerInfo[ 'gd_string' ], "bundled")) {
 		echo 'lime';
 	} else {
 		echo 'yellow';
