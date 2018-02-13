@@ -756,7 +756,7 @@ class phpthumb_filters {
 		while ($rotate_angle < 0) {
 			$rotate_angle += 360;
 		}
-		$rotate_angle = $rotate_angle % 360;
+		$rotate_angle %= 360;
 		if ($rotate_angle != 0) {
 
 			$background_color = phpthumb_functions::ImageHexColorAllocate($gdimg_source, $config_background_hexcolor);
