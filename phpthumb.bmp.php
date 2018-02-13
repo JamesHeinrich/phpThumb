@@ -857,12 +857,11 @@ class phpthumb_bmp {
 		$floatnum = (float) $floatnum;
 
 		// convert a float to type int, only if possible
-		if ($this->trunc($floatnum) == $floatnum) {
-			// it's not floating point
-			if ($floatnum <= 1073741824) { // 2^30
-				// it's within int range
-				$floatnum = (int) $floatnum;
-			}
+		if ($this->trunc($floatnum) == $floatnum && $floatnum <= 1073741824)
+		{
+			// 2^30
+			// it's within int range
+			$floatnum = (int) $floatnum;
 		}
 		return $floatnum;
 	}

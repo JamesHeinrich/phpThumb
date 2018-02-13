@@ -232,3 +232,9 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+.idea/modules.xml
+.idea/composerJson.xml
+.idea/php.xml
+.idea/phpThumb.iml
+.idea/vcs.xml
+.idea/workspace.xml

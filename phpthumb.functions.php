@@ -971,18 +971,17 @@ if (!function_exists('gd_info')) {
 					}
 				}
 				// to determine capability of GIF creation, try to use imagecreatefromgif on a 1px GIF
-				if (function_exists('imagecreatefromgif')) {
-					if ($tempfilename = phpthumb::phpThumb_tempnam()) {
-						if ($fp_tempfile = @fopen($tempfilename, 'wb')) {
-							fwrite($fp_tempfile, base64_decode('R0lGODlhAQABAIAAAH//AP///ywAAAAAAQABAAACAUQAOw==')); // very simple 1px GIF file base64-encoded as string
-							fclose($fp_tempfile);
-							@chmod($tempfilename, $this->getParameter('config_file_create_mask'));
+				if (function_exists('imagecreatefromgif') && $tempfilename = phpthumb::phpThumb_tempnam())
+				{
+					if ($fp_tempfile = @fopen($tempfilename, 'wb')) {
+						fwrite($fp_tempfile, base64_decode('R0lGODlhAQABAIAAAH//AP///ywAAAAAAQABAAACAUQAOw==')); // very simple 1px GIF file base64-encoded as string
+						fclose($fp_tempfile);
+						@chmod($tempfilename, $this->getParameter('config_file_create_mask'));
 
-							// if we can convert the GIF file to a GD image then GIF create support must be enabled, otherwise it's not
-							$gd_info['GIF Read Support'] = (bool) @imagecreatefromgif($tempfilename);
-						}
-						unlink($tempfilename);
+						// if we can convert the GIF file to a GD image then GIF create support must be enabled, otherwise it's not
+						$gd_info['GIF Read Support'] = (bool) @imagecreatefromgif($tempfilename);
 					}
+					unlink($tempfilename);
 				}
 				if (function_exists('imagecreatetruecolor') && @imagecreatetruecolor(1, 1)) {
 					$gd_info['GD Version'] = '2.0.1 or higher (assumed)';

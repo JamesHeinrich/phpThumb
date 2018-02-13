@@ -1165,10 +1165,9 @@ class phpthumb {
 			for ($i = 0, $iMax = count($segments); $i < $iMax; $i++) {
 				$this->applyPathSegment($parts, $segments[$i]);
 				$thispart = implode(DIRECTORY_SEPARATOR, $parts);
-				if ($this->isInOpenBasedir($thispart)) {
-					if (is_link($thispart)) {
-						break;
-					}
+				if ($this->isInOpenBasedir($thispart) && is_link($thispart))
+				{
+					break;
 				}
 			}
 
@@ -1978,11 +1977,10 @@ if (false) {
 						case 'gam':
 							@list($amount) = explode('|', $parameter);
 							$amount = min(max((float) $amount, 0.001), 10);
-							if (number_format($amount, 3) != '1.000') {
-								if ($this->ImageMagickSwitchAvailable('gamma')) {
-									$commandline .= ' -gamma '.phpthumb_functions::escapeshellarg_replacement($amount);
-									$successfullyProcessedFilters[] = $filterkey;
-								}
+							if (number_format($amount, 3) != '1.000' && $this->ImageMagickSwitchAvailable('gamma'))
+							{
+								$commandline .= ' -gamma '.phpthumb_functions::escapeshellarg_replacement($amount);
+								$successfullyProcessedFilters[] = $filterkey;
 							}
 							break;
 
@@ -2157,26 +2155,30 @@ if (false) {
 							break;
 
 						case 'bord':
-							if ($this->ImageMagickSwitchAvailable(array('border', 'bordercolor', 'thumbnail', 'crop'))) {
-								if (!$this->zc) {
-									@list($width, $rX, $rY, $color) = explode('|', $parameter);
-									$width = (int) $width;
-									$rX    = (int) $rX;
-									$rY    = (int) $rY;
-									if ($width && !$rX && !$rY) {
-										if (!phpthumb_functions::IsHexColor($color)) {
-											$color = ((!empty($this->bc) && phpthumb_functions::IsHexColor($this->bc)) ? $this->bc : '000000');
-										}
-										$commandline .= ' -border '.phpthumb_functions::escapeshellarg_replacement((int) $width);
-										$commandline .= ' -bordercolor '.phpthumb_functions::escapeshellarg_replacement('#'.$color);
-
-										if (preg_match('# \\-crop "([0-9]+)x([0-9]+)\\+0\\+0" #', $commandline, $matches)) {
-											$commandline = str_replace(' -crop "'.$matches[1].'x'.$matches[2].'+0+0" ', ' -crop '.phpthumb_functions::escapeshellarg_replacement(($matches[1] - (2 * $width)).'x'.($matches[2] - (2 * $width)).'+0+0').' ', $commandline);
-										} elseif (preg_match('# \\-'.$IMresizeParameter.' "([0-9]+)x([0-9]+)" #', $commandline, $matches)) {
-											$commandline = str_replace(' -'.$IMresizeParameter.' "'.$matches[1].'x'.$matches[2].'" ', ' -'.$IMresizeParameter.' '.phpthumb_functions::escapeshellarg_replacement(($matches[1] - (2 * $width)).'x'.($matches[2] - (2 * $width))).' ', $commandline);
-										}
-										$successfullyProcessedFilters[] = $filterkey;
+							if ($this->ImageMagickSwitchAvailable(array(
+									'border',
+									'bordercolor',
+									'thumbnail',
+									'crop'
+								)) && !$this->zc)
+							{
+								@list($width, $rX, $rY, $color) = explode('|', $parameter);
+								$width = (int) $width;
+								$rX    = (int) $rX;
+								$rY    = (int) $rY;
+								if ($width && !$rX && !$rY) {
+									if (!phpthumb_functions::IsHexColor($color)) {
+										$color = ((!empty($this->bc) && phpthumb_functions::IsHexColor($this->bc)) ? $this->bc : '000000');
 									}
+									$commandline .= ' -border '.phpthumb_functions::escapeshellarg_replacement((int) $width);
+									$commandline .= ' -bordercolor '.phpthumb_functions::escapeshellarg_replacement('#'.$color);
+
+									if (preg_match('# \\-crop "([0-9]+)x([0-9]+)\\+0\\+0" #', $commandline, $matches)) {
+										$commandline = str_replace(' -crop "'.$matches[1].'x'.$matches[2].'+0+0" ', ' -crop '.phpthumb_functions::escapeshellarg_replacement(($matches[1] - (2 * $width)).'x'.($matches[2] - (2 * $width)).'+0+0').' ', $commandline);
+									} elseif (preg_match('# \\-'.$IMresizeParameter.' "([0-9]+)x([0-9]+)" #', $commandline, $matches)) {
+										$commandline = str_replace(' -'.$IMresizeParameter.' "'.$matches[1].'x'.$matches[2].'" ', ' -'.$IMresizeParameter.' '.phpthumb_functions::escapeshellarg_replacement(($matches[1] - (2 * $width)).'x'.($matches[2] - (2 * $width))).' ', $commandline);
+									}
+									$successfullyProcessedFilters[] = $filterkey;
 								}
 							}
 							break;
@@ -2245,13 +2247,15 @@ if (false) {
 					$this->useRawIMoutput = false;
 				}
 
-				if (preg_match('#jpe?g#i', $outputFormat) && $this->q) {
-					if ($this->ImageMagickSwitchAvailable(array('quality', 'interlace'))) {
-						$commandline .= ' -quality '.phpthumb_functions::escapeshellarg_replacement($this->thumbnailQuality);
-						if ($this->config_output_interlace) {
-							// causes weird things with animated GIF... leave for JPEG only
-							$commandline .= ' -interlace line '; // Use Line or Plane to create an interlaced PNG or GIF or progressive JPEG image
-						}
+				if (preg_match('#jpe?g#i', $outputFormat) && $this->q && $this->ImageMagickSwitchAvailable(array(
+						'quality',
+						'interlace'
+					)))
+				{
+					$commandline .= ' -quality '.phpthumb_functions::escapeshellarg_replacement($this->thumbnailQuality);
+					if ($this->config_output_interlace) {
+						// causes weird things with animated GIF... leave for JPEG only
+						$commandline .= ' -interlace line '; // Use Line or Plane to create an interlaced PNG or GIF or progressive JPEG image
 					}
 				}
 				$commandline .= ' '.$outputFormat.':'.phpthumb_functions::escapeshellarg_replacement($IMtempfilename);
@@ -3694,25 +3698,24 @@ if (false) {
 		}
 		$this->DebugMessage('starting SourceImageToGD()', __FILE__, __LINE__);
 
-		if ($this->config_prefer_imagemagick) {
-			if (empty($this->sourceFilename) && !empty($this->rawImageData)) {
-				$this->DebugMessage('Copying raw image data to temp file and trying again with ImageMagick', __FILE__, __LINE__);
-				if ($tempnam = $this->phpThumb_tempnam()) {
-					if (file_put_contents($tempnam, $this->rawImageData)) {
-						$this->sourceFilename = $tempnam;
-						if ($this->ImageMagickThumbnailToGD()) {
-							// excellent, we have a thumbnailed source image
-							$this->DebugMessage('ImageMagickThumbnailToGD() succeeded', __FILE__, __LINE__);
-						} else {
-							$this->DebugMessage('ImageMagickThumbnailToGD() failed', __FILE__, __LINE__);
-						}
-						@chmod($tempnam, $this->getParameter('config_file_create_mask'));
+		if ($this->config_prefer_imagemagick && empty($this->sourceFilename) && !empty($this->rawImageData))
+		{
+			$this->DebugMessage('Copying raw image data to temp file and trying again with ImageMagick', __FILE__, __LINE__);
+			if ($tempnam = $this->phpThumb_tempnam()) {
+				if (file_put_contents($tempnam, $this->rawImageData)) {
+					$this->sourceFilename = $tempnam;
+					if ($this->ImageMagickThumbnailToGD()) {
+						// excellent, we have a thumbnailed source image
+						$this->DebugMessage('ImageMagickThumbnailToGD() succeeded', __FILE__, __LINE__);
 					} else {
-						$this->DebugMessage('failed to put $this->rawImageData into temp file "'.$tempnam.'"', __FILE__, __LINE__);
+						$this->DebugMessage('ImageMagickThumbnailToGD() failed', __FILE__, __LINE__);
 					}
+					@chmod($tempnam, $this->getParameter('config_file_create_mask'));
 				} else {
-					$this->DebugMessage('failed to generate temp file name', __FILE__, __LINE__);
+					$this->DebugMessage('failed to put $this->rawImageData into temp file "'.$tempnam.'"', __FILE__, __LINE__);
 				}
+			} else {
+				$this->DebugMessage('failed to generate temp file name', __FILE__, __LINE__);
 			}
 		}
 		if (!$this->gdimg_source && $this->rawImageData) {

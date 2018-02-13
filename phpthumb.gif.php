@@ -293,7 +293,9 @@ class CGIFLZW
 				$this->sp++;
 
 				if ($Code == $this->Next[$Code]) // Circular table entry, big GIF Error!
+				{
 					return -1;
+				}
 
 				$Code = $this->Next[$Code];
 			}
