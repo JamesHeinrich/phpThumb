@@ -242,7 +242,7 @@ class phpthumb {
 			$this->config_max_source_pixels = round($this->php_memory_limit * 0.20); // 20% of memory_limit
 		}
 
-		$this->iswindows  = (bool) (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN');
+		$this->iswindows  = (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN');
 		$this->issafemode = (bool) preg_match('#(1|ON)#i', ini_get('safe_mode'));
 		$this->config_document_root = (!empty($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT']   : $this->config_document_root);
 		$this->config_cache_prefix  = ( isset($_SERVER['SERVER_NAME'])   ? $_SERVER['SERVER_NAME'].'_' : '');
@@ -1969,7 +1969,7 @@ if (false) {
 								@list($amount, $color) = explode('|', $parameter);
 								$amount = ($amount ? $amount : 80);
 								if (!$color) {
-									$commandline .= ' -sepia-tone '.phpthumb_functions::escapeshellarg_replacement(min(max((int) $amount, 0), 100).'%');
+									$commandline .= ' -sepia-tone '.phpthumb_functions::escapeshellarg_replacement(min(max($amount, 0), 100).'%');
 									$successfullyProcessedFilters[] = $filterkey;
 								}
 							}
@@ -2029,7 +2029,7 @@ if (false) {
 						case 'edge':
 							if ($this->ImageMagickSwitchAvailable('edge')) {
 								$parameter = (!empty($parameter) ? $parameter : 2);
-								$commandline .= ' -edge '.phpthumb_functions::escapeshellarg_replacement(!empty($parameter) ? (int) $parameter : 1);
+								$commandline .= ' -edge '.phpthumb_functions::escapeshellarg_replacement(!empty($parameter) ? $parameter : 1);
 								$successfullyProcessedFilters[] = $filterkey;
 							}
 							break;
@@ -2037,7 +2037,7 @@ if (false) {
 						case 'emb':
 							if ($this->ImageMagickSwitchAvailable(array('emboss', 'negate'))) {
 								$parameter = (!empty($parameter) ? $parameter : 2);
-								$commandline .= ' -emboss '.phpthumb_functions::escapeshellarg_replacement((int) $parameter);
+								$commandline .= ' -emboss '.phpthumb_functions::escapeshellarg_replacement($parameter);
 								if ($parameter < 2) {
 									$commandline .= ' -negate'; // ImageMagick negates the image for some reason with '-emboss 1';
 								}
@@ -2858,7 +2858,7 @@ if (false) {
 
 					case 'over': // Overlay
 						@list($filename, $underlay, $margin, $opacity) = explode('|', $parameter, 4);
-						$underlay = (bool) ($underlay              ? $underlay : false);
+						$underlay = ($underlay              ? $underlay : false);
 						$margin   =        ((strlen($margin)  > 0) ? $margin   : ($underlay ? 0.1 : 0.0));
 						$opacity  =        ((strlen($opacity) > 0) ? $opacity  : 100);
 						if (($margin > 0) && ($margin < 1)) {
@@ -2952,8 +2952,8 @@ if (false) {
 									$phpthumbFilters->ImprovedImageRotate($img_watermark, $rotate_angle, 'FFFFFF', null, $this);
 								}
 								if (preg_match('#^([0-9\\.\\-]*)x([0-9\\.\\-]*)$#i', $alignment, $matches)) {
-									$watermark_max_width  = (int) ($margin[ 'x'] ? $margin[ 'x'] : imagesx($img_watermark));
-									$watermark_max_height = (int) ($margin[ 'y'] ? $margin[ 'y'] : imagesy($img_watermark));
+									$watermark_max_width  = ($margin[ 'x'] ? $margin[ 'x'] : imagesx($img_watermark));
+									$watermark_max_height = ($margin[ 'y'] ? $margin[ 'y'] : imagesy($img_watermark));
 									$scale = phpthumb_functions::ScaleToFitInBox(imagesx($img_watermark), imagesy($img_watermark), $watermark_max_width, $watermark_max_height, true, true);
 									$this->DebugMessage('Scaling watermark by a factor of '.number_format($scale, 4), __FILE__, __LINE__);
 									if (($scale > 1) || ($scale < 1)) {
@@ -3596,9 +3596,9 @@ if (false) {
 		}
 		if ($this->php_memory_limit && function_exists('memory_get_usage')) {
 			$available_memory = $this->php_memory_limit - memory_get_usage();
-			return (bool) (($width * $height * 5) > $available_memory);
+			return (($width * $height * 5) > $available_memory);
 		}
-		return (bool) (($width * $height) > $this->config_max_source_pixels);
+		return (($width * $height) > $this->config_max_source_pixels);
 	}
 
 	public function ImageCreateFromFilename($filename) {

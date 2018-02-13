@@ -834,7 +834,7 @@ class phpthumb_bmp {
 
 	public function FixedPoint2_30($rawdata) {
 		$binarystring = $this->BigEndian2Bin($rawdata);
-		return $this->Bin2Dec(substr($binarystring, 0, 2)) + (float) ($this->Bin2Dec(substr($binarystring, 2, 30)) / 1073741824);
+		return $this->Bin2Dec(substr($binarystring, 0, 2)) + ($this->Bin2Dec(substr($binarystring, 2, 30)) / 1073741824);
 	}
 
 	public function Bin2Dec($binstring, $signed=false) {
