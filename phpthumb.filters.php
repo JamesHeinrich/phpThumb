@@ -76,9 +76,9 @@ class phpthumb_filters {
 
 
     public function Bevel(&$gdimg, $width, $hexcolor1, $hexcolor2) {
-        $width     = ($width     ? $width     : 5);
-        $hexcolor1 = ($hexcolor1 ? $hexcolor1 : 'FFFFFF');
-        $hexcolor2 = ($hexcolor2 ? $hexcolor2 : '000000');
+        $width     = ($width     ? : 5);
+        $hexcolor1 = ($hexcolor1 ? : 'FFFFFF');
+        $hexcolor2 = ($hexcolor2 ? : '000000');
 
         imagealphablending($gdimg, true);
         for ($i = 0; $i < $width; $i++) {
@@ -315,11 +315,11 @@ class phpthumb_filters {
 		if (phpthumb_functions::gd_version() < 2) {
 			return false;
 		}
-		$distance =                 ($distance ? $distance : 10);
-		$width    =                 ($width    ? $width    : 10);
-		$hexcolor =                 ($hexcolor ? $hexcolor : '000000');
-		$angle    =                 ($angle    ? $angle    : 225) % 360;
-		$alpha    = max(0, min(100, ($alpha    ? $alpha    : 100)));
+		$distance =                 ($distance ? : 10);
+		$width    =                 ($width    ? : 10);
+		$hexcolor =                 ($hexcolor ? : '000000');
+		$angle    =                 ($angle    ? : 225) % 360;
+		$alpha    = max(0, min(100, ($alpha    ? : 100)));
 
 		if ($alpha <= 0) {
 			// invisible shadow, nothing to do
@@ -473,11 +473,11 @@ class phpthumb_filters {
 
 
 	public function Frame(&$gdimg, $frame_width, $edge_width, $hexcolor_frame, $hexcolor1, $hexcolor2) {
-		$frame_width    = ($frame_width    ? $frame_width    : 5);
-		$edge_width     = ($edge_width     ? $edge_width     : 1);
-		$hexcolor_frame = ($hexcolor_frame ? $hexcolor_frame : 'CCCCCC');
-		$hexcolor1      = ($hexcolor1      ? $hexcolor1      : 'FFFFFF');
-		$hexcolor2      = ($hexcolor2      ? $hexcolor2      : '000000');
+		$frame_width    = ($frame_width    ? : 5);
+		$edge_width     = ($edge_width     ? : 1);
+		$hexcolor_frame = ($hexcolor_frame ? : 'CCCCCC');
+		$hexcolor1      = ($hexcolor1      ? : 'FFFFFF');
+		$hexcolor2      = ($hexcolor2      ? : '000000');
 
 		$color_frame = phpthumb_functions::ImageHexColorAllocate($gdimg, $hexcolor_frame);
 		$color1      = phpthumb_functions::ImageHexColorAllocate($gdimg, $hexcolor1);
@@ -681,9 +681,9 @@ class phpthumb_filters {
 
 
 	public function ImageBorder(&$gdimg, $border_width, $radius_x, $radius_y, $hexcolor_border) {
-		$border_width = ($border_width ? $border_width : 1);
-		$radius_x     = ($radius_x     ? $radius_x     : 0);
-		$radius_y     = ($radius_y     ? $radius_y     : 0);
+		$border_width = ($border_width ? : 1);
+		$radius_x     = ($radius_x     ? : 0);
+		$radius_y     = ($radius_y     ? : 0);
 
 		$output_width  = imagesx($gdimg);
 		$output_height = imagesy($gdimg);
@@ -1032,7 +1032,7 @@ class phpthumb_filters {
 	public function Threshold(&$gdimg, $cutoff) {
 		$width  = imagesx($gdimg);
 		$height = imagesy($gdimg);
-		$cutoff = min(255, max(0, ($cutoff ? $cutoff : 128)));
+		$cutoff = min(255, max(0, ($cutoff ? : 128)));
 		for ($x = 0; $x < $width; $x++) {
 			for ($y = 0; $y < $height; $y++) {
 				$currentPixel = phpthumb_functions::GetPixelColor($gdimg, $x, $y);
@@ -1204,17 +1204,17 @@ class phpthumb_filters {
 
 					case 'L':
 						$text_origin_x = $margin + $originOffsetX;
-						$text_origin_y = ($originOffsetY ? $originOffsetY : round((imagesy($gdimg) - $text_height) / 2) + $char_height);
+						$text_origin_y = ($originOffsetY ? : round((imagesy($gdimg) - $text_height) / 2) + $char_height);
 						break;
 
 					case 'R':
 						$text_origin_x = ($originOffsetX ? $originOffsetX - $text_width : imagesx($gdimg) - $text_width  + $TTFbox[0] - $min_x + round($size * 0.25) - $margin);
-						$text_origin_y = ($originOffsetY ? $originOffsetY : round((imagesy($gdimg) - $text_height) / 2) + $char_height);
+						$text_origin_y = ($originOffsetY ? : round((imagesy($gdimg) - $text_height) / 2) + $char_height);
 						break;
 
 					case 'C':
 						$text_origin_x = ($originOffsetX ? $originOffsetX - round($text_width / 2) : round((imagesx($gdimg) - $text_width) / 2));
-						$text_origin_y = ($originOffsetY ? $originOffsetY : round((imagesy($gdimg) - $text_height) / 2) + $char_height);
+						$text_origin_y = ($originOffsetY ? : round((imagesy($gdimg) - $text_height) / 2) + $char_height);
 						break;
 
 					case 'TL':
