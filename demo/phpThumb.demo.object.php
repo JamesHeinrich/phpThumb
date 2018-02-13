@@ -19,7 +19,7 @@
 
 die('For security reasons, this demo is disabled by default. Please comment out line '.__LINE__.' in '.basename(__FILE__));
 
-require_once('../phpthumb.class.php');
+require_once '../phpthumb.class.php';
 
 // create phpThumb object
 $phpThumb = new phpThumb();

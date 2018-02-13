@@ -34,7 +34,7 @@ $use_popup     = true;                       // if true, open large image in sel
 
 //////////////////////////////////////////////////////////////
 
-require_once($docroot.$config);
+require_once $docroot.$config;
 
 $dirlimit = realpath($docroot.'/'.$imgdir);
 
