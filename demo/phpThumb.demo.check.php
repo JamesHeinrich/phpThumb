@@ -282,7 +282,7 @@ echo ' <span style="cursor: help;" title="is_readable"                  >['. (in
 echo ' <span style="cursor: help;" title="is_executable"                >['. (int) (@is_executable($phpThumb->config_imagemagick_path)) .']</span> ';
 echo '</div>';
 echo '<div style="color: blue; font-family: monospace;">'.htmlspecialchars($phpThumb->ImageMagickCommandlineBase()).'</div>';
-echo ($ServerInfo['im_version'] ? $ServerInfo['im_version'] : 'n/a');
+echo ($ServerInfo['im_version'] ? : 'n/a');
 echo ($IMreleaseDate ? '<br><br>This version of ImageMagick is '.NiceTimeFormatting($IMversionAge).' old<br>(see <a href="http://www.imagemagick.org/">www.imagemagick.org</a> for new versions)' : '');
 echo '</th><td>ImageMagick is faster than GD, can process larger images without PHP memory_limit issues, can resize animated GIFs. phpThumb can perform most operations with ImageMagick only, even if GD is not available.</td></tr>';
 
@@ -493,7 +493,7 @@ if (!$memory_limit) {
 } else {
 	echo 'red';
 }
-echo ';">'.($memory_limit ? $memory_limit : '<i>unlimited</i>').'</th><th style="background-color: ';
+echo ';">'.($memory_limit ? : '<i>unlimited</i>').'</th><th style="background-color: ';
 $memory_limit = @ini_get('memory_limit');
 if (!$memory_limit) {
 	echo 'lime';
@@ -514,7 +514,7 @@ if (!$memory_limit) {
 } else {
 	echo 'red';
 }
-echo ';">'.($memory_limit ? $memory_limit : '<i>unlimited</i>').'</th>';
+echo ';">'.($memory_limit ? : '<i>unlimited</i>').'</th>';
 echo '<td>The higher the better. Divide by 5 to get maximum megapixels of source image that can be thumbnailed (without ImageMagick).'.($memory_limit ? ' Your setting ('.$memory_limit.') allows images up to approximately '.number_format($memory_limit / 5, 1).' megapixels' : '').'</td></tr>';
 
 echo '</table>';

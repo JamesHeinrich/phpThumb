@@ -537,7 +537,7 @@ class phpthumb_functions {
 	public static function filesize_remote($remotefile, $timeout=10) {
 		$size = false;
 		$url = phpthumb_functions::ParseURLbetter($remotefile);
-		if ($fp = @fsockopen($url['host'], ($url['port'] ? $url['port'] : 80), $errno, $errstr, $timeout)) {
+		if ($fp = @fsockopen($url['host'], ($url['port'] ? : 80), $errno, $errstr, $timeout)) {
 			fwrite($fp, 'HEAD '.@$url['path'].@$url['query'].' HTTP/1.0'."\r\n".'Host: '.@$url['host']."\r\n\r\n");
 			if (phpthumb_functions::version_compare_replacement(PHP_VERSION, '4.3.0', '>=')) {
 				stream_set_timeout($fp, $timeout);
@@ -558,7 +558,7 @@ class phpthumb_functions {
 	public static function filedate_remote($remotefile, $timeout=10) {
 		$date = false;
 		$url = phpthumb_functions::ParseURLbetter($remotefile);
-		if ($fp = @fsockopen($url['host'], ($url['port'] ? $url['port'] : 80), $errno, $errstr, $timeout)) {
+		if ($fp = @fsockopen($url['host'], ($url['port'] ? : 80), $errno, $errstr, $timeout)) {
 			fwrite($fp, 'HEAD '.@$url['path'].@$url['query'].' HTTP/1.0'."\r\n".'Host: '.@$url['host']."\r\n\r\n");
 			if (phpthumb_functions::version_compare_replacement(PHP_VERSION, '4.3.0', '>=')) {
 				stream_set_timeout($fp, $timeout);
