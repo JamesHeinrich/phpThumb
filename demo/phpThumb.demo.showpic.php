@@ -31,7 +31,7 @@
 die('For security reasons, this demo is disabled by default. Please comment out line '.__LINE__.' in '.basename(__FILE__));
 
 $phpThumbLocation = '../phpThumb.php';
-require_once('../phpThumb.config.php');
+require_once '../phpThumb.config.php';
 
 echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">';
 echo '<html><head>';

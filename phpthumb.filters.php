@@ -557,7 +557,7 @@ class phpthumb_filters {
 		// method 0 stretches according to RGB colors. Gives a more conservative stretch.
 		// method 1 band stretches according to grayscale which is color-biased (59% green, 30% red, 11% blue). May give a punchier / more aggressive stretch, possibly appearing over-saturated
 		$Analysis = phpthumb_filters::HistogramAnalysis($gdimg, true);
-		$keys = array('r'=>'red', 'g'=>'green', 'b'=>'blue', 'a'=>'alpha', '*'=>(($method == 0) ? 'all' : 'gray'));
+		$keys = array('r'=>'red', 'g'=>'green', 'b'=>'blue', 'a'=>'alpha', '*'=> ($method == 0) ? 'all' : 'gray' );
 		$band = $band[ 0 ];
 		if (!isset($keys[$band])) {
 			return false;
@@ -876,7 +876,7 @@ class phpthumb_filters {
 		for ($x = 0; $x < $ImageSX; $x++) {
 			for ($y = 0; $y < $ImageSY; $y++) {
 				$currentPixel = phpthumb_functions::GetPixelColor($gdimg, $x, $y);
-				$newColor = phpthumb_functions::ImageColorAllocateAlphaSafe($gdimg, (~$currentPixel['red'] & 0xFF), (~$currentPixel['green'] & 0xFF), (~$currentPixel['blue'] & 0xFF), $currentPixel['alpha']);
+				$newColor = phpthumb_functions::ImageColorAllocateAlphaSafe($gdimg, ~$currentPixel[ 'red'] & 0xFF, ~$currentPixel[ 'green'] & 0xFF, ~$currentPixel[ 'blue'] & 0xFF, $currentPixel[ 'alpha']);
 				imagesetpixel($gdimg, $x, $y, $newColor);
 			}
 		}
