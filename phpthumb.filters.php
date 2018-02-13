@@ -361,11 +361,10 @@ class phpthumb_filters {
 				for ($y = 0; $y < $tempImageHeight; $y++) {
 					//for ($i = 0; $i < $width; $i++) {
 					for ($i = 0; $i < 1; $i++) {
-						if (!isset($PixelMap[$x][$y]['alpha']) || ($PixelMap[$x][$y]['alpha'] > 0)) {
-							if (isset($PixelMap[$x + $Offset['x']][$y + $Offset['y']]['alpha']) && ($PixelMap[$x + $Offset['x']][$y + $Offset['y']]['alpha'] < 127)) {
-								$thisColor = phpthumb_functions::ImageHexColorAllocate($gdimg, $hexcolor, false, $PixelMap[$x + $Offset['x']][$y + $Offset['y']]['alpha']);
-								imagesetpixel($gdimg_dropshadow_temp, $x, $y, $thisColor);
-							}
+						if ((!isset($PixelMap[ $x ][ $y ][ 'alpha' ]) || ($PixelMap[ $x ][ $y ][ 'alpha' ] > 0)) && isset($PixelMap[ $x + $Offset[ 'x' ] ][ $y + $Offset[ 'y' ] ][ 'alpha' ]) && ($PixelMap[ $x + $Offset[ 'x' ] ][ $y + $Offset[ 'y' ] ][ 'alpha' ] < 127))
+						{
+							$thisColor = phpthumb_functions::ImageHexColorAllocate($gdimg, $hexcolor, false, $PixelMap[$x + $Offset['x']][$y + $Offset['y']]['alpha']);
+							imagesetpixel($gdimg_dropshadow_temp, $x, $y, $thisColor);
 						}
 					}
 				}
@@ -1324,14 +1323,12 @@ class phpthumb_filters {
 				$img_watermark_mask    = false;
 				$mask_color_background = false;
 				$mask_color_watermark  = false;
-				if ($angle && function_exists('imagerotate')) {
-					// using $img_watermark_mask is pointless if imagerotate function isn't available
-					if ($img_watermark_mask = phpthumb_functions::ImageCreateFunction($text_width, $text_height)) {
-						$mask_color_background = imagecolorallocate($img_watermark_mask, 0, 0, 0);
-						imagealphablending($img_watermark_mask, false);
-						imagefilledrectangle($img_watermark_mask, 0, 0, imagesx($img_watermark_mask), imagesy($img_watermark_mask), $mask_color_background);
-						$mask_color_watermark = imagecolorallocate($img_watermark_mask, 255, 255, 255);
-					}
+				if ($angle && function_exists('imagerotate') && $img_watermark_mask = phpthumb_functions::ImageCreateFunction($text_width, $text_height))
+				{
+					$mask_color_background = imagecolorallocate($img_watermark_mask, 0, 0, 0);
+					imagealphablending($img_watermark_mask, false);
+					imagefilledrectangle($img_watermark_mask, 0, 0, imagesx($img_watermark_mask), imagesy($img_watermark_mask), $mask_color_background);
+					$mask_color_watermark = imagecolorallocate($img_watermark_mask, 255, 255, 255);
 				}
 
 				$text_color_watermark = phpthumb_functions::ImageHexColorAllocate($img_watermark, $hex_color);
