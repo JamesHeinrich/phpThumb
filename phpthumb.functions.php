@@ -609,8 +609,8 @@ class phpthumb_functions {
 	public static function LittleEndian2String($number, $minbytes=1) {
 		$intstring = '';
 		while ($number > 0) {
-			$intstring = $intstring.chr($number & 255);
-			$number >>= 8;
+			$intstring .= chr($number & 255);
+			$number    >>= 8;
 		}
 		return str_pad($intstring, $minbytes, "\x00", STR_PAD_RIGHT);
 	}
