@@ -365,7 +365,7 @@ fltr = filter system. Call as an array as follows:
              watermark image will be scaled to fit inside
          <r> is rotation angle of overlaid watermark
        - "wmt" (WaterMarkText)
-         [ex: &fltr[]=wmt|<t>|<s>|<a>|<c>|<f>|<o>|<m>|<n>|<b>|<O>|<x>]
+         [ex: &fltr[]=wmt|<t>|<s>|<a>|<c>|<f>|<o>|<m>|<n>|<b>|<O>|<x>|<h>]
          where:
          <t> is the text to use as a watermark;
              URLencoded Unicode HTMLentities must be used for
@@ -407,6 +407,8 @@ fltr = filter system. Call as an array as follows:
              extended (either 'x' or 'y' (or both, but both
              will obscure entire image))
              Note: works with TTF fonts only, not built-in
+         <h> is the scale multiplier for line height/spacing
+             default is 1.0
        - "flip" [ex: &fltr[]=flip|x   or   &fltr[]=flip|y]
          flip image on X or Y axis
        - "ric" [ex: &fltr[]=ric|<x>|<y>]

@@ -215,7 +215,7 @@ class phpthumb {
 	public $issafemode       = null;
 	public $php_memory_limit = null;
 
-	public $phpthumb_version = '1.7.15-201802100727';
+	public $phpthumb_version = '1.7.15-201802181529';
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -2984,7 +2984,7 @@ if (false) {
 						break;
 
 					case 'wmt': // WaterMarkText
-						@list($text, $size, $alignment, $hex_color, $ttffont, $opacity, $margin, $angle, $bg_color, $bg_opacity, $fillextend) = explode('|', $parameter, 11);
+						@list($text, $size, $alignment, $hex_color, $ttffont, $opacity, $margin, $angle, $bg_color, $bg_opacity, $fillextend, $lineheight) = explode('|', $parameter, 12);
 						$text       = ($text            ? $text       : '');
 						$size       = ($size            ? $size       : 3);
 						$alignment  = ($alignment       ? $alignment  : 'BR');
@@ -2996,13 +2996,14 @@ if (false) {
 						$bg_color   = ($bg_color        ? $bg_color   : false);
 						$bg_opacity = ($bg_opacity      ? $bg_opacity : 0);
 						$fillextend = ($fillextend      ? $fillextend : '');
+						$lineheight = ($lineheight      ? $lineheight : 1.0);
 
 						if (basename($ttffont) == $ttffont) {
 							$ttffont = $this->realPathSafe($this->config_ttf_directory.DIRECTORY_SEPARATOR.$ttffont);
 						} else {
 							$ttffont = $this->ResolveFilenameToAbsolute($ttffont);
 						}
-						$phpthumbFilters->WatermarkText($this->gdimg_output, $text, $size, $alignment, $hex_color, $ttffont, $opacity, $margin, $angle, $bg_color, $bg_opacity, $fillextend);
+						$phpthumbFilters->WatermarkText($this->gdimg_output, $text, $size, $alignment, $hex_color, $ttffont, $opacity, $margin, $angle, $bg_color, $bg_opacity, $fillextend, $lineheight);
 						break;
 
 					case 'blur': // Blur

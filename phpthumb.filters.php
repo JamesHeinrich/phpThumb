@@ -1109,7 +1109,7 @@ class phpthumb_filters {
 	}
 
 
-	public function WatermarkText(&$gdimg, $text, $size, $alignment, $hex_color='000000', $ttffont='', $opacity=100, $margin=5, $angle=0, $bg_color=false, $bg_opacity=0, $fillextend='') {
+	public function WatermarkText(&$gdimg, $text, $size, $alignment, $hex_color='000000', $ttffont='', $opacity=100, $margin=5, $angle=0, $bg_color=false, $bg_opacity=0, $fillextend='', $lineheight=1.0) {
 		// text watermark requested
 		if (!$text) {
 			return false;
@@ -1125,6 +1125,7 @@ class phpthumb_filters {
 			$originOffsetX = 0;
 			$originOffsetY = 0;
 		}
+		$lineheight = min(100.0, max(0.01, (float) $lineheight));
 
 		$metaTextArray = array(
 			'^Fb' =>       $this->phpThumbObject->getimagesizeinfo['filesize'],
@@ -1178,7 +1179,7 @@ class phpthumb_filters {
 						imagettftext($gdimg, $size, $angle, $text_origin_x, $text_origin_y, $letter_color_text, $ttffont, $text);
 						$text_origin_x += ($text_width + $margin);
 					}
-					$text_origin_y += ($text_height + $margin);
+					$text_origin_y += ($text_height + $margin) * $lineheight;
 				}
 
 			} else {
@@ -1293,7 +1294,7 @@ class phpthumb_filters {
 					$this->DebugMessage('WatermarkText() calling imagettftext($gdimg, '.$size.', '.$angle.', '.$text_origin_x.', '.($text_origin_y + $y_offset).', $letter_color_text, '.$ttffont.', '.$line.')', __FILE__, __LINE__);
 					imagettftext($gdimg, $size, $angle, $text_origin_x, $text_origin_y + $y_offset, $letter_color_text, $ttffont, $line);
 
-					$y_offset += $char_height;
+					$y_offset += $char_height * $lineheight;
 				}
 
 			}
@@ -1400,8 +1401,8 @@ class phpthumb_filters {
 					$this->DebugMessage('WatermarkText() calling imagestring($img_watermark, '.$size.', '.$x_offset.', '.($key * imagefontheight($size)).', '.$line.', $text_color_watermark)', __FILE__, __LINE__);
 					imagestring($img_watermark, $size, $x_offset, $key * imagefontheight($size), $line, $text_color_watermark);
 					if ($angle && $img_watermark_mask) {
-						$this->DebugMessage('WatermarkText() calling imagestring($img_watermark_mask, '.$size.', '.$x_offset.', '.($key * imagefontheight($size)).', '.$text.', $mask_color_watermark)', __FILE__, __LINE__);
-						imagestring($img_watermark_mask, $size, $x_offset, $key * imagefontheight($size), $text, $mask_color_watermark);
+						$this->DebugMessage('WatermarkText() calling imagestring($img_watermark_mask, '.$size.', '.$x_offset.', '.($key * imagefontheight($size) * $lineheight).', '.$text.', $mask_color_watermark)', __FILE__, __LINE__);
+						imagestring($img_watermark_mask, $size, $x_offset, $key * imagefontheight($size) * $lineheight, $text, $mask_color_watermark);
 					}
 				}
 				if ($angle && $img_watermark_mask) {
