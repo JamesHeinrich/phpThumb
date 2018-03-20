@@ -1710,6 +1710,10 @@ class phpthumb {
 						if ($getimagesize[2] == IMAGETYPE_GIF) {
 							$commandline .= ' -flatten';
 						}
+					} else {
+						if ($getimagesize[2] == IMAGETYPE_PNG && !$this->bg) {
+							$commandline .= ' -background none';
+						}
 					}
 					if ($getimagesize[2] == IMAGETYPE_GIF) {
 						$commandline .= ' -coalesce'; // may be needed for animated GIFs
