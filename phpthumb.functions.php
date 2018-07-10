@@ -745,7 +745,7 @@ class phpthumb_functions {
 				$parsedURL[$key] = null;
 			}
 		}
-		$parsedURL['port'] = ($parsedURL['port'] ? $parsedURL['port'] : self::URLschemeDefaultPort($scheme));
+		$parsedURL['port'] = ($parsedURL['port'] ? $parsedURL['port'] : self::URLschemeDefaultPort($parsedURL['scheme']));
 		return $parsedURL;
 	}
 
