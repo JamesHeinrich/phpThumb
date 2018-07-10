@@ -28,12 +28,17 @@ if (PHP_VERSION < '4.1.0') {
 	$_GET    = $HTTP_GET_VARS;
 }
 
-function SendSaveAsFileHeaderIfNeeded() {
+function SendSaveAsFileHeaderIfNeeded($getimagesize=false) {
 	if (headers_sent()) {
 		return false;
 	}
 	global $phpThumb;
 	$downloadfilename = phpthumb_functions::SanitizeFilename(!empty($_GET['sia']) ? $_GET['sia'] : (!empty($_GET['down']) ? $_GET['down'] : 'phpThumb_generated_thumbnail.'.(!empty($_GET['f']) ? $_GET['f'] : 'jpg')));
+	//if (empty($_GET['sia']) && empty($_GET['down']) && !empty($phpThumb->thumbnail_image_width) && !empty($phpThumb->thumbnail_image_height)) {
+	if (empty($_GET['sia']) && empty($_GET['down']) && !empty($getimagesize[0]) && !empty($getimagesize[1])) {
+		// if we know the output image dimensions we can generate a better default filename
+		$downloadfilename = phpthumb_functions::SanitizeFilename((!empty($phpThumb->src) ? basename($phpThumb->src) : md5($this->rawImageData)).'-'.intval($getimagesize[0]).'x'.intval($getimagesize[1]).'.'.(!empty($_GET['f']) ? $_GET['f'] : 'jpg'));
+	}
 	if (!empty($downloadfilename)) {
 		$phpThumb->DebugMessage('SendSaveAsFileHeaderIfNeeded() sending header: Content-Disposition: '.(!empty($_GET['down']) ? 'attachment' : 'inline').'; filename="'.$downloadfilename.'"', __FILE__, __LINE__);
 		header('Content-Disposition: '.(!empty($_GET['down']) ? 'attachment' : 'inline').'; filename="'.$downloadfilename.'"');
@@ -75,7 +80,8 @@ function RedirectToCachedFile() {
 			$phpThumb->ErrorImage('Headers already sent ('.basename(__FILE__).' line '.__LINE__.')');
 			exit;
 		}
-		SendSaveAsFileHeaderIfNeeded();
+		$getimagesize = @getimagesize($phpThumb->cache_filename);
+		SendSaveAsFileHeaderIfNeeded($getimagesize);
 
 		header('Pragma: private');
 		header('Cache-Control: max-age='.$phpThumb->getParameter('config_cache_maxage'));
@@ -87,7 +93,7 @@ function RedirectToCachedFile() {
 		}
 		header('Last-Modified: '.gmdate('D, d M Y H:i:s', $nModified).' GMT');
 		header('ETag: "'.md5_file($phpThumb->cache_filename).'"');
-		if ($getimagesize = @getimagesize($phpThumb->cache_filename)) {
+		if (!empty($getimagesize[2])) {
 			header('Content-Type: '.phpthumb_functions::ImageTypeToMIMEtype($getimagesize[2]));
 		} elseif (preg_match('#\\.ico$#i', $phpThumb->cache_filename)) {
 			header('Content-Type: image/x-icon');
@@ -532,7 +538,7 @@ while ($CanPassThroughDirectly && $phpThumb->src) {
 				break;
 			}
 
-			SendSaveAsFileHeaderIfNeeded();
+			SendSaveAsFileHeaderIfNeeded($phpThumb->getimagesizeinfo);
 			header('Last-Modified: '.gmdate('D, d M Y H:i:s', @filemtime($SourceFilename)).' GMT');
 			if ($contentType = phpthumb_functions::ImageTypeToMIMEtype(@$phpThumb->getimagesizeinfo[2])) {
 				header('Content-Type: '.$contentType);
