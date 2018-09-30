@@ -1965,6 +1965,7 @@ if (false) {
 								@list($amount, $color) = explode('|', $parameter);
 								$commandline .= ' -fill '.phpthumb_functions::escapeshellarg_replacement('#'.preg_replace('#[^0-9A-F]#i', '', $color));
 								$commandline .= ' -colorize '.phpthumb_functions::escapeshellarg_replacement(min(max((int) $amount, 0), 100));
+                                $successfullyProcessedFilters[] = $filterkey;
 							}
 							break;
 
