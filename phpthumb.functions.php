@@ -107,8 +107,8 @@ class phpthumb_functions {
 
 		// and also inserts dots . before and after any non number so that for example '4.3.2RC1' becomes '4.3.2.RC.1'.
 		// Then it splits the results like if you were using explode('.',$ver). Then it compares the parts starting from left to right.
-		$version1 = preg_replace('#([0-9]+)([A-Z]+)([0-9]+)#i', "$1.$2.$3", $version1);
-		$version2 = preg_replace('#([0-9]+)([A-Z]+)([0-9]+)#i', "$1.$2.$3", $version2);
+		$version1 = preg_replace('#([\d]+)([A-Z]+)([\d]+)#i', "$1.$2.$3", $version1);
+		$version2 = preg_replace('#([\d]+)([A-Z]+)([\d]+)#i', "$1.$2.$3", $version2);
 
 		$parts1 = explode('.', $version1);
 		$parts2 = explode('.', $version1);
@@ -663,7 +663,7 @@ class phpthumb_functions {
 				} else {
 					$data_body .= $line;
 				}
-				if (preg_match('#^HTTP/[\\.0-9]+ ([0-9]+) (.+)$#i', rtrim($line), $matches)) {
+				if (preg_match('#^HTTP/[\\.\d]+ ([\d]+) (.+)$#i', rtrim($line), $matches)) {
 					list( , $errno, $errstr) = $matches;
 					$errno = (int) $errno;
 				} elseif (preg_match('#^Location: (.*)$#i', rtrim($line), $matches)) {
@@ -693,7 +693,7 @@ class phpthumb_functions {
 	}
 
 	public static function CleanUpURLencoding($url, $queryseperator='&') {
-		if (!preg_match('#^http#i', $url)) {
+		if (!0 === stripos($url, "http") ) {
 			return $url;
 		}
 		$parsed_url = self::ParseURLbetter($url);

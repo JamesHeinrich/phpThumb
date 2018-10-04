@@ -178,7 +178,7 @@ if (empty($phpThumb->config_disable_pathinfo_parsing) && (empty($_GET) || isset(
 			$_GET['new'] = $matches[1];
 		}
 	}
-	if (preg_match('#^([0-9]*)x?([0-9]*)$#i', @$args[count($args) - 2], $matches)) {
+	if (preg_match('#^([\d]*)x?([\d]*)$#i', @$args[count($args) - 2], $matches)) {
 		$_GET['w'] = $matches[1];
 		$_GET['h'] = $matches[2];
 		$phpThumb->DebugMessage('PATH_INFO."w"x"h" set to "'.$_GET['w'].'"x"'.$_GET['h'].'"', __FILE__, __LINE__);

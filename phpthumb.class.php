@@ -1484,7 +1484,7 @@ class phpthumb {
 					$commandline .= ' --version';
 					$this->DebugMessage('ImageMagick version checked with "'.$commandline.'"', __FILE__, __LINE__);
 					$versionstring[1] = trim(phpthumb_functions::SafeExec($commandline));
-					if (preg_match('#^Version: [^0-9]*([ 0-9\\.\\:Q/\\-]+)#i', $versionstring[1], $matches)) {
+					if (preg_match('#^Version: [^\D]*([ 0-9\\.\\:Q/\\-]+)#i', $versionstring[1], $matches)) {
 						$versionstring[0] = trim($matches[1]);
 					} else {
 						$versionstring[0] = false;
@@ -1724,7 +1724,7 @@ class phpthumb {
 							$borderThickness = 0;
 							if (!empty($this->fltr)) {
 								foreach ($this->fltr as $key => $value) {
-									if (preg_match('#^bord\|([0-9]+)#', $value, $matches)) {
+									if (preg_match('#^bord\|([\d]+)#', $value, $matches)) {
 										$borderThickness = $matches[1];
 										break;
 									}
@@ -2175,7 +2175,7 @@ if (false) {
 										$commandline .= ' -border '.phpthumb_functions::escapeshellarg_replacement((int) $width);
 										$commandline .= ' -bordercolor '.phpthumb_functions::escapeshellarg_replacement('#'.$color);
 
-										if (preg_match('# \\-crop "([0-9]+)x([0-9]+)\\+0\\+0" #', $commandline, $matches)) {
+										if (preg_match('# \\-crop "([\d]+)x([\d]+)\\+0\\+0" #', $commandline, $matches)) {
 											$commandline = str_replace(' -crop "'.$matches[1].'x'.$matches[2].'+0+0" ', ' -crop '.phpthumb_functions::escapeshellarg_replacement(($matches[1] - (2 * $width)).'x'.($matches[2] - (2 * $width)).'+0+0').' ', $commandline);
 										} elseif (preg_match('# \\-'.$IMresizeParameter.' "([0-9]+)x([0-9]+)" #', $commandline, $matches)) {
 											$commandline = str_replace(' -'.$IMresizeParameter.' "'.$matches[1].'x'.$matches[2].'" ', ' -'.$IMresizeParameter.' '.phpthumb_functions::escapeshellarg_replacement(($matches[1] - (2 * $width)).'x'.($matches[2] - (2 * $width))).' ', $commandline);
