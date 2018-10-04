@@ -111,7 +111,7 @@ function gif_outputAsPng($gif, $lpszFileName, $bgColor = -1)
 function gif_outputAsJpeg($gif, $lpszFileName, $bgColor = -1)
 {
 	// JPEG output that does not require cjpeg added by James Heinrich <info@silisoftware.com> - December 10, 2003
-	if ((strtoupper(substr(PHP_OS, 0, 3)) != 'WIN') && (file_exists('/usr/local/bin/cjpeg') || `which cjpeg`)) {
+	if ((strtoupper(substr(PHP_OS, 0, 3)) != 'WIN') && (file_exists('/usr/local/bin/cjpeg') || shell_exec("which cjpeg"))) {
 
 		if (gif_outputAsBmp($gif, $lpszFileName.'.bmp', $bgColor)) {
 			exec('cjpeg '.$lpszFileName.'.bmp >'.$lpszFileName.' 2>/dev/null');
