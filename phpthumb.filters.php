@@ -140,7 +140,7 @@ class phpthumb_filters {
 			// fall through and try it the hard way
 		}
 		$this->DebugMessage('FAILED: phpthumb_filters::BlurGaussian($gdimg) [using phpthumb_filters::Blur() instead]', __FILE__, __LINE__);
-		return self::Blur($gdimg, 0.5);
+		return $this->Blur($gdimg, 0.5);
 	}
 
 
@@ -307,7 +307,7 @@ class phpthumb_filters {
 		if ($amount == 0) {
 			return true;
 		}
-		return self::Colorize($gdimg, $amount, (phpthumb_functions::IsHexColor($color) ? $color : 'gray'));
+		return $this->Colorize($gdimg, $amount, (phpthumb_functions::IsHexColor($color) ? $color : 'gray'));
 	}
 
 
@@ -420,7 +420,7 @@ class phpthumb_filters {
 				imagefilledellipse($gdimg_ellipsemask_double, imagesx($gdimg), imagesy($gdimg), (imagesx($gdimg) - 1) * 2, (imagesy($gdimg) - 1) * 2, $color_transparent);
 				imagecopyresampled($gdimg_ellipsemask, $gdimg_ellipsemask_double, 0, 0, 0, 0, imagesx($gdimg), imagesy($gdimg), imagesx($gdimg) * 2, imagesy($gdimg) * 2);
 
-				self::ApplyMask($gdimg_ellipsemask, $gdimg);
+				$this->ApplyMask($gdimg_ellipsemask, $gdimg);
 				imagedestroy($gdimg_ellipsemask);
 				return true;
 
@@ -520,7 +520,7 @@ class phpthumb_filters {
 			$this->DebugMessage('FAILED: imagefilter($gdimg, IMG_FILTER_GRAYSCALE)', __FILE__, __LINE__);
 			// fall through and try it the hard way
 		}
-		return self::Colorize($gdimg, 100, 'gray');
+		return $this->Colorize($gdimg, 100, 'gray');
 	}
 
 
@@ -556,7 +556,7 @@ class phpthumb_filters {
 		// equivalent of "Auto Contrast" in Adobe Photoshop
 		// method 0 stretches according to RGB colors. Gives a more conservative stretch.
 		// method 1 band stretches according to grayscale which is color-biased (59% green, 30% red, 11% blue). May give a punchier / more aggressive stretch, possibly appearing over-saturated
-		$Analysis = self::HistogramAnalysis($gdimg, true);
+		$Analysis = $this->HistogramAnalysis($gdimg, true);
 		$keys = array('r'=>'red', 'g'=>'green', 'b'=>'blue', 'a'=>'alpha', '*'=>(($method == 0) ? 'all' : 'gray'));
 		$band = $band[ 0 ];
 		if (!isset($keys[$band])) {
@@ -633,7 +633,7 @@ class phpthumb_filters {
 	public function HistogramOverlay(&$gdimg, $bands='*', $colors='', $width=0.25, $height=0.25, $alignment='BR', $opacity=50, $margin_x=5, $margin_y=null) {
 		$margin_y = (null === $margin_y ? $margin_x : $margin_y);
 
-		$Analysis = self::HistogramAnalysis($gdimg, true);
+		$Analysis = $this->HistogramAnalysis($gdimg, true);
 		$histW = round(($width > 1) ? min($width, imagesx($gdimg)) : imagesx($gdimg) * $width);
 		$histH = round(($width > 1) ? min($width, imagesx($gdimg)) : imagesx($gdimg) * $width);
 		if ($gdHist = imagecreatetruecolor($histW, $histH)) {
@@ -672,7 +672,7 @@ class phpthumb_filters {
 				return false;
 			}
 
-			self::WatermarkOverlay($gdimg, $gdHist, $alignment, $opacity, $margin_x, $margin_y);
+			$this->WatermarkOverlay($gdimg, $gdHist, $alignment, $opacity, $margin_x, $margin_y);
 			imagedestroy($gdHist);
 			return true;
 		}
@@ -901,7 +901,7 @@ class phpthumb_filters {
 				imagecopyresampled($gdimg_cornermask, $gdimg_cornermask_triple, imagesx($gdimg) - $radius_x, imagesy($gdimg) - $radius_y, $radius_x * 3, $radius_y * 3, $radius_x, $radius_y, $radius_x * 2, $radius_y * 2);
 				imagecopyresampled($gdimg_cornermask, $gdimg_cornermask_triple, imagesx($gdimg) - $radius_x,                           0, $radius_x * 3,     $radius_y, $radius_x, $radius_y, $radius_x * 2, $radius_y * 2);
 
-				self::ApplyMask($gdimg_cornermask, $gdimg);
+				$this->ApplyMask($gdimg_cornermask, $gdimg);
 				imagedestroy($gdimg_cornermask);
 				$this->DebugMessage('RoundedImageCorners('.$radius_x.', '.$radius_y.') succeeded', __FILE__, __LINE__);
 				return true;
@@ -926,7 +926,7 @@ class phpthumb_filters {
 		} else {
 			$amount = abs($amount);
 		}
-		return self::Desaturate($gdimg, $amount, $color);
+		return $this->Desaturate($gdimg, $amount, $color);
 	}
 
 
@@ -1067,7 +1067,7 @@ class phpthumb_filters {
 		$colors = max(min($colors, 256), 2);
 		// imagetruecolortopalette usually makes ugly colors, the replacement is a bit better
 		//imagetruecolortopalette($gdimg, $dither, $colors);
-		self::ImageTrueColorToPalette2($gdimg, $dither, $colors);
+		$this->ImageTrueColorToPalette2($gdimg, $dither, $colors);
 		return true;
 	}
 
@@ -1080,7 +1080,7 @@ class phpthumb_filters {
 				'blue'  => hexdec(substr($targetColor, 4, 2))
 			);
 		} else {
-			$Analysis = self::HistogramAnalysis($gdimg, false);
+			$Analysis = $this->HistogramAnalysis($gdimg, false);
 			$targetPixel = array(
 				'red'   => max(array_keys($Analysis['red'])),
 				'green' => max(array_keys($Analysis['green'])),
@@ -1408,11 +1408,11 @@ class phpthumb_filters {
 				if ($angle && $img_watermark_mask) {
 					$img_watermark      = imagerotate($img_watermark,      $angle, $text_color_background);
 					$img_watermark_mask = imagerotate($img_watermark_mask, $angle, $mask_color_background);
-					self::ApplyMask($img_watermark_mask, $img_watermark);
+					$this->ApplyMask($img_watermark_mask, $img_watermark);
 				}
 				//phpthumb_filters::WatermarkOverlay($gdimg, $img_watermark, $alignment, $opacity, $margin);
 				$this->DebugMessage('WatermarkText() calling phpthumb_filters::WatermarkOverlay($gdimg, $img_watermark, '.($originOffsetX.'x'.$originOffsetY).', '.$opacity.', 0)', __FILE__, __LINE__);
-				self::WatermarkOverlay($gdimg, $img_watermark, $originOffsetX.'x'.$originOffsetY, $opacity, 0);
+				$this->WatermarkOverlay($gdimg, $img_watermark, $originOffsetX.'x'.$originOffsetY, $opacity, 0);
 				imagedestroy($img_watermark);
 				return true;
 			}
