@@ -215,7 +215,7 @@ class phpthumb {
 	public $issafemode       = null;
 	public $php_memory_limit = null;
 
-	public $phpthumb_version = '1.7.15-201807101405';
+	public $phpthumb_version = '1.7.15-201810050741';
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -1484,7 +1484,7 @@ class phpthumb {
 					$commandline .= ' --version';
 					$this->DebugMessage('ImageMagick version checked with "'.$commandline.'"', __FILE__, __LINE__);
 					$versionstring[1] = trim(phpthumb_functions::SafeExec($commandline));
-					if (preg_match('#^Version: [^\D]*([ 0-9\\.\\:Q/\\-]+)#i', $versionstring[1], $matches)) {
+					if (preg_match('#^Version: [^\d]*([ 0-9\\.\\:Q/\\-]+)#i', $versionstring[1], $matches)) {
 						$versionstring[0] = trim($matches[1]);
 					} else {
 						$versionstring[0] = false;
