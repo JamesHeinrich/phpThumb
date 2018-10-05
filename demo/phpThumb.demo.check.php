@@ -19,17 +19,17 @@ die('For security reasons, this demo is disabled by default. Please comment out 
 $ServerInfo['gd_string']  = 'unknown';
 $ServerInfo['gd_numeric'] = 0;
 //ob_start();
-if (!include_once('../phpthumb.functions.php')) {
+if (!include_once '../phpthumb.functions.php' ) {
 	ob_end_flush();
 	die('failed to include_once("../phpthumb.functions.php")');
 }
-if (!include_once('../phpthumb.class.php')) {
+if (!include_once '../phpthumb.class.php' ) {
 	//ob_end_flush();
 	die('failed to include_once("../phpthumb.class.php")');
 }
 //ob_end_clean();
 $phpThumb = new phpThumb();
-if (file_exists('../phpThumb.config.php') && include_once('../phpThumb.config.php')) {
+if (file_exists('../phpThumb.config.php') && include_once '../phpThumb.config.php' ) {
 	foreach ($PHPTHUMB_CONFIG as $key => $value) {
 		$phpThumb->setParameter('config_'.$key, $value);
 	}
