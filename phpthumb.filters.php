@@ -1250,10 +1250,10 @@ class phpthumb_filters {
 				$y1 = $text_origin_y + $TTFbox[1];
 				$x2 = $text_origin_x + $min_x + $text_width;
 				$y2 = $text_origin_y + $TTFbox[1] - $text_height;
-				$x_TL = false !== stripos($fillextend, "x") ?               0 : min($x1, $x2);
-				$y_TL = false !== stripos($fillextend, "y") ?               0 : min($y1, $y2);
-				$x_BR = false !== stripos($fillextend, "x") ? imagesx($gdimg) : max($x1, $x2);
-				$y_BR = false !== stripos($fillextend, "y") ? imagesy($gdimg) : max($y1, $y2);
+				$x_TL = false !== stripos($fillextend, 'x') ?               0 : min($x1, $x2);
+				$y_TL = false !== stripos($fillextend, 'y') ?               0 : min($y1, $y2);
+				$x_BR = false !== stripos($fillextend, 'x') ? imagesx($gdimg) : max($x1, $x2);
+				$y_BR = false !== stripos($fillextend, 'y') ? imagesy($gdimg) : max($y1, $y2);
 				$this->DebugMessage('WatermarkText() calling imagefilledrectangle($gdimg, '.$x_TL.', '.$y_TL.', '.$x_BR.', '.$y_BR.', $text_color_background)', __FILE__, __LINE__);
 				imagefilledrectangle($gdimg, $x_TL, $y_TL, $x_BR, $y_BR, $text_color_background);
 
