@@ -2155,7 +2155,7 @@ if (false) {
 								@list($amount, $radius, $threshold) = explode('|', $parameter);
 								$amount    = ($amount            ? min(max((int) $amount,    0), 255) : 80);
 								$radius    = ($radius            ? min(max((int) $radius,    0),  10) : 0.5);
-								$threshold = (strlen($threshold) ? min(max((int) $threshold, 0),  50) : 3);
+								$threshold = ('' !== $threshold ? min(max((int) $threshold, 0),  50) : 3);
 								$commandline .= ' -unsharp '.phpthumb_functions::escapeshellarg_replacement(number_format(($radius * 2) - 1, 2, '.', '').'x1+'.number_format($amount / 100, 2, '.', '').'+'.number_format($threshold / 100, 2, '.', ''));
 								$successfullyProcessedFilters[] = $filterkey;
 							}
@@ -2936,12 +2936,12 @@ if (false) {
 						@list($filename, $alignment, $opacity, $margin['x'], $margin['y'], $rotate_angle) = explode('|', $parameter, 6);
 						// $margin can be pixel margin or percent margin if $alignment is text, or max width/height if $alignment is position like "50x75"
 						$alignment    = ($alignment            ? $alignment            : 'BR');
-						$opacity      = (strlen($opacity)      ? (int) $opacity : 50);
-						$rotate_angle = (strlen($rotate_angle) ? (int) $rotate_angle : 0);
+						$opacity      = ('' !== $opacity ? (int) $opacity : 50);
+						$rotate_angle = ('' !== $rotate_angle ? (int) $rotate_angle : 0);
 						if (!preg_match('#^([0-9\\.\\-]*)x([0-9\\.\\-]*)$#i', $alignment, $matches)) {
 							$margins = array('x', 'y');
 							foreach ($margins as $xy) {
-								$margin[$xy] = (strlen($margin[$xy]) ? $margin[$xy] : 5);
+								$margin[$xy] = ('' !== $margin[ $xy ] ? $margin[ $xy] : 5);
 								if (($margin[$xy] > 0) && ($margin[$xy] < 1)) {
 									$margin[$xy] = min(0.499, $margin[$xy]);
 								} elseif (($margin[$xy] > -1) && ($margin[$xy] < 0)) {
@@ -2995,9 +2995,9 @@ if (false) {
 						$alignment  = ($alignment       ? $alignment  : 'BR');
 						$hex_color  = ($hex_color       ? $hex_color  : '000000');
 						$ttffont    = ($ttffont         ? $ttffont    : '');
-						$opacity    = (strlen($opacity) ? $opacity    : 50);
-						$margin     = (strlen($margin)  ? $margin     : 5);
-						$angle      = (strlen($angle)   ? $angle      : 0);
+						$opacity    = ('' !== $opacity ? $opacity    : 50);
+						$margin     = ('' !== $margin ? $margin     : 5);
+						$angle      = ('' !== $angle ? $angle      : 0);
 						$bg_color   = ($bg_color        ? $bg_color   : false);
 						$bg_opacity = ($bg_opacity      ? $bg_opacity : 0);
 						$fillextend = ($fillextend      ? $fillextend : '');
@@ -3041,7 +3041,7 @@ if (false) {
 						@list($amount, $radius, $threshold) = explode('|', $parameter, 3);
 						$amount    = ($amount            ? $amount    : 80);
 						$radius    = ($radius            ? $radius    : 0.5);
-						$threshold = (strlen($threshold) ? $threshold : 3);
+						$threshold = ('' !== $threshold ? $threshold : 3);
 						if (phpthumb_functions::gd_version() >= 2.0) {
 							ob_start();
 							if (!@include_once __DIR__ .'/phpthumb.unsharp.php' ) {
@@ -3102,8 +3102,8 @@ if (false) {
 							$this->DebugMessage('Skipping SourceTransparentColor hex color is invalid ('.$hexcolor.')', __FILE__, __LINE__);
 							return false;
 						}
-						$min_limit = (strlen($min_limit) ? $min_limit :  5);
-						$max_limit = (strlen($max_limit) ? $max_limit : 10);
+						$min_limit = ('' !== $min_limit ? $min_limit :  5);
+						$max_limit = ('' !== $max_limit ? $max_limit : 10);
 						if ($gdimg_mask = $phpthumbFilters->SourceTransparentColorMask($this->gdimg_output, $hexcolor, $min_limit, $max_limit)) {
 							$this->is_alpha = true;
 							$phpthumbFilters->ApplyMask($gdimg_mask, $this->gdimg_output);
