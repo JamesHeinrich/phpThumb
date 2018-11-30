@@ -2936,8 +2936,8 @@ if (false) {
 						@list($filename, $alignment, $opacity, $margin['x'], $margin['y'], $rotate_angle) = explode('|', $parameter, 6);
 						// $margin can be pixel margin or percent margin if $alignment is text, or max width/height if $alignment is position like "50x75"
 						$alignment    = ($alignment            ? $alignment            : 'BR');
-						$opacity      = ('' !== $opacity ? (int) $opacity : 50);
-						$rotate_angle = ('' !== $rotate_angle ? (int) $rotate_angle : 0);
+						$opacity      = ('' != $opacity ? (int) $opacity : 50);
+						$rotate_angle = ('' != $rotate_angle ? (int) $rotate_angle : 0);
 						if (!preg_match('#^([0-9\\.\\-]*)x([0-9\\.\\-]*)$#i', $alignment, $matches)) {
 							$margins = array('x', 'y');
 							foreach ($margins as $xy) {
@@ -2995,9 +2995,9 @@ if (false) {
 						$alignment  = ($alignment       ? $alignment  : 'BR');
 						$hex_color  = ($hex_color       ? $hex_color  : '000000');
 						$ttffont    = ($ttffont         ? $ttffont    : '');
-						$opacity    = ('' !== $opacity ? $opacity    : 50);
-						$margin     = ('' !== $margin ? $margin     : 5);
-						$angle      = ('' !== $angle ? $angle      : 0);
+						$opacity    = ('' != $opacity ? $opacity    : 50);
+						$margin     = ('' != $margin ? $margin     : 5);
+						$angle      = ('' != $angle ? $angle      : 0);
 						$bg_color   = ($bg_color        ? $bg_color   : false);
 						$bg_opacity = ($bg_opacity      ? $bg_opacity : 0);
 						$fillextend = ($fillextend      ? $fillextend : '');
