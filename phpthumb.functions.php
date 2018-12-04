@@ -663,7 +663,7 @@ class phpthumb_functions {
 				} else {
 					$data_body .= $line;
 				}
-				if (preg_match('#^HTTP/[\\.\d]+ ([\d]+) (.+)$#i', rtrim($line), $matches)) {
+				if (preg_match('#^HTTP\/[\\.\d]+ ([\d]+)\s*(.+)?$#i', rtrim($line), $matches)) {
 					list( , $errno, $errstr) = $matches;
 					$errno = (int) $errno;
 				} elseif (preg_match('#^Location: (.*)$#i', rtrim($line), $matches)) {
