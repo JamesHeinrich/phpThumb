@@ -979,6 +979,10 @@ class phpthumb {
 				$this->thumbnailFormat         = 'gif';
 				$AvailableImageOutputFormats[] = 'gif';
 			}
+			if ($imagetypes & IMG_WEBP) {
+				$this->thumbnailFormat         = 'webp';
+				$AvailableImageOutputFormats[] = 'webp';
+			}
 			if ($imagetypes & IMG_PNG) {
 				$this->thumbnailFormat         = 'png';
 				$AvailableImageOutputFormats[] = 'png';
@@ -991,7 +995,7 @@ class phpthumb {
 			$this->DebugMessage('imagetypes() does not exist - GD support might not be enabled?',  __FILE__, __LINE__);
 		}
 		if ($this->ImageMagickVersion()) {
-			$IMformats = array('jpeg', 'png', 'gif', 'bmp', 'ico', 'wbmp');
+			$IMformats = array('jpeg', 'png', 'gif', 'bmp', 'ico', 'wbmp', 'webp');
 			$this->DebugMessage('Addding ImageMagick formats to $AvailableImageOutputFormats ('.implode(';', $AvailableImageOutputFormats).')', __FILE__, __LINE__);
 			foreach ($IMformats as $key => $format) {
 				$AvailableImageOutputFormats[] = $format;
