@@ -2608,8 +2608,9 @@ if (false) {
 		}
 		switch ($this->thumbnailFormat) {
 			case 'png':
+			case 'webp':
 			case 'ico':
-				// image has alpha transparency, but output as PNG or ICO which can handle it
+				// image has alpha transparency, but output as PNG, WEBP or ICO which can handle it
 				$this->DebugMessage('skipping AlphaChannelFlatten() because ($this->thumbnailFormat == "'.$this->thumbnailFormat.'")', __FILE__, __LINE__);
 				return false;
 				break;
