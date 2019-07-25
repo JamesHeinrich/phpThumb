@@ -1874,7 +1874,11 @@ if (false) {
 
 								$commandline .= ' -'.$IMresizeParameter.' '.phpthumb_functions::escapeshellarg_replacement(phpthumb_functions::nonempty_min($this->w, $getimagesize[0]).'x'.phpthumb_functions::nonempty_min($this->h, $getimagesize[1]));
 								$commandline .= ' -gravity center';
-								$commandline .= ' -background '.phpthumb_functions::escapeshellarg_replacement('#'.$this->bg);
+								if ($this->bg) {
+									$commandline .= ' -background ' . phpthumb_functions::escapeshellarg_replacement('#' . $this->bg);
+								} else {
+									$commandline .= ' -background none';
+								}
 								$commandline .= ' -extent '.phpthumb_functions::escapeshellarg_replacement($this->w.'x'.$this->h);
 
 							} else {
