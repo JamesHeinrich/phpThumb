@@ -9,12 +9,16 @@
 //                                                         ///
 //////////////////////////////////////////////////////////////
 
-ob_start();
-if (!include_once __DIR__ .'/phpthumb.functions.php' ) {
-	ob_end_flush();
-	die('failed to include_once("'. __DIR__ .'/phpthumb.functions.php")');
+if (!class_exists('phpthumb_functions'))
+{
+	ob_start();
+	if(!include_once __DIR__ . '/phpthumb.functions.php')
+	{
+		ob_end_flush();
+		die('failed to include_once("' . __DIR__ . '/phpthumb.functions.php")');
+	}
+	ob_end_clean();
 }
-ob_end_clean();
 
 class phpthumb {
 
