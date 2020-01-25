@@ -219,7 +219,7 @@ class phpthumb_functions {
 		$len = strlen($string);
 		$output = '';
 		for ($i = 0; $i < $len; $i++) {
-			$output .= ' 0x'.str_pad(dechex(ord($string{$i})), 2, '0', STR_PAD_LEFT);
+			$output .= ' 0x'.str_pad(dechex(ord($string[$i])), 2, '0', STR_PAD_LEFT);
 		}
 		return $output;
 	}
