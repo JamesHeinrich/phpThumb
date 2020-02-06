@@ -1019,7 +1019,7 @@ if (!function_exists('preg_quote')) {
 		if (empty($preg_quote_array)) {
 			$escapeables = '.\\+*?[^]$(){}=!<>|:';
 			for ($i = 0, $iMax = strlen($escapeables); $i < $iMax; $i++) {
-				$strtr_preg_quote[$escapeables{$i}] = $delimiter.$escapeables{$i};
+				$strtr_preg_quote[$escapeables[$i]] = $delimiter.$escapeables[$i];
 			}
 		}
 		return strtr($string, $strtr_preg_quote);
