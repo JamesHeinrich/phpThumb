@@ -12,9 +12,13 @@
 
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
-ini_set('magic_quotes_runtime', '0');
-if (ini_get('magic_quotes_runtime')) {
-	die('"magic_quotes_runtime" is set in php.ini, cannot run phpThumb with this enabled');
+
+// check for magic quotes in PHP < 7.4.0 (when these functions became deprecated)
+if (version_compare(PHP_VERSION, '7.4.0', '<')) {
+	ini_set('magic_quotes_runtime', '0');
+	if (ini_get('magic_quotes_runtime')) {
+		die('"magic_quotes_runtime" is set in php.ini, cannot run phpThumb with this enabled');
+	}
 }
 // Set a default timezone if web server has not done already in php.ini
 if (!ini_get('date.timezone') && function_exists('date_default_timezone_set')) { // PHP >= 5.1.0
@@ -218,16 +222,19 @@ if (isset($_GET['phpThumbDebug']) && ($_GET['phpThumbDebug'] == '0')) {
 }
 ////////////////////////////////////////////////////////////////
 
-// returned the fixed string if the evil "magic_quotes_gpc" setting is on
-if (get_magic_quotes_gpc()) {
-	// deprecated: 'err', 'file', 'goto',
-	$RequestVarsToStripSlashes = array('src', 'wmf', 'down');
-	foreach ($RequestVarsToStripSlashes as $key) {
-		if (isset($_GET[$key])) {
-			if (is_string($_GET[$key])) {
-				$_GET[$key] = stripslashes($_GET[$key]);
-			} else {
-				unset($_GET[$key]);
+// check for magic quotes in PHP < 7.4.0 (when these functions became deprecated)
+if (version_compare(PHP_VERSION, '7.4.0', '<')) {
+	// returned the fixed string if the evil "magic_quotes_gpc" setting is on
+	if (get_magic_quotes_gpc()) {
+		// deprecated: 'err', 'file', 'goto',
+		$RequestVarsToStripSlashes = array('src', 'wmf', 'down');
+		foreach ($RequestVarsToStripSlashes as $key) {
+			if (isset($_GET[$key])) {
+				if (is_string($_GET[$key])) {
+					$_GET[$key] = stripslashes($_GET[$key]);
+				} else {
+					unset($_GET[$key]);
+				}
 			}
 		}
 	}
