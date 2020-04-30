@@ -352,7 +352,7 @@ class CGIFLZW
 
 			if ($Count) {
 				for ($i = 0; $i < $Count; $i++) {
-					$this->Buf[2 + $i] = ord($data{$i});
+					$this->Buf[2 + $i] = ord($data[$i]);
 				}
 				$data = substr($data, $Count);
 			} else {
@@ -907,7 +907,7 @@ class CGIF
 					($x <  ($this->m_img->m_gih->m_nLeft + $this->m_img->m_gih->m_nWidth)) &&
 					($y <  ($this->m_img->m_gih->m_nTop  + $this->m_img->m_gih->m_nHeight))) {
 					// PART OF IMAGE
-					if (@$this->m_img->m_bTrans && (ord($data{$nPxl}) == $this->m_img->m_nTrans)) {
+					if (@$this->m_img->m_bTrans && (ord($data[$nPxl]) == $this->m_img->m_nTrans)) {
 						// TRANSPARENT -> BACKGROUND
 						if ($bgColor == -1) {
 							$bmp .= chr($this->m_gfh->m_nBgColor);
@@ -915,7 +915,7 @@ class CGIF
 							$bmp .= chr($bgColor);
 						}
 					} else {
-						$bmp .= $data{$nPxl};
+						$bmp .= $data[$nPxl];
 					}
 				} else {
 					// BACKGROUND
@@ -1007,7 +1007,7 @@ class CGIF
 					($x <  ($this->m_img->m_gih->m_nLeft + $this->m_img->m_gih->m_nWidth)) &&
 					($y <  ($this->m_img->m_gih->m_nTop  + $this->m_img->m_gih->m_nHeight))) {
 					// PART OF IMAGE
-					$bmp .= $data{$nPxl};
+					$bmp .= $data[$nPxl];
 				} else {
 					// BACKGROUND
 					if ($bgColor == -1) {
@@ -1112,10 +1112,10 @@ class CGIF
 					($x <  ($this->m_img->m_gih->m_nLeft + $this->m_img->m_gih->m_nWidth)) &&
 					($y <  ($this->m_img->m_gih->m_nTop  + $this->m_img->m_gih->m_nHeight))) {
 					// PART OF IMAGE
-					if (@$this->m_img->m_bTrans && (ord($data{$nPxl}) == $this->m_img->m_nTrans)) {
+					if (@$this->m_img->m_bTrans && (ord($data[$nPxl]) == $this->m_img->m_nTrans)) {
 						imagesetpixel($PlottingIMG, $x, $this->m_gfh->m_nHeight - $y - 1, $ThisImageColor[$this->m_gfh->m_nBgColor]);
 					} else {
-						imagesetpixel($PlottingIMG, $x, $this->m_gfh->m_nHeight - $y - 1, $ThisImageColor[ord($data{$nPxl})]);
+						imagesetpixel($PlottingIMG, $x, $this->m_gfh->m_nHeight - $y - 1, $ThisImageColor[ord($data[$nPxl])]);
 					}
 				} else {
 					// BACKGROUND
