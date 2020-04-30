@@ -7,7 +7,7 @@
 ¤ = structure change or important new feature
 * = less important new feature or change
 
-v1.7.15-202002130926
+v1.7.15-202004301145
   ¤ PHP 7.4 curly brace substring compatibility
   ¤ add basic support for WebP
   * [bugfix: G18] fopen() fails when using remote images from SSL
