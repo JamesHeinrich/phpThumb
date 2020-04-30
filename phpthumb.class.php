@@ -1290,7 +1290,7 @@ class phpthumb {
 			return false;
 		}
 
-		if (preg_match('#^[a-z0-9]+\:/{1,2}#i', $filename)) {
+		if (preg_match('#^[a-z0-9]+\\:/{1,2}#i', $filename)) {
 			// eg: http://host/path/file.jpg (HTTP URL)
 			// eg: ftp://host/path/file.jpg  (FTP URL)
 			// eg: data1:/path/file.jpg      (Netware path)

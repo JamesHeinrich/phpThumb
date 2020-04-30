@@ -840,7 +840,7 @@ class phpthumb_bmp {
 	public function Bin2Dec($binstring, $signed=false) {
 		$signmult = 1;
 		if ($signed) {
-			if ($binstring{0} == '1') {
+			if ($binstring[0] == '1') {
 				$signmult = -1;
 			}
 			$binstring = substr($binstring, 1);
