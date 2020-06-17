@@ -436,10 +436,10 @@ if (isset($_GET['phpThumbDebug']) && ($_GET['phpThumbDebug'] == '3')) {
 $CanPassThroughDirectly = true;
 if ($phpThumb->rawImageData) {
 	// data from SQL, should be fine
-} elseif (preg_match('#^http\://[^\\?&]+\\.(jpe?g|gif|png|webp)$#i', $phpThumb->src)) {
+} elseif (preg_match('#^https?\\://[^\\?&]+\\.(jpe?g|gif|png|webp)$#i', $phpThumb->src)) {
 	// assume is ok to passthru if no other parameters specified
-} elseif (preg_match('#^(f|ht)tp\://#i', $phpThumb->src)) {
-	$phpThumb->DebugMessage('$CanPassThroughDirectly=false because preg_match("#^(f|ht)tp\://#i", '.$phpThumb->src.')', __FILE__, __LINE__);
+} elseif (preg_match('#^(f|ht)tps?\\://#i', $phpThumb->src)) {
+	$phpThumb->DebugMessage('$CanPassThroughDirectly=false because preg_match("#^(f|ht)tps?://#i", '.$phpThumb->src.')', __FILE__, __LINE__);
 	$CanPassThroughDirectly = false;
 } elseif (!@is_readable($phpThumb->sourceFilename)) {
 	$phpThumb->DebugMessage('$CanPassThroughDirectly=false because !@is_readable('.$phpThumb->sourceFilename.')', __FILE__, __LINE__);

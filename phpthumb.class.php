@@ -219,7 +219,7 @@ class phpthumb {
 	public $issafemode       = null;
 	public $php_memory_limit = null;
 
-	public $phpthumb_version = '1.7.15-202004301145';
+	public $phpthumb_version = '1.7.16-202006170947';
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -1043,7 +1043,7 @@ class phpthumb {
 	public function setCacheDirectory() {
 		// resolve cache directory to absolute pathname
 		$this->DebugMessage('setCacheDirectory() starting with config_cache_directory = "'.$this->config_cache_directory.'"', __FILE__, __LINE__);
-		if ($this->config_cache_directory[ 0 ] == '.') {
+		if ($this->config_cache_directory && ($this->config_cache_directory[0] == '.')) {
 			if (preg_match('#^(f|ht)tps?\://#i', $this->src)) {
 				if (!$this->config_cache_disable_warning) {
 					$this->ErrorImage('$this->config_cache_directory ('.$this->config_cache_directory.') cannot be used for remote images. Adjust "cache_directory" or "cache_disable_warning" in phpThumb.config.php');
