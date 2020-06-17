@@ -457,7 +457,7 @@ foreach ($_GET as $key => $value) {
 		case 'w':
 		case 'h':
 			// might be OK if exactly matches original
-			if (preg_match('#^http\://[^\\?&]+\\.(jpe?g|gif|png|webp)$#i', $phpThumb->src)) {
+			if (preg_match('#^https?\\://[^\\?&]+\\.(jpe?g|gif|png|webp)$#i', $phpThumb->src)) {
 				// assume it is not ok for direct-passthru of remote image
 				$CanPassThroughDirectly = false;
 			}
@@ -491,7 +491,7 @@ $phpThumb->DebugMessage('$CanPassThroughDirectly="'. (int) $CanPassThroughDirect
 while ($CanPassThroughDirectly && $phpThumb->src) {
 	// no parameters set, passthru
 
-	if (preg_match('#^http\://[^\\?&]+\.(jpe?g|gif|png|webp)$#i', $phpThumb->src)) {
+	if (preg_match('#^https?\\://[^\\?&]+\.(jpe?g|gif|png|webp)$#i', $phpThumb->src)) {
 		$phpThumb->DebugMessage('Passing HTTP source through directly as Location: redirect ('.$phpThumb->src.')', __FILE__, __LINE__);
 		header('Location: '.$phpThumb->src);
 		exit;
