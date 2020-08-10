@@ -27,7 +27,6 @@
 //                                                          //
 // See demo linked from http://phpthumb.sourceforge.net    ///
 //////////////////////////////////////////////////////////////
-
 die('For security reasons, this demo is disabled by default. Please comment out line '.__LINE__.' in '.basename(__FILE__));
 
 $phpThumbLocation = '../phpThumb.php';

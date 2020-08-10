@@ -11,6 +11,7 @@
 // Demo showing basic usage of phpThumb in a photo gallery  //
 //                                                          //
 //////////////////////////////////////////////////////////////
+die('For security reasons, this demo is disabled by default. Please comment out line '.__LINE__.' in '.basename(__FILE__));
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -21,8 +22,6 @@
 This is a demo of how you can use <a href="http://phpthumb.sourceforge.net">phpThumb()</a> in an image gallery.<br>
 <hr>
 <?php
-die('For security reasons, this demo is disabled by default. Please comment out line '.__LINE__.' in '.basename(__FILE__));
-
 $docroot = realpath((getenv('DOCUMENT_ROOT') && preg_match('#^'.preg_quote(realpath(getenv('DOCUMENT_ROOT'))).'#', realpath(__FILE__))) ? getenv('DOCUMENT_ROOT') : str_replace(dirname(@$_SERVER['PHP_SELF']), '', str_replace(DIRECTORY_SEPARATOR, '/',  __DIR__ )));
 $imgdir = '/images/';                        // webroot-relative path to main images directory (only this and subdirectories of this will be displayed)
 $thumb  = '/phpThumb.php';                   // webroot-relative path to "phpThumb.php"

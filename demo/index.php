@@ -16,7 +16,7 @@ if (empty($_REQUEST['list'])) {
 <?php
 $dh = opendir('.');
 while ($file = readdir($dh)) {
-	if (is_file($file) && ($file{0} != '.') && ($file != basename(__FILE__))) {
+	if (is_file($file) && ($file[0] != '.') && ($file != basename(__FILE__))) {
 		switch ($file) {
 			case 'phpThumb.demo.object.simple.php':
 			case 'phpThumb.demo.object.php':

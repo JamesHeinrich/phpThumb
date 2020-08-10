@@ -12,7 +12,6 @@
 // Run with no parameters for usage instructions.           //
 //                                                          //
 //////////////////////////////////////////////////////////////
-
 die('For security reasons, this demo is disabled by default. Please comment out line '.__LINE__.' in '.basename(__FILE__));
 
 function SelectRandomImage($dirname='.', $portrait=true, $landscape=true, $square=true) {

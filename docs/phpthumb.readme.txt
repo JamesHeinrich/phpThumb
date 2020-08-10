@@ -224,6 +224,12 @@ Parameters:
        or set to "T", "B", "L", "R", "TL", "TR", "BL", "BR"
        to gravitate towards top/left/bottom/right directions
        (requies ImageMagick for values other than "C" or "1")
+ ica = ImageCropAuto, requires (PHP 5 >= 5.5.0, PHP 7)
+       https://www.php.net/manual/en/function.imagecropauto.php
+       value can be 0-4 (IMG_CROP_DEFAULT, IMG_CROP_TRANSPARENT,
+       IMG_CROP_BLACK, IMG_CROP_WHITE, IMG_CROP_SIDES) or can be
+       "5|<threshold>|<bgcolor>" where <threshold> is between 0
+       and 1, and <bgcolor> is the hex background color
   bg = background hex color (default = FFFFFF)
   bc = border hex color (default = 000000)
 fltr = filter system. Call as an array as follows:

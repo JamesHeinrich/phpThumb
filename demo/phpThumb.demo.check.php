@@ -13,7 +13,6 @@
 // Live demo is at http://phpthumb.sourceforge.net/demo/    //
 //                                                          //
 //////////////////////////////////////////////////////////////
-
 die('For security reasons, this demo is disabled by default. Please comment out line '.__LINE__.' in '.basename(__FILE__));
 
 $ServerInfo['gd_string']  = 'unknown';
@@ -418,6 +417,7 @@ $FunctionsExist = array(
 	'imagecreatetruecolor'  => array('orange',     'required for all non-ImageMagick filters.'),
 	'imageistruecolor'      => array('olive',      'available in PHP v4.3.2+ with GD v2.0.1+'),
 	'imagefilter'           => array('yellow',     'PHP5 only. Required for some filters (but most can use ImageMagick instead)'),
+	'imageautocrop'         => array('yellow',     'PHP v5.5.0+, required for "ica" filter'),
 );
 foreach ($FunctionsExist as $function => $details) {
 	list($color, $description) = $details;

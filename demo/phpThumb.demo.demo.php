@@ -13,7 +13,6 @@
 // Live demo is at http://phpthumb.sourceforge.net/demo/    //
 //                                                          //
 //////////////////////////////////////////////////////////////
-
 die('For security reasons, this demo is disabled by default. Please comment out line '.__LINE__.' in '.basename(__FILE__));
 
 $ServerInfo['gd_string']  = 'unknown';
@@ -100,6 +99,7 @@ $img['levels2']    = 'images/lilies.jpg';
 $img['anigif']     = 'images/animaple.gif';
 $img['alpha']      = 'images/alpha.png';
 //$img['alpha']      = 'images/North15.gif';
+$img['whitespace'] = 'images/whitespace.jpg';
 
 $img['mask1']      = 'images/mask04.png';
 $img['mask2']      = 'images/mask05.png';
@@ -154,6 +154,7 @@ $Examples[] = array('getstrings' => array('src='.$img['unrotated'].'&w=150&h=150
 $Examples[] = array('getstrings' => array('src='.$img['landscape'].'&w=300&ra=30&bg=0000FF', 'src='.$img['landscape'].'&w=300&ra=30&f=png', 'src='.$img['alpha'].'&ra=30&f=png', 'src='.$img['alpha'].'&ra=30&f=gif'), 'description' => 'Rotated 30&deg; (counter-clockwise), width=300px, blue background vs. transparent background vs. rotated image with pre-existing alpha'.$only_php42.$only_gd);
 $Examples[] = array('getstrings' => array('src='.$img['landscape'].'&w=300&h=300&far=1&bg=CCCCCC', 'src='.$img['landscape'].'&w=300&h=300&iar=1'), 'description' => 'Normal resize behavior (left) vs. Forced non-proportional resize (right)'.$only_gd);
 $Examples[] = array('getstrings' => array('src='.$img['landscape'].'&w=100&h=50&zc=1', 'src='.$img['landscape'].'&w=100&zc=1', 'src='.$img['landscape'].'&h=50&zc=1', 'src='.$img['portrait'].'&w=100&h=50&zc=1', 'src='.$img['portrait'].'&w=100&zc=1', 'src='.$img['portrait'].'&h=50&zc=1'), 'description' => 'Zoom-Crop');
+$Examples[] = array('getstrings' => array('src='.$img['whitespace'].'&w=100&h=100', 'src='.$img['whitespace'].'&w=100&h=100&ica=1', 'src='.$img['whitespace'].'&w=100&h=100&ica=2', 'src='.$img['whitespace'].'&w=100&h=100&ica=3', 'src='.$img['whitespace'].'&w=100&h=100&ica=4', 'src='.$img['whitespace'].'&w=100&h=100&ica=5|0.25|FFFFFF'), 'description' => 'ImageAutoCrop');
 $Examples[] = array('getstrings' => array('src='.$img['landscape'].'&w=300&fltr[]=crop|50', 'src='.$img['landscape'].'&w=300&fltr[]=crop|0|0|0|0.25'), 'description' => 'crop filter');
 $Examples[] = array('getstrings' => array('src='.$img['landscape'].'&w=300&fltr[]=bord|2|20|10|009900&f=png'), 'description' => '2px border, curved border corners (20px horizontal radius, 10px vertical radius)'.$only_gd);
 $Examples[] = array('getstrings' => array('src='.$img['landscape'].'&w=300&fltr[]=ric|50|20&f=png'), 'description' => 'curved border corners (20px vertical radius, 50px horizontal radius)<br>'.$png_alpha.$only_gd2.$only_php432);
@@ -200,10 +201,8 @@ foreach ($Examples as $key => $ExamplesArray) {
 			echo '<br>';
 			$text .= "\n";
 		} else {
-			//echo '<a href="'.htmlentities($GETstring.'&down=phpThumb.demo.'.$key.'.'.$dummy).'.jpg" title="'.htmlentities($GETstring, ENT_QUOTES).'">';
-			echo '<img border="0" src="'.htmlentities(phpThumbURL($GETstring, $phpThumbBase), ENT_QUOTES).'" alt="">';
-			//echo '</a> ';
-			$text .= '<img border="0" src="'.htmlentities(phpThumbURL($GETstring, $phpThumbBase), ENT_QUOTES).'" alt="">'."\n";
+			echo '<img border="0" src="'.htmlentities(phpThumbURL($GETstring, $phpThumbBase), ENT_QUOTES).'" title="'.htmlentities($GETstring, ENT_QUOTES).'" style="min-width: 10px; min-height: 10px; margin: 2px;">';
+			$text .= '<img src="'.phpThumbURL($GETstring, $phpThumbBase).'">'."\n";
 		}
 	}
 	echo '</td></tr></table>';
