@@ -234,7 +234,7 @@ class phpthumb {
 		$this->DebugMessage('phpThumb() v'.$this->phpthumb_version, __FILE__, __LINE__);
 
 		foreach (array(ini_get('memory_limit'), get_cfg_var('memory_limit')) as $php_config_memory_limit) {
-			if ('' !== $php_config_memory_limit) {
+			if (!empty($php_config_memory_limit)) {
 				if (strtoupper($php_config_memory_limit[ strlen($php_config_memory_limit) - 1 ]) == 'G') { // PHP memory limit expressed in Gigabytes
 					$php_config_memory_limit = (int) substr($php_config_memory_limit, 0, -1) * 1073741824;
 				} elseif (strtoupper($php_config_memory_limit[ strlen($php_config_memory_limit) - 1 ]) == 'M') { // PHP memory limit expressed in Megabytes
