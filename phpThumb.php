@@ -532,7 +532,7 @@ while ($CanPassThroughDirectly && $phpThumb->src) {
 		if ($phpThumb->config_disable_onlycreateable_passthru || (function_exists($theImageCreateFunction) && ($dummyImage = @$theImageCreateFunction($SourceFilename)))) {
 
 			// great
-			if (@is_resource($dummyImage)) {
+			if (@is_resource($dummyImage) || (@is_object($dummyImage) && $dummyImage instanceOf \GdImage)) {
 				unset($dummyImage);
 			}
 
