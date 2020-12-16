@@ -1000,7 +1000,8 @@ if (!function_exists('gd_info')) {
 						if ($fp_tempfile = @fopen($tempfilename, 'wb')) {
 							fwrite($fp_tempfile, base64_decode('R0lGODlhAQABAIAAAH//AP///ywAAAAAAQABAAACAUQAOw==')); // very simple 1px GIF file base64-encoded as string
 							fclose($fp_tempfile);
-							@chmod($tempfilename, $this->getParameter('config_file_create_mask'));
+							$phpthumb_temp = new phpthumb();
+							@chmod($tempfilename, $phpthumb_temp->getParameter('config_file_create_mask'));
 
 							// if we can convert the GIF file to a GD image then GIF create support must be enabled, otherwise it's not
 							$gd_info['GIF Read Support'] = (bool) @imagecreatefromgif($tempfilename);

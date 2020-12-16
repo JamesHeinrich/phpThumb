@@ -41,7 +41,7 @@ function SendSaveAsFileHeaderIfNeeded($getimagesize=false) {
 	//if (empty($_GET['sia']) && empty($_GET['down']) && !empty($phpThumb->thumbnail_image_width) && !empty($phpThumb->thumbnail_image_height)) {
 	if (empty($_GET['sia']) && empty($_GET['down']) && !empty($getimagesize[0]) && !empty($getimagesize[1])) {
 		// if we know the output image dimensions we can generate a better default filename
-		$downloadfilename = phpthumb_functions::SanitizeFilename((!empty($phpThumb->src) ? basename($phpThumb->src) : md5($this->rawImageData)).'-'.intval($getimagesize[0]).'x'.intval($getimagesize[1]).'.'.(!empty($_GET['f']) ? $_GET['f'] : 'jpg'));
+		$downloadfilename = phpthumb_functions::SanitizeFilename((!empty($phpThumb->src) ? basename($phpThumb->src) : md5($phpThumb->rawImageData)).'-'.intval($getimagesize[0]).'x'.intval($getimagesize[1]).'.'.(!empty($_GET['f']) ? $_GET['f'] : 'jpg'));
 	}
 	if (!empty($downloadfilename)) {
 		$phpThumb->DebugMessage('SendSaveAsFileHeaderIfNeeded() sending header: Content-Disposition: '.(!empty($_GET['down']) ? 'attachment' : 'inline').'; filename="'.$downloadfilename.'"', __FILE__, __LINE__);
