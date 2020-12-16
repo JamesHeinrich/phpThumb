@@ -725,7 +725,7 @@ class phpthumb_bmp {
 			}
 
 		}
-		if (!is_resource($gd) || (is_object($gd) && $gd instanceOf \GdImage)) {
+		if (!is_resource($gd) && !(is_object($gd) && $gd instanceOf \GdImage)) {
 			return false;
 		}
 
