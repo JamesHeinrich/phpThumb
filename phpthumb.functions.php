@@ -843,13 +843,22 @@ class phpthumb_functions {
 
 	public static function EnsureDirectoryExists($dirname, $mask = 0755) {
 		$directory_elements = explode(DIRECTORY_SEPARATOR, $dirname);
-		$startoffset = (!$directory_elements[0] ? 2 : 1);  // unix with leading "/" then start with 2nd element; Windows with leading "c:\" then start with 1st element
-		$open_basedirs = preg_split('#[;:]#', ini_get('open_basedir'));
-		foreach ($open_basedirs as $key => $open_basedir) {
-			if (preg_match('#^'.preg_quote($open_basedir).'#', $dirname) && (strlen($dirname) > strlen($open_basedir))) {
-				$startoffset = substr_count($open_basedir, DIRECTORY_SEPARATOR) + 1;
-				break;
-			}
+		// Unix with leading "/" then start with 2nd element
+		if (!$directory_elements[0]) {
+		    $startoffset = 2;
+		    $pregPattern = '#[:]#';
+	    // Windows with leading "C:\" then start with 1st element
+		} else {
+		    $startoffset = 1;
+		    $pregPattern = '#[;]#'; // Prevent from splitting C:\inetpub\vhosts into two separate paths "C" and "inetpub\vhosts"
+		}
+		$open_basedirs = preg_split($pregPattern, ini_get('open_basedir'));
+		foreach ($open_basedirs as &$open_basedir) {
+		    if ($startoffset == 1) $open_basedir = str_replace("/", "\\", $open_basedir); // Plesk for Windows utilizes "/" in open_basedir but we need "\" for string comparison
+		    if (preg_match('#^'.preg_quote($open_basedir).'#i', $dirname) && (strlen($dirname) > strlen($open_basedir))) {
+		        $startoffset = substr_count($open_basedir, DIRECTORY_SEPARATOR) + 1;
+		        break;
+		    }
 		}
 		$i = $startoffset;
 		$endoffset = count($directory_elements);
