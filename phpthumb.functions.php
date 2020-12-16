@@ -11,6 +11,10 @@
 
 class phpthumb_functions {
 
+	public static function is_windows() {
+		return (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN');
+	}
+
 	public static function user_function_exists($functionname) {
 		if (function_exists('get_defined_functions')) {
 			static $get_defined_functions = array();
@@ -841,17 +845,30 @@ class phpthumb_functions {
 		return false;
 	}
 
-	public static function EnsureDirectoryExists($dirname, $mask = 0755) {
-		$directory_elements = explode(DIRECTORY_SEPARATOR, $dirname);
-		$startoffset = (!$directory_elements[0] ? 2 : 1);  // unix with leading "/" then start with 2nd element; Windows with leading "c:\" then start with 1st element
-		$open_basedirs = preg_split('#[;:]#', ini_get('open_basedir'));
+	public static function EnsureDirectoryExists($dirname, $mask=0755) {
+		// https://www.php.net/manual/en/ini.core.php#ini.open-basedir says:
+		// "Under Windows, separate the directories with a semicolon. On all other systems, separate the directories with a colon."
+		$config_open_basedir = ini_get('open_basedir');
+		$startoffset = 2; // 1-based counting, first element to left of first directory separator will either be drive letter (Windows) or blank (unix). May be overridden below.
+		if (self::is_windows()) {
+			$delimiter = ';';
+			$case_insensitive_pathname = true;
+			// unix OSs will always use "/", some Windows configurations you may find "/" used interchangeably with the OS-correct "\", so standardize for ease of comparison
+			$dirname             = str_replace('/', DIRECTORY_SEPARATOR, $dirname);
+			$config_open_basedir = str_replace('/', DIRECTORY_SEPARATOR, $config_open_basedir);
+		} else {
+			$delimiter = ':';
+			$case_insensitive_pathname = false;
+		}
+		$open_basedirs = explode($delimiter, $config_open_basedir);
 		foreach ($open_basedirs as $key => $open_basedir) {
-			if (preg_match('#^'.preg_quote($open_basedir).'#', $dirname) && (strlen($dirname) > strlen($open_basedir))) {
+			if (preg_match('#^'.preg_quote($open_basedir).'#'.($case_insensitive_pathname ? 'i' : ''), $dirname) && (strlen($dirname) > strlen($open_basedir))) {
 				$startoffset = substr_count($open_basedir, DIRECTORY_SEPARATOR) + 1;
 				break;
 			}
 		}
-		$i = $startoffset;
+
+		$directory_elements = explode(DIRECTORY_SEPARATOR, $dirname);
 		$endoffset = count($directory_elements);
 		for ($i = $startoffset; $i <= $endoffset; $i++) {
 			$test_directory = implode(DIRECTORY_SEPARATOR, array_slice($directory_elements, 0, $i));
