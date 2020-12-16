@@ -220,7 +220,7 @@ class phpthumb {
 	public $issafemode       = null;
 	public $php_memory_limit = null;
 
-	public $phpthumb_version = '1.7.16-202012161434';
+	public $phpthumb_version = '1.7.16-202012161551';
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -1259,7 +1259,14 @@ class phpthumb {
 
 		// http://stackoverflow.com/questions/21421569
 		$newfilename = preg_replace('#[\\/]+#', DIRECTORY_SEPARATOR, $filename);
-		if (!preg_match('#^'.preg_quote(DIRECTORY_SEPARATOR).'#', $newfilename)) {
+
+		if (phpthumb_functions::is_windows()) {
+			$isAlreadyAbsoluteFilename = preg_match('#^[A-Z]\\:#i', $newfilename);  // C:\path\filename.ext
+		} else {
+			$isAlreadyAbsoluteFilename = ($newfilename[0] == DIRECTORY_SEPARATOR);  // /path/filename.ext
+		}
+		if (!$isAlreadyAbsoluteFilename) {
+			// not already an absolute filename, prepend current directory
 			$newfilename =  __DIR__ .DIRECTORY_SEPARATOR.$newfilename;
 		}
 		do {
