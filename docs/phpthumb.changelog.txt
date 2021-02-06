@@ -7,6 +7,14 @@
 ¤ = structure change or important new feature
 * = less important new feature or change
 
+v1.7.16-202012161640
+  ¤ PHP 8.0 compatibility
+  * [bugfix: G168] bad call to $this inside static function
+  * [bugfix: G167] realPathSafe() issues on Windows
+  * [bugfix: G164] open_basedir on Windows prevents caching
+  * [bugfix: G155] PHP 7.4 compatibility
+  * [bugfix: G154] regex for external image source
+
 v1.7.15-202004301145
   ¤ PHP 7.4 curly brace substring compatibility
   ¤ add basic support for WebP
