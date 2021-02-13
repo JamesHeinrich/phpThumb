@@ -9,7 +9,7 @@
 //                                                         ///
 //////////////////////////////////////////////////////////////
 
-if (!class_exists('phpthumb_functions'))
+if (!class_exists('phpthumb_functions', false))
 {
 	ob_start();
 	if(!include_once __DIR__ . '/phpthumb.functions.php')
@@ -220,7 +220,7 @@ class phpthumb {
 	public $issafemode       = null;
 	public $php_memory_limit = null;
 
-	public $phpthumb_version = '1.7.16-202012161640';
+	public $phpthumb_version = '1.7.17-202102131808';
 
 	//////////////////////////////////////////////////////////////////////
 
