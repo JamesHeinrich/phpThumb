@@ -75,7 +75,7 @@ function RedirectToCachedFile() {
 		if (preg_match('#^'.preg_quote($nice_docroot).'(.*)$#', $nice_cachefile, $matches)) {
 			$phpThumb->DebugMessage('* Would have sent headers (3): Location: '.dirname($matches[1]).'/'.urlencode(basename($matches[1])), __FILE__, __LINE__);
 		} else {
-			$phpThumb->DebugMessage('* Would have sent data: readfile('.$phpThumb->cache_filename.')', __FILE__, __LINE__);
+			$phpThumb->DebugMessage('* Would have sent data: file_get_contents('.$phpThumb->cache_filename.')', __FILE__, __LINE__);
 		}
 
 	} else {
@@ -106,7 +106,7 @@ function RedirectToCachedFile() {
 		if (empty($phpThumb->config_cache_force_passthru) && preg_match('#^'.preg_quote($nice_docroot).'(.*)$#', $nice_cachefile, $matches)) {
 			header('Location: '.dirname($matches[1]).'/'.urlencode(basename($matches[1])));
 		} else {
-			@readfile($phpThumb->cache_filename);
+			echo file_get_contents($phpThumb->cache_filename);
 		}
 		exit;
 
@@ -551,7 +551,7 @@ while ($CanPassThroughDirectly && $phpThumb->src) {
 			if ($contentType = phpthumb_functions::ImageTypeToMIMEtype(@$phpThumb->getimagesizeinfo[2])) {
 				header('Content-Type: '.$contentType);
 			}
-			@readfile($SourceFilename);
+			echo file_get_contents($SourceFilename);
 			exit;
 
 		} else {
