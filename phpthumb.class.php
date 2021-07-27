@@ -220,7 +220,7 @@ class phpthumb {
 	public $issafemode       = null;
 	public $php_memory_limit = null;
 
-	public $phpthumb_version = '1.7.17-202103271119';
+	public $phpthumb_version = '1.7.17-202107271830';
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -553,7 +553,7 @@ class phpthumb {
 					ob_end_clean();
 					return false;
 				}
-				imagewebp($this->gdimg_output);
+				imagewebp($this->gdimg_output, null, $this->thumbnailQuality);
 				$this->outputImageData = ob_get_contents();
 				break;
 
@@ -669,14 +669,9 @@ class phpthumb {
 			$this->DebugMessage('imageinterlace($this->gdimg_output, '. (int) $this->config_output_interlace .')', __FILE__, __LINE__);
 			imageinterlace($this->gdimg_output, (int) $this->config_output_interlace);
 			switch ($this->thumbnailFormat) {
-				case 'jpeg':
-					header('Content-Type: '.phpthumb_functions::ImageTypeToMIMEtype($this->thumbnailFormat));
-					$ImageOutFunction = 'image'.$this->thumbnailFormat;
-					@$ImageOutFunction($this->gdimg_output, null, $this->thumbnailQuality);
-					break;
-
-				case 'png':
 				case 'gif':
+				case 'jpeg':
+				case 'png':
 				case 'webp':
 					$ImageOutFunction = 'image'.$this->thumbnailFormat;
 					if (!function_exists($ImageOutFunction)) {
@@ -684,7 +679,11 @@ class phpthumb {
 						return false;
 					}
 					header('Content-Type: '.phpthumb_functions::ImageTypeToMIMEtype($this->thumbnailFormat));
-					@$ImageOutFunction($this->gdimg_output);
+					if ($this->thumbnailFormat == 'gif') {
+						@$ImageOutFunction($this->gdimg_output);
+					} else {
+						@$ImageOutFunction($this->gdimg_output, null, $this->thumbnailQuality);
+					}
 					break;
 
 				case 'bmp':
