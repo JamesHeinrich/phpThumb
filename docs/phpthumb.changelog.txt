@@ -7,6 +7,12 @@
 ¤ = structure change or important new feature
 * = less important new feature or change
 
+v1.7.17-202109221111
+  * [bugfix: G171] problem with class_exists and autoloading
+  * [bugfix: G173] file_get_contents instead of readfile
+  * [bugfix: G178] missing quality parameter in webp
+  * [bugfix: G181] missing webp in ImageCreateFromFilename
+
 v1.7.16-202012161640
   ¤ PHP 8.0 compatibility
   * [bugfix: G168] bad call to $this inside static function
