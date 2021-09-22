@@ -3700,6 +3700,7 @@ if (false) {
 					2  => 'imagecreatefromjpeg',
 					3  => 'imagecreatefrompng',
 					15 => 'imagecreatefromwbmp',
+					18 => 'imagecreatefromwebp',
 				);
 				$this->DebugMessage('ImageCreateFromFilename found ($getimagesizeinfo[2]=='.@$getimagesizeinfo[2].')', __FILE__, __LINE__);
 				switch (@$getimagesizeinfo[2]) {
@@ -3707,6 +3708,7 @@ if (false) {
 					case 2:  // JPEG
 					case 3:  // PNG
 					case 15: // WBMP
+					case 18: // WEBP
 						$ImageCreateFromFunctionName = $ImageCreateFromFunction[$getimagesizeinfo[2]];
 						if (function_exists($ImageCreateFromFunctionName)) {
 							$this->DebugMessage('Calling '.$ImageCreateFromFunctionName.'('.$filename.')', __FILE__, __LINE__);
