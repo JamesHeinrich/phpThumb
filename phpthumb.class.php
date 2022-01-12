@@ -220,7 +220,7 @@ class phpthumb {
 	public $issafemode       = null;
 	public $php_memory_limit = null;
 
-	public $phpthumb_version = '1.7.18-202110211855';
+	public $phpthumb_version = '1.7.18-202201121135';
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -4139,7 +4139,7 @@ if (false) {
 		$DebugOutput[] = 'getenv(DOCUMENT_ROOT)       = '.@getenv('DOCUMENT_ROOT');
 		$DebugOutput[] = '';
 
-		$DebugOutput[] = 'get_magic_quotes_gpc()         = '.(function_exists('get_magic_quotes_gpc') ? $this->phpThumbDebugVarDump(@get_magic_quotes_gpc()) : false);
+		$DebugOutput[] = 'get_magic_quotes_gpc()         = '.(function_exists('get_magic_quotes_gpc')     ? $this->phpThumbDebugVarDump(@get_magic_quotes_gpc())     : false);
 		$DebugOutput[] = 'get_magic_quotes_runtime()     = '.(function_exists('get_magic_quotes_runtime') ? $this->phpThumbDebugVarDump(@get_magic_quotes_runtime()) : false);
 		$DebugOutput[] = 'error_reporting()              = '.$this->phpThumbDebugVarDump(error_reporting());
 		$DebugOutput[] = 'ini_get(error_reporting)       = '.$this->phpThumbDebugVarDump(@ini_get('error_reporting'));
