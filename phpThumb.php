@@ -41,7 +41,7 @@ function SendSaveAsFileHeaderIfNeeded($getimagesize=false) {
 	//if (empty($_GET['sia']) && empty($_GET['down']) && !empty($phpThumb->thumbnail_image_width) && !empty($phpThumb->thumbnail_image_height)) {
 	if (empty($_GET['sia']) && empty($_GET['down']) && !empty($getimagesize[0]) && !empty($getimagesize[1])) {
 		// if we know the output image dimensions we can generate a better default filename
-		$downloadfilename = phpthumb_functions::SanitizeFilename((!empty($phpThumb->src) ? basename($phpThumb->src) : md5($this->rawImageData)).'-'.intval($getimagesize[0]).'x'.intval($getimagesize[1]).'.'.(!empty($_GET['f']) ? $_GET['f'] : 'jpg'));
+		$downloadfilename = phpthumb_functions::SanitizeFilename((!empty($phpThumb->src) ? basename($phpThumb->src) : md5($phpThumb->rawImageData)).'-'.intval($getimagesize[0]).'x'.intval($getimagesize[1]).'.'.(!empty($_GET['f']) ? $_GET['f'] : 'jpg'));
 	}
 	if (!empty($downloadfilename)) {
 		$phpThumb->DebugMessage('SendSaveAsFileHeaderIfNeeded() sending header: Content-Disposition: '.(!empty($_GET['down']) ? 'attachment' : 'inline').'; filename="'.$downloadfilename.'"', __FILE__, __LINE__);
@@ -75,7 +75,7 @@ function RedirectToCachedFile() {
 		if (preg_match('#^'.preg_quote($nice_docroot).'(.*)$#', $nice_cachefile, $matches)) {
 			$phpThumb->DebugMessage('* Would have sent headers (3): Location: '.dirname($matches[1]).'/'.urlencode(basename($matches[1])), __FILE__, __LINE__);
 		} else {
-			$phpThumb->DebugMessage('* Would have sent data: readfile('.$phpThumb->cache_filename.')', __FILE__, __LINE__);
+			$phpThumb->DebugMessage('* Would have sent data: file_get_contents('.$phpThumb->cache_filename.')', __FILE__, __LINE__);
 		}
 
 	} else {
@@ -106,7 +106,7 @@ function RedirectToCachedFile() {
 		if (empty($phpThumb->config_cache_force_passthru) && preg_match('#^'.preg_quote($nice_docroot).'(.*)$#', $nice_cachefile, $matches)) {
 			header('Location: '.dirname($matches[1]).'/'.urlencode(basename($matches[1])));
 		} else {
-			@readfile($phpThumb->cache_filename);
+			echo file_get_contents($phpThumb->cache_filename);
 		}
 		exit;
 
@@ -207,9 +207,8 @@ if (!empty($phpThumb->config_high_security_enabled)) {
 	} elseif (phpthumb_functions::PasswordStrength($phpThumb->config_high_security_password) < 20) {
 		$phpThumb->config_disable_debug = false; // otherwise error message won't print
 		$phpThumb->ErrorImage('ERROR: $PHPTHUMB_CONFIG[high_security_password] is not complex enough');
-	} elseif ($_GET['hash'] != md5(str_replace($phpThumb->config_high_security_url_separator.'hash='.$_GET['hash'], '', $_SERVER['QUERY_STRING']).$phpThumb->config_high_security_password)) {
+	} elseif ($_GET['hash'] != hash_hmac('sha256', str_replace($phpThumb->config_high_security_url_separator.'hash='.$_GET['hash'], '', $_SERVER['QUERY_STRING']), $phpThumb->config_high_security_password)) {
 		header('HTTP/1.0 403 Forbidden');
-		sleep(10); // deliberate delay to discourage password-guessing
 		$phpThumb->ErrorImage('ERROR: invalid hash');
 	}
 }
@@ -532,7 +531,7 @@ while ($CanPassThroughDirectly && $phpThumb->src) {
 		if ($phpThumb->config_disable_onlycreateable_passthru || (function_exists($theImageCreateFunction) && ($dummyImage = @$theImageCreateFunction($SourceFilename)))) {
 
 			// great
-			if (@is_resource($dummyImage)) {
+			if (@is_resource($dummyImage) || (@is_object($dummyImage) && $dummyImage instanceOf \GdImage)) {
 				unset($dummyImage);
 			}
 
@@ -551,7 +550,7 @@ while ($CanPassThroughDirectly && $phpThumb->src) {
 			if ($contentType = phpthumb_functions::ImageTypeToMIMEtype(@$phpThumb->getimagesizeinfo[2])) {
 				header('Content-Type: '.$contentType);
 			}
-			@readfile($SourceFilename);
+			echo file_get_contents($SourceFilename);
 			exit;
 
 		} else {

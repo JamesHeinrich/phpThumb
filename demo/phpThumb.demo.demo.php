@@ -35,7 +35,7 @@ if (include_once '../phpThumb.config.php' ) {
 	}
 }
 $ServerInfo['phpthumb_version'] = $phpThumb->phpthumb_version;
-$ServerInfo['im_version']       = $phpThumb->ImageMagickVersion();;
+$ServerInfo['im_version']       = $phpThumb->ImageMagickVersion();
 $ServerInfo['gd_string']        = phpthumb_functions::gd_version(true);
 $ServerInfo['gd_numeric']       = phpthumb_functions::gd_version(false);
 unset($phpThumb);
