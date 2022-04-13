@@ -220,7 +220,7 @@ class phpthumb {
 	public $issafemode       = null;
 	public $php_memory_limit = null;
 
-	public $phpthumb_version = '1.7.18-202201121135';
+	public $phpthumb_version = '1.7.18-202204131313';
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -1405,10 +1405,12 @@ class phpthumb {
 		static $open_basedirs = null;
 		static $file_exists_cache = array();
 		if (!$cached || !isset($file_exists_cache[$filename])) {
-			if (null === $open_basedirs) {
+			if (is_null($open_basedirs)) {
 				$open_basedirs = preg_split('#[;:]#', ini_get('open_basedir'));
 			}
-			if (empty($open_basedirs) || in_array(dirname($filename), $open_basedirs)) {
+			if (is_null($filename)) { // shouldn't happen, but https://github.com/JamesHeinrich/phpThumb/issues/188
+				$file_exists_cache[$filename] = false;
+			} elseif (empty($open_basedirs) || in_array(dirname($filename), $open_basedirs)) {
 				$file_exists_cache[$filename] = file_exists($filename);
 			} elseif ($this->iswindows) {
 				$ls_filename = trim(phpthumb_functions::SafeExec('dir /b '.phpthumb_functions::escapeshellarg_replacement($filename)));
@@ -1474,7 +1476,10 @@ class phpthumb {
 
 				$this->DebugMessage('using ImageMagick path from $this->config_imagemagick_path ('.$this->config_imagemagick_path.')', __FILE__, __LINE__);
 				if ($this->iswindows) {
-					$commandline = substr($this->config_imagemagick_path, 0, 2).' && cd '.phpthumb_functions::escapeshellarg_replacement(str_replace('/', DIRECTORY_SEPARATOR, substr(dirname($this->config_imagemagick_path), 2))).' && '.phpthumb_functions::escapeshellarg_replacement(basename($this->config_imagemagick_path));
+					$commandline  = '';
+					$commandline .= substr($this->config_imagemagick_path, 0, 2);
+					$commandline .= ' && cd '.phpthumb_functions::escapeshellarg_replacement(str_replace('/', DIRECTORY_SEPARATOR, substr(dirname($this->config_imagemagick_path), 2)));
+					$commandline .= ' && '.phpthumb_functions::escapeshellarg_replacement(basename($this->config_imagemagick_path));
 				} else {
 					$commandline = phpthumb_functions::escapeshellarg_replacement($this->config_imagemagick_path);
 				}
@@ -1588,7 +1593,7 @@ class phpthumb {
 		if (null === $IMformatsList) {
 			$IMformatsList = '';
 			$commandline = $this->ImageMagickCommandlineBase();
-			if (null !== $commandline) {
+			if (!is_null($commandline)) {
 				$commandline = dirname($commandline).DIRECTORY_SEPARATOR.str_replace('convert', 'identify', basename($commandline));
 				$commandline .= ' -list format';
 				$IMformatsList = phpthumb_functions::SafeExec($commandline);
@@ -3513,7 +3518,7 @@ if (false) {
 
 		}
 
-		$this->DebugMessage('EXIF thumbnail extraction: (size='.strlen($this->exif_thumbnail_data).'; type="'.$this->exif_thumbnail_type.'"; '. (int) $this->exif_thumbnail_width .'x'. (int) $this->exif_thumbnail_height .')', __FILE__, __LINE__);
+		$this->DebugMessage('EXIF thumbnail extraction: (size='.(!empty($this->exif_thumbnail_data) ? strlen($this->exif_thumbnail_data) : 0).'; type="'.$this->exif_thumbnail_type.'"; '. (int) $this->exif_thumbnail_width .'x'. (int) $this->exif_thumbnail_height .')', __FILE__, __LINE__);
 
 		// see if EXIF thumbnail can be used directly with no processing
 		if ($this->config_use_exif_thumbnail_for_speed && $this->exif_thumbnail_data) {
