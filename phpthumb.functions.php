@@ -743,7 +743,7 @@ class phpthumb_functions {
 			'http'  => 80,
 			'https' => 443,
 		);
-		return (isset($schemePort[strtolower($scheme)]) ? $schemePort[strtolower($scheme)] : null);
+		return ((!empty($scheme) && isset($schemePort[strtolower($scheme)])) ? $schemePort[strtolower($scheme)] : null);
 	}
 
 	public static function ParseURLbetter($url) {
