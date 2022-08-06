@@ -9,16 +9,57 @@
 //                                                         ///
 //////////////////////////////////////////////////////////////
 
-if (!class_exists('phpthumb_functions', false))
-{
+if (!class_exists('phpthumb_functions', false)) {
 	ob_start();
-	if(!include_once __DIR__ . '/phpthumb.functions.php')
-	{
+	if (!include_once __DIR__ . '/phpthumb.functions.php') {
 		ob_end_flush();
 		die('failed to include_once("' . __DIR__ . '/phpthumb.functions.php")');
 	}
 	ob_end_clean();
 }
+
+// make sure all image type constants are defined, even in older PHP versions that don't natively support them
+$predefined_IMG_constants = array(
+	'IMG_GIF'           =>   1,
+	'IMG_JPG'           =>   2, // not a typo, both IMG_JPG and IMG_JPEG have a value of "2"
+	'IMG_JPEG'          =>   2, // not a typo, both IMG_JPG and IMG_JPEG have a value of "2"
+	'IMG_PNG'           =>   4,
+	'IMG_WBMP'          =>   8,
+	'IMG_XPM'           =>  16,
+	'IMG_WEBP'          =>  32, // PHP 7.0.10
+	'IMG_BMP'           =>  64, // PHP 7.2.0
+	'IMG_WEBP_LOSSLESS' => 101, // PHP 8.1.0
+	'IMG_AVIF'          => 256, // PHP 8.1.0
+);
+$predefined_IMAGETYPE_constants = array(
+	'IMAGETYPE_GIF'       =>  1,
+	'IMAGETYPE_JPEG'      =>  2,
+	'IMAGETYPE_PNG'       =>  3,
+	'IMAGETYPE_SWF'       =>  4,
+	'IMAGETYPE_PSD'       =>  5,
+	'IMAGETYPE_BMP'       =>  6,
+	'IMAGETYPE_TIFF_II'   =>  7,
+	'IMAGETYPE_TIFF_MM'   =>  8,
+	'IMAGETYPE_JPC'       =>  9,
+	'IMAGETYPE_JP2'       => 10,
+	'IMAGETYPE_JPX'       => 11,
+	'IMAGETYPE_JB2'       => 12,
+	'IMAGETYPE_SWC'       => 13,
+	'IMAGETYPE_IFF'       => 14,
+	'IMAGETYPE_WBMP'      => 15,
+	'IMAGETYPE_XBM'       => 16,
+	'IMAGETYPE_ICO'       => 17,
+	'IMAGETYPE_WEBP'      => 18, // PHP 7.0.10
+	'IMAGETYPE_AVIF'      => 19, // PHP 8.1.0
+);
+
+foreach ($predefined_IMG_constants as $PHP_constant_name => $PHP_constant_value) {
+	if (!defined($PHP_constant_name)) {
+		define($PHP_constant_name, $PHP_constant_value);
+	}
+}
+unset($predefined_IMG_constants, $PHP_constant_name, $PHP_constant_value);
+
 
 class phpthumb {
 
@@ -213,14 +254,14 @@ class phpthumb {
 	public $tempFilesToDelete = array();
 	public $cache_filename    = null;
 
-	public $AlphaCapableFormats = array( 'png', 'ico', 'gif', 'webp');
+	public $AlphaCapableFormats = array( 'png', 'ico', 'gif', 'webp', 'avif');
 	public $is_alpha = false;
 
 	public $iswindows        = null;
 	public $issafemode       = null;
 	public $php_memory_limit = null;
 
-	public $phpthumb_version = '1.7.18-202207181544';
+	public $phpthumb_version = '1.7.18-202208061319';
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -472,12 +513,9 @@ class phpthumb {
 			$builtin_formats['jpg']  = (bool) ($imagetypes & IMG_JPG);
 			$builtin_formats['gif']  = (bool) ($imagetypes & IMG_GIF);
 			$builtin_formats['png']  = (bool) ($imagetypes & IMG_PNG);
-			if (defined('IMG_WEBP')) {
-				$builtin_formats['webp'] = (bool) ($imagetypes & IMG_WEBP); // PHP 5.6.25, 7.0.10
-			}
-			if (defined('IMG_BMP')) {
-				$builtin_formats['bmp']  = (bool) ($imagetypes & IMG_BMP);  // PHP 7.2.0
-			}
+			$builtin_formats['webp'] = (bool) ($imagetypes & IMG_WEBP); // PHP 7.0.10
+			$builtin_formats['bmp']  = (bool) ($imagetypes & IMG_BMP);  // PHP 7.2.0
+			$builtin_formats['avif'] = (bool) ($imagetypes & IMG_AVIF); // PHP 8.1.0
 		}
 
 		$this->DebugMessage('imageinterlace($this->gdimg_output, '. (int) $this->config_output_interlace .')', __FILE__, __LINE__);
@@ -554,6 +592,16 @@ class phpthumb {
 					return false;
 				}
 				imagewebp($this->gdimg_output, null, $this->thumbnailQuality);
+				$this->outputImageData = ob_get_contents();
+				break;
+
+			case 'avif':
+				if (empty($builtin_formats['avif'])) {
+					$this->DebugMessage('GD does not have required built-in support for AVIF output', __FILE__, __LINE__);
+					ob_end_clean();
+					return false;
+				}
+				imageavif($this->gdimg_output, null, $this->thumbnailQuality);
 				$this->outputImageData = ob_get_contents();
 				break;
 
@@ -673,6 +721,7 @@ class phpthumb {
 				case 'jpeg':
 				case 'png':
 				case 'webp':
+				case 'avif':
 					$ImageOutFunction = 'image'.$this->thumbnailFormat;
 					if (!function_exists($ImageOutFunction)) {
 						$this->DebugMessage($ImageOutFunction.' is not available', __FILE__, __LINE__);
@@ -985,6 +1034,10 @@ class phpthumb {
 				$this->thumbnailFormat         = 'gif';
 				$AvailableImageOutputFormats[] = 'gif';
 			}
+			if ($imagetypes & IMG_AVIF) {
+				$this->thumbnailFormat         = 'avif';
+				$AvailableImageOutputFormats[] = 'avif';
+			}
 			if ($imagetypes & IMG_WEBP) {
 				$this->thumbnailFormat         = 'webp';
 				$AvailableImageOutputFormats[] = 'webp';
@@ -1001,7 +1054,7 @@ class phpthumb {
 			$this->DebugMessage('imagetypes() does not exist - GD support might not be enabled?',  __FILE__, __LINE__);
 		}
 		if ($this->ImageMagickVersion()) {
-			$IMformats = array('jpeg', 'png', 'gif', 'bmp', 'ico', 'wbmp', 'webp');
+			$IMformats = array('jpeg', 'png', 'gif', 'bmp', 'ico', 'wbmp', 'webp', 'avif');
 			$this->DebugMessage('Addding ImageMagick formats to $AvailableImageOutputFormats ('.implode(';', $AvailableImageOutputFormats).')', __FILE__, __LINE__);
 			foreach ($IMformats as $key => $format) {
 				$AvailableImageOutputFormats[] = $format;
@@ -1679,6 +1732,10 @@ class phpthumb {
 						break;
 					case 'webp':
 						$ImageCreateFunction = 'imagecreatefromwebp';
+						$this->is_alpha = true;
+						break;
+					case 'avif':
+						$ImageCreateFunction = 'imagecreatefromavif';
 						$this->is_alpha = true;
 						break;
 					default:
@@ -2644,8 +2701,9 @@ if (false) {
 		switch ($this->thumbnailFormat) {
 			case 'png':
 			case 'webp':
+			case 'avif':
 			case 'ico':
-				// image has alpha transparency, but output as PNG, WEBP or ICO which can handle it
+				// image has alpha transparency, but output as PNG, WEBP, AVIF, ICO which can handle it
 				$this->DebugMessage('skipping AlphaChannelFlatten() because ($this->thumbnailFormat == "'.$this->thumbnailFormat.'")', __FILE__, __LINE__);
 				return false;
 				break;
@@ -3704,19 +3762,21 @@ if (false) {
 		if ($filename && ($getimagesizeinfo = @getimagesize($filename))) {
 			if (!$this->SourceImageIsTooLarge($getimagesizeinfo[0], $getimagesizeinfo[1])) {
 				$ImageCreateFromFunction = array(
-					1  => 'imagecreatefromgif',
-					2  => 'imagecreatefromjpeg',
-					3  => 'imagecreatefrompng',
-					15 => 'imagecreatefromwbmp',
-					18 => 'imagecreatefromwebp',
+					IMAGETYPE_GIF  => 'imagecreatefromgif',
+					IMAGETYPE_JPEG => 'imagecreatefromjpeg',
+					IMAGETYPE_PNG  => 'imagecreatefrompng',
+					IMAGETYPE_WBMP => 'imagecreatefromwbmp',
+					IMAGETYPE_WEBP => 'imagecreatefromwebp',
+					IMAGETYPE_AVIF => 'imagecreatefromavif',
 				);
 				$this->DebugMessage('ImageCreateFromFilename found ($getimagesizeinfo[2]=='.@$getimagesizeinfo[2].')', __FILE__, __LINE__);
 				switch (@$getimagesizeinfo[2]) {
-					case 1:  // GIF
-					case 2:  // JPEG
-					case 3:  // PNG
-					case 15: // WBMP
-					case 18: // WEBP
+					case IMAGETYPE_GIF:
+					case IMAGETYPE_JPEG:
+					case IMAGETYPE_PNG:
+					case IMAGETYPE_WBMP:
+					case IMAGETYPE_WEBP:
+					case IMAGETYPE_AVIF:
 						$ImageCreateFromFunctionName = $ImageCreateFromFunction[$getimagesizeinfo[2]];
 						if (function_exists($ImageCreateFromFunctionName)) {
 							$this->DebugMessage('Calling '.$ImageCreateFromFunctionName.'('.$filename.')', __FILE__, __LINE__);
@@ -3727,18 +3787,19 @@ if (false) {
 						}
 						break;
 
-					case 4:  // SWF
-					case 5:  // PSD
-					case 6:  // BMP
-					case 7:  // TIFF (LE)
-					case 8:  // TIFF (BE)
-					case 9:  // JPC
-					case 10: // JP2
-					case 11: // JPX
-					case 12: // JB2
-					case 13: // SWC
-					case 14: // IFF
-					case 16: // XBM
+					case IMAGETYPE_SWF:
+					case IMAGETYPE_PSD:
+					case IMAGETYPE_BMP:
+					case IMAGETYPE_TIFF_II:
+					case IMAGETYPE_TIFF_MM:
+					case IMAGETYPE_JPC:
+					case IMAGETYPE_JP2:
+					case IMAGETYPE_JPX:
+					case IMAGETYPE_JB2:
+					case IMAGETYPE_SWC:
+					case IMAGETYPE_IFF:
+					case IMAGETYPE_XBM:
+					case IMAGETYPE_ICO:
 						$this->DebugMessage('No built-in image creation function for image type "'.@$getimagesizeinfo[2].'" ($getimagesizeinfo[2])', __FILE__, __LINE__);
 						break;
 
