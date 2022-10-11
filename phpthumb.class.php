@@ -52,13 +52,17 @@ $predefined_IMAGETYPE_constants = array(
 	'IMAGETYPE_WEBP'      => 18, // PHP 7.0.10
 	'IMAGETYPE_AVIF'      => 19, // PHP 8.1.0
 );
-
 foreach ($predefined_IMG_constants as $PHP_constant_name => $PHP_constant_value) {
 	if (!defined($PHP_constant_name)) {
 		define($PHP_constant_name, $PHP_constant_value);
 	}
 }
-unset($predefined_IMG_constants, $PHP_constant_name, $PHP_constant_value);
+foreach ($predefined_IMAGETYPE_constants as $PHP_constant_name => $PHP_constant_value) {
+	if (!defined($PHP_constant_name)) {
+		define($PHP_constant_name, $PHP_constant_value);
+	}
+}
+unset($predefined_IMG_constants, $predefined_IMAGETYPE_constants, $PHP_constant_name, $PHP_constant_value);
 
 
 class phpthumb {
@@ -261,7 +265,7 @@ class phpthumb {
 	public $issafemode       = null;
 	public $php_memory_limit = null;
 
-	public $phpthumb_version = '1.7.18-202208061319';
+	public $phpthumb_version = '1.7.19-202210110924';
 
 	//////////////////////////////////////////////////////////////////////
 
