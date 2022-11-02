@@ -16,6 +16,9 @@
     "require": {
         "php": ">=5.3.0"
     },
+    "scripts": {
+        "copy-config": "php -r \"copy('phpThumb.config.php.default', 'phpThumb.config.php');\""
+    },
     "suggest": {
         "ext-gd": "PHP GD library",
         "ext-imagick": "PHP ImageMagick"
