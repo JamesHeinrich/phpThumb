@@ -17,7 +17,8 @@
         "php": ">=5.3.0"
     },
     "scripts": {
-        "copy-config": "php -r \"copy('phpThumb.config.php.default', 'phpThumb.config.php');\""
+        "copy-config": "php -r \"copy('phpThumb.config.php.default', 'phpThumb.config.php');\"",
+        "hsp-generate": "php -r \"$cf=file_get_contents('phpThumb.config.php');$cf=str_replace('__HSP_KEY__', base64_encode(bin2hex(random_bytes(22))), $cf);file_put_contents('phpThumb.config.php', $cf);\""
     },
     "suggest": {
         "ext-gd": "PHP GD library",
