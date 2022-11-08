@@ -1,3 +1,6 @@
+# Composer lock yes or not (comment # uncomment)
+composer.lock
+
 phpThumbCacheIMcommandlineBase.txt
 phpThumbCacheIMversion.txt
 phpThumbCacheStats.txt
