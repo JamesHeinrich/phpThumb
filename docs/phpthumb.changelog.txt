@@ -7,6 +7,11 @@
 ¤ = structure change or important new feature
 * = less important new feature or change
 
+v1.7.19-202210110924
+  ¤ #193 Composer - script hsp-generate for generate High Security Password
+  * [bugfix: #196] PHP8 compatibility
+  * [bugfix: #191] IMAGETYPE_AVIF not defined
+
 v1.7.18-202208061319
   ¤ add support for AVIF image format (requires PHP 8.1.0) for native PHP support.
   * [bugfix: G190] ensure that all used IMG_ and IMAGETYPE_ constants are always defined.
