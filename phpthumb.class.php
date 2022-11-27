@@ -380,7 +380,7 @@ class phpthumb {
 	public function setParameter($param, $value) {
 		if ($param == 'src') {
 			$this->setSourceFilename($this->ResolveFilenameToAbsolute($value));
-		} elseif (@is_array($this->$param)) {
+		} elseif (isset($this->$param) && is_array($this->$param)) {
 			if (is_array($value)) {
 				foreach ($value as $arraykey => $arrayvalue) {
 					array_push($this->$param, $arrayvalue);
