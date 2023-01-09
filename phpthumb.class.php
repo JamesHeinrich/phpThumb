@@ -380,7 +380,7 @@ class phpthumb {
 	public function setParameter($param, $value) {
 		if ($param == 'src') {
 			$this->setSourceFilename($this->ResolveFilenameToAbsolute($value));
-		} elseif (@is_array($this->$param)) {
+		} elseif (isset($this->$param) && is_array($this->$param)) {
 			if (is_array($value)) {
 				foreach ($value as $arraykey => $arrayvalue) {
 					array_push($this->$param, $arrayvalue);
@@ -3731,7 +3731,7 @@ if (false) {
 		} elseif (!$this->config_cache_source_filemtime_ignore_remote && preg_match('#^(f|ht)tps?\://#i', $this->src)) {
 			$this->cache_filename .= '_dat'. (int) phpthumb_functions::filedate_remote($this->src);
 		} elseif (!$this->config_cache_source_filemtime_ignore_local && $this->src && !$this->rawImageData) {
-			$this->cache_filename .= '_dat'. (int) (@filemtime($this->sourceFilename));
+			$this->cache_filename .= '_dat'. (int) (file_exists($this->sourceFilename) ? filemtime($this->sourceFilename) : 0);
 		}
 
 		$this->cache_filename .= '.'.strtolower($this->thumbnailFormat);
