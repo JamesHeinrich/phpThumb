@@ -238,7 +238,7 @@ class phpthumb_functions {
 
 	public static function ImageColorAllocateAlphaSafe(&$gdimg_hexcolorallocate, $R, $G, $B, $alpha=false) {
 		if (self::version_compare_replacement(PHP_VERSION, '4.3.2', '>=') && ($alpha !== false)) {
-			return imagecolorallocatealpha($gdimg_hexcolorallocate, $R, $G, $B, (int) $alpha);
+			return imagecolorallocatealpha($gdimg_hexcolorallocate, round($R), round($G), round($B), (int) $alpha);
 		} else {
 			return imagecolorallocate($gdimg_hexcolorallocate, $R, $G, $B);
 		}
