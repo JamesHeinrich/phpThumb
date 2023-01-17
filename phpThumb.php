@@ -391,6 +391,8 @@ foreach ($_GET as $key => $value) {
 	if (!empty($PHPTHUMB_DEFAULTS_DISABLEGETPARAMS) && ($key != 'src')) {
 		// disabled, do not set parameter
 		$phpThumb->DebugMessage('ignoring $_GET['.$key.'] because of $PHPTHUMB_DEFAULTS_DISABLEGETPARAMS', __FILE__, __LINE__);
+	} elseif ($key == 'hash') {
+		// "hash" is for use in phpThumb.phpdoes only, should not be set on object
 	} elseif (in_array($key, $allowedGETparameters)) {
 		$phpThumb->DebugMessage('setParameter('.$key.', '.$phpThumb->phpThumbDebugVarDump($value).')', __FILE__, __LINE__);
 		$phpThumb->setParameter($key, $value);

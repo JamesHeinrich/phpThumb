@@ -862,6 +862,16 @@ class phpthumb_functions {
 			$delimiter = ':';
 			$case_insensitive_pathname = false;
 		}
+		do {
+			/*
+			\\3930K\WEBROOT\trainspotted.com\phpThumb/_cache/\6\6f    // starts off with mismatched directory separators
+			\\3930K\WEBROOT\trainspotted.com\phpThumb\_cache\\6\6f    // gets multiple directory separators in a row that we want to strip out (being sure not to replace the UNC double-slash at the beginning)
+			*/
+			if ($doubleslash_offset = strpos($dirname, DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR, 1)) {
+				$dirname = substr($dirname, 0, $doubleslash_offset).substr($dirname, $doubleslash_offset + 1);
+			}
+		} while ($doubleslash_offset !== false);
+
 		$open_basedirs = explode($delimiter, $config_open_basedir);
 		foreach ($open_basedirs as $key => $open_basedir) {
 			if (preg_match('#^'.preg_quote($open_basedir).'#'.($case_insensitive_pathname ? 'i' : ''), $dirname) && (strlen($dirname) > strlen($open_basedir))) {
@@ -878,12 +888,23 @@ class phpthumb_functions {
 				continue;
 			}
 			if (!@is_dir($test_directory)) {
+				if (substr($test_directory, 0, 2) == '\\\\') {
+					// UNC path
+					if (count(explode('\\', $test_directory)) <= 4) {
+						// 1,2 = UNC starting slashes
+						// 3 = hostname; skip further checks
+						// 4 = sharename; skip further checks
+						// 5+ = real subdiretories
+						continue;
+					}
+				}
 				if (@file_exists($test_directory)) {
 					// directory name already exists as a file
 					return false;
 				}
 				@mkdir($test_directory, $mask);
 				@chmod($test_directory, $mask);
+				clearstatcache();
 				if (!@is_dir($test_directory) || !@is_writable($test_directory)) {
 					return false;
 				}
