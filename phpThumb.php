@@ -134,8 +134,13 @@ if (!phpthumb_functions::FunctionIsDisabled('set_time_limit')) {
 // phpThumbDebug[0] used to be here, but may reveal too much
 // info when high_security_mode should be enabled (not set yet)
 
-if (file_exists( __DIR__ .'/phpThumb.config.php')) {
+/** @noinspection PhpStatementHasEmptyBodyInspection */
+if (!empty($PHPTHUMB_CONFIG)) {  // we could use another check if the config file is loaded, but this is good enough
+    // configuation is alredy loaded
+    // (used in case phpThumb is used as composer package, where we have no access to phpThumb.config.php nor phpThumb.config.default.php))
+} elseif (file_exists( __DIR__ .'/phpThumb.config.php')) {
 	ob_start();
+    /** @noinspection PhpStatementHasEmptyBodyInspection */
 	if (include_once __DIR__ .'/phpThumb.config.php' ) {
 		// great
 	} else {
