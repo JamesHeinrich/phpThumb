@@ -391,6 +391,8 @@ foreach ($_GET as $key => $value) {
 	if (!empty($PHPTHUMB_DEFAULTS_DISABLEGETPARAMS) && ($key != 'src')) {
 		// disabled, do not set parameter
 		$phpThumb->DebugMessage('ignoring $_GET['.$key.'] because of $PHPTHUMB_DEFAULTS_DISABLEGETPARAMS', __FILE__, __LINE__);
+	} elseif ($key == 'hash') {
+		// "hash" is for use in phpThumb.phpdoes only, should not be set on object
 	} elseif (in_array($key, $allowedGETparameters)) {
 		$phpThumb->DebugMessage('setParameter('.$key.', '.$phpThumb->phpThumbDebugVarDump($value).')', __FILE__, __LINE__);
 		$phpThumb->setParameter($key, $value);
@@ -435,7 +437,7 @@ if (isset($_GET['phpThumbDebug']) && ($_GET['phpThumbDebug'] == '3')) {
 $CanPassThroughDirectly = true;
 if ($phpThumb->rawImageData) {
 	// data from SQL, should be fine
-} elseif (preg_match('#^https?\\://[^\\?&]+\\.(jpe?g|gif|png|webp)$#i', $phpThumb->src)) {
+} elseif (preg_match('#^https?\\://[^\\?&]+\\.(jpe?g|gif|png|webp|avif)$#i', $phpThumb->src)) {
 	// assume is ok to passthru if no other parameters specified
 } elseif (preg_match('#^(f|ht)tps?\\://#i', $phpThumb->src)) {
 	$phpThumb->DebugMessage('$CanPassThroughDirectly=false because preg_match("#^(f|ht)tps?://#i", '.$phpThumb->src.')', __FILE__, __LINE__);
@@ -456,7 +458,7 @@ foreach ($_GET as $key => $value) {
 		case 'w':
 		case 'h':
 			// might be OK if exactly matches original
-			if (preg_match('#^https?\\://[^\\?&]+\\.(jpe?g|gif|png|webp)$#i', $phpThumb->src)) {
+			if (preg_match('#^https?\\://[^\\?&]+\\.(jpe?g|gif|png|webp|avif)$#i', $phpThumb->src)) {
 				// assume it is not ok for direct-passthru of remote image
 				$CanPassThroughDirectly = false;
 			}
@@ -490,7 +492,7 @@ $phpThumb->DebugMessage('$CanPassThroughDirectly="'. (int) $CanPassThroughDirect
 while ($CanPassThroughDirectly && $phpThumb->src) {
 	// no parameters set, passthru
 
-	if (preg_match('#^https?\\://[^\\?&]+\.(jpe?g|gif|png|webp)$#i', $phpThumb->src)) {
+	if (preg_match('#^https?\\://[^\\?&]+\.(jpe?g|gif|png|webp|avif)$#i', $phpThumb->src)) {
 		$phpThumb->DebugMessage('Passing HTTP source through directly as Location: redirect ('.$phpThumb->src.')', __FILE__, __LINE__);
 		header('Location: '.$phpThumb->src);
 		exit;
@@ -513,10 +515,11 @@ while ($CanPassThroughDirectly && $phpThumb->src) {
 			break;
 		}
 		switch ($phpThumb->getimagesizeinfo[2]) {
-			case  1: // GIF
-			case  2: // JPG
-			case  3: // PNG
-			case 18: // WEBP
+			case IMAGETYPE_GIF:
+			case IMAGETYPE_JPEG:
+			case IMAGETYPE_PNG:
+			case IMAGETYPE_WEBP:
+			case IMAGETYPE_AVIF:
 				// great, let it through
 				break;
 			default:
@@ -525,7 +528,13 @@ while ($CanPassThroughDirectly && $phpThumb->src) {
 				break 2;
 		}
 
-		$ImageCreateFunctions = array(1=>'imagecreatefromgif', 2=>'imagecreatefromjpeg', 3=>'imagecreatefrompng', 18=>'imagecreatefromwebp');
+		$ImageCreateFunctions = array(
+			IMAGETYPE_GIF  => 'imagecreatefromgif',
+			IMAGETYPE_JPEG => 'imagecreatefromjpeg',
+			IMAGETYPE_PNG  => 'imagecreatefrompng',
+			IMAGETYPE_WEBP => 'imagecreatefromwebp',
+			IMAGETYPE_AVIF => 'imagecreatefromavif',
+		);
 		$theImageCreateFunction = @$ImageCreateFunctions[$phpThumb->getimagesizeinfo[2]];
 		$dummyImage = false;
 		if ($phpThumb->config_disable_onlycreateable_passthru || (function_exists($theImageCreateFunction) && ($dummyImage = @$theImageCreateFunction($SourceFilename)))) {
