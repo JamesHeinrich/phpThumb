@@ -7,6 +7,25 @@
 ¤ = structure change or important new feature
 * = less important new feature or change
 
+v1.7.20-202212091316
+  * [bugfix: #203] Support https in file_get_contents polyfill
+  * [bugfix: #202] Test if property is set when testing array (@ operator fix)
+  * [bugfix: #201] Test if file exists when getting modified time (@ operator fix)
+  * [bugfix: #200] IMAGETYPE_AVIF not included in ImageTypeToMIMEtype()
+
+v1.7.19-202210110924
+  ¤ #193 Composer - script hsp-generate for generate High Security Password
+  * [bugfix: #196] PHP8 compatibility
+  * [bugfix: #191] IMAGETYPE_AVIF not defined
+
+v1.7.18-202208061319
+  ¤ add support for AVIF image format (requires PHP 8.1.0) for native PHP support.
+  * [bugfix: G190] ensure that all used IMG_ and IMAGETYPE_ constants are always defined.
+  * [bugfix: G188] fix some potential null-parameter warnings
+  * [bugfix: G187] PHP8 compatibility
+  * [bugfix: G185] PHP8 compatibility
+  * [bugfix: G183] better message auth
+
 v1.7.17-202109221111
   * [bugfix: G171] problem with class_exists and autoloading
   * [bugfix: G173] file_get_contents instead of readfile
