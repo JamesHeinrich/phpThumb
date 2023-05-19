@@ -2395,6 +2395,10 @@ if (false) {
 						}
 					}
 				}
+                // ImageMagic also support quality for webp - but only for version 7.0.8-68 and above
+                if (($outputFormat=='webp') && $this->q && $this->ImageMagickSwitchAvailable(['quality'])) {
+                    $commandline .= ' -quality '.phpthumb_functions::escapeshellarg_replacement($this->thumbnailQuality);
+                }
 				$commandline .= ' '.$outputFormat.':'.phpthumb_functions::escapeshellarg_replacement($IMtempfilename);
 				if (!$this->iswindows) {
 					$commandline .= ' 2>&1';
@@ -3717,8 +3721,8 @@ if (false) {
 				$ParametersString .= '_'.$key.substr(md5($this->$key), 0, 4);
 			}
 		}
-		if ($this->thumbnailFormat == 'jpeg') {
-			// only JPEG output has variable quality option
+        if (in_array($this->thumbnailFormat, ['jpeg','webp'])) {
+            // only JPEG and WEBP output has variable quality option
 			$ParametersString .= '_q'. (int) $this->thumbnailQuality;
 		}
 		$this->DebugMessage('SetCacheFilename() _par set from md5('.$ParametersString.')', __FILE__, __LINE__);
