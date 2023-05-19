@@ -1,5 +1,5 @@
 {
-    "name": "honzito/phpthumb",
+    "name": "james-heinrich/phpthumb",
     "description": "The PHP thumbnail generator",
     "type": "library",
     "license": ["GPL-1.0-or-later", "LGPL-3.0-only", "MPL-2.0"],
