@@ -706,7 +706,7 @@ class phpthumb_functions {
 			return $url;
 		}
 		$parsed_url = self::ParseURLbetter($url);
-		$pathelements = explode('/', $parsed_url['path']);
+		$pathelements = explode('/', (string)$parsed_url['path']);
 		$CleanPathElements = array();
 		$TranslationMatrix = array(' '=>'%20');
 		foreach ($pathelements as $key => $pathelement) {
@@ -718,7 +718,7 @@ class phpthumb_functions {
 			}
 		}
 
-		$queries = explode($queryseperator, $parsed_url['query']);
+		$queries = explode($queryseperator, (string)$parsed_url['query']);
 		$CleanQueries = array();
 		foreach ($queries as $key => $query) {
 			@list($param, $value) = explode('=', $query);
