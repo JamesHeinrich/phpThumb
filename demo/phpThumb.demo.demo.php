@@ -99,7 +99,8 @@ $img['levels2']    = 'images/lilies.jpg';
 $img['anigif']     = 'images/animaple.gif';
 $img['alpha']      = 'images/alpha.png';
 //$img['alpha']      = 'images/North15.gif';
-$img['whitespace'] = 'images/whitespace.jpg';
+// $img['whitespace'] = 'images/whitespace.jpg';  // missing
+$img['whitespace'] = 'images/bunnies.jpg';
 
 $img['mask1']      = 'images/mask04.png';
 $img['mask2']      = 'images/mask05.png';
@@ -135,7 +136,7 @@ $Examples[] = array('getstrings' => array('src='.$img['square'].'&w=300'), 'desc
 $Examples[] = array('getstrings' => array('src='.$img['square'].'&w=300&q=10&sia=custom-filename'), 'description' => 'width=300px, JPEGquality=10%, SaveImageAs=custom-filename');
 $Examples[] = array('getstrings' => array('src='.$img['watermark'].'&w=400&aoe=1&bg=ffffff'), 'description' => 'width=400px, AllowOutputEnlargement enabled');
 $Examples[] = array('getstrings' => array('src='.$img['square'].'&w=250&sx=600&sy=5&sw=100&sh=100&aoe=1'), 'description' => 'section from (600x5 - 700x105) cropped and enlarged by 250%, AllowOutputEnlargement enabled');
-$Examples[] = array('getstrings' => array('src='.urlencode('http://www.silisoftware.com/images/SiliSoft.gif').'&w=100'), 'description' => 'HTTP source image'.$only_gd);
+$Examples[] = array('getstrings' => array('src='.urlencode('https://www.silisoftware.com/images/SiliSoft.gif').'&w=100'), 'description' => 'HTTP source image'.$only_gd);
 $Examples[] = array('getstrings' => array('src='.$img['square'].'&w=300&fltr[]=wmi|'.$img['watermark'].'|BL'), 'description' => 'width=300px, watermark (bottom-left, 75% opacity)'.$only_gd);
 $Examples[] = array('getstrings' => array('src='.$img['square'].'&w=300&fltr[]=wmi|'.$img['watermark'].'|*|25'), 'description' => 'width=300px, watermark (tiled, 25% opacity)'.$only_gd);
 $Examples[] = array('getstrings' => array('src='.$img['square'].'&w=300&fltr[]=wmi|'.$img['watermark'].'|75x50|80|75|75|45'), 'description' => 'width=300px, watermark (absolute position (75x50), rotation (45), scaling (75x75)))'.$only_gd);

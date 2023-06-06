@@ -232,7 +232,7 @@ class phpthumb_functions {
 
 
 	public static function IsHexColor($HexColorString) {
-		return preg_match('#^[0-9A-F]{6}$#i', $HexColorString);
+		return preg_match('#^[0-9A-F]{6}$#i', (string)$HexColorString);
 	}
 
 

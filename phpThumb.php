@@ -41,7 +41,7 @@ function SendSaveAsFileHeaderIfNeeded($getimagesize=false) {
 	//if (empty($_GET['sia']) && empty($_GET['down']) && !empty($phpThumb->thumbnail_image_width) && !empty($phpThumb->thumbnail_image_height)) {
 	if (empty($_GET['sia']) && empty($_GET['down']) && !empty($getimagesize[0]) && !empty($getimagesize[1])) {
 		// if we know the output image dimensions we can generate a better default filename
-		$downloadfilename = phpthumb_functions::SanitizeFilename((!empty($phpThumb->src) ? basename($phpThumb->src) : md5($phpThumb->rawImageData)).'-'.intval($getimagesize[0]).'x'.intval($getimagesize[1]).'.'.(!empty($_GET['f']) ? $_GET['f'] : 'jpg'));
+		$downloadfilename = phpthumb_functions::SanitizeFilename((!empty($phpThumb->src) ? basename($phpThumb->src) : md5((string)$phpThumb->rawImageData)).'-'.intval($getimagesize[0]).'x'.intval($getimagesize[1]).'.'.(!empty($_GET['f']) ? $_GET['f'] : 'jpg'));
 	}
 	if (!empty($downloadfilename)) {
 		$phpThumb->DebugMessage('SendSaveAsFileHeaderIfNeeded() sending header: Content-Disposition: '.(!empty($_GET['down']) ? 'attachment' : 'inline').'; filename="'.$downloadfilename.'"', __FILE__, __LINE__);
@@ -286,7 +286,7 @@ if ($phpThumb->config_nooffsitelink_require_refer && !in_array(@$parsed_url_refe
 	$phpThumb->ErrorImage('config_nooffsitelink_require_refer enabled and '.(@$parsed_url_referer['host'] ? '"'.$parsed_url_referer['host'].'" is not an allowed referer' : 'no HTTP_REFERER exists'));
 }
 $parsed_url_src = phpthumb_functions::ParseURLbetter(@$_GET['src']);
-if ($phpThumb->config_nohotlink_enabled && $phpThumb->config_nohotlink_erase_image && preg_match('#^(f|ht)tps?://#i', @$_GET['src']) && !in_array(@$parsed_url_src['host'], $phpThumb->config_nohotlink_valid_domains)) {
+if ($phpThumb->config_nohotlink_enabled && $phpThumb->config_nohotlink_erase_image && preg_match('#^(f|ht)tps?://#i', (string)@$_GET['src']) && !in_array(@$parsed_url_src['host'], $phpThumb->config_nohotlink_valid_domains)) {
 	$phpThumb->ErrorImage($phpThumb->config_nohotlink_text_message);
 }
 
@@ -437,9 +437,9 @@ if (isset($_GET['phpThumbDebug']) && ($_GET['phpThumbDebug'] == '3')) {
 $CanPassThroughDirectly = true;
 if ($phpThumb->rawImageData) {
 	// data from SQL, should be fine
-} elseif (preg_match('#^https?\\://[^\\?&]+\\.(jpe?g|gif|png|webp|avif)$#i', $phpThumb->src)) {
+} elseif (preg_match('#^https?\\://[^\\?&]+\\.(jpe?g|gif|png|webp|avif)$#i', (string)$phpThumb->src)) {
 	// assume is ok to passthru if no other parameters specified
-} elseif (preg_match('#^(f|ht)tps?\\://#i', $phpThumb->src)) {
+} elseif (preg_match('#^(f|ht)tps?\\://#i', (string)$phpThumb->src)) {
 	$phpThumb->DebugMessage('$CanPassThroughDirectly=false because preg_match("#^(f|ht)tps?://#i", '.$phpThumb->src.')', __FILE__, __LINE__);
 	$CanPassThroughDirectly = false;
 } elseif (!@is_readable($phpThumb->sourceFilename)) {
@@ -458,7 +458,7 @@ foreach ($_GET as $key => $value) {
 		case 'w':
 		case 'h':
 			// might be OK if exactly matches original
-			if (preg_match('#^https?\\://[^\\?&]+\\.(jpe?g|gif|png|webp|avif)$#i', $phpThumb->src)) {
+			if (preg_match('#^https?\\://[^\\?&]+\\.(jpe?g|gif|png|webp|avif)$#i', (string)$phpThumb->src)) {
 				// assume it is not ok for direct-passthru of remote image
 				$CanPassThroughDirectly = false;
 			}
