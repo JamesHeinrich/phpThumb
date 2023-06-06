@@ -232,7 +232,7 @@ class phpthumb_functions {
 
 
 	public static function IsHexColor($HexColorString) {
-		return preg_match('#^[0-9A-F]{6}$#i', $HexColorString);
+		return preg_match('#^[0-9A-F]{6}$#i', (string)$HexColorString);
 	}
 
 
@@ -718,7 +718,7 @@ class phpthumb_functions {
 			}
 		}
 
-		$queries = explode($queryseperator, $parsed_url['query']);
+		$queries = explode($queryseperator, (string)$parsed_url['query']);
 		$CleanQueries = array();
 		foreach ($queries as $key => $query) {
 			@list($param, $value) = explode('=', $query);
