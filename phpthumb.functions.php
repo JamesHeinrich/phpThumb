@@ -706,7 +706,7 @@ class phpthumb_functions {
 			return $url;
 		}
 		$parsed_url = self::ParseURLbetter($url);
-		$pathelements = explode('/', $parsed_url['path']);
+		$pathelements = explode('/', (string)$parsed_url['path']);
 		$CleanPathElements = array();
 		$TranslationMatrix = array(' '=>'%20');
 		foreach ($pathelements as $key => $pathelement) {
