@@ -314,6 +314,9 @@ class phpthumb {
 		$this->purgeTempFiles();
 	}
 
+	public function __set(string $name, mixed $value): void {
+	}
+
 	// public:
 	public function purgeTempFiles() {
 		foreach ($this->tempFilesToDelete as $tempFileToDelete) {
