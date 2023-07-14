@@ -7,6 +7,15 @@
 ¤ = structure change or important new feature
 * = less important new feature or change
 
+v1.7.21-202307141720
+  * [bugfix: #215] PHP 8.2 compatibility
+  * [bugfix: #214] PHP 8.2 compatibility (Dynamic Properties are deprecated)
+  * [bugfix: #213] PHP 8.2 compatibility
+  * [bugfix: #212] PHP 8.2 compatibility
+  * [bugfix: #211] quality parameter fix for ImageMagick processing
+  * [bugfix: #208] PHP 8.2 compatibility
+  * [bugfix: #207] PHP 8.2 compatibility
+
 v1.7.20-202212091316
   * [bugfix: #203] Support https in file_get_contents polyfill
   * [bugfix: #202] Test if property is set when testing array (@ operator fix)
