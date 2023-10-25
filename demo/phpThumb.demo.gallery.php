@@ -61,7 +61,7 @@ if (!empty($_REQUEST['pic'])) {
 		$folders = array();
 		$pictures = array();
 		while ($file = readdir($dh)) {
-			if (is_dir($currentdir.'/'.$file) && ($file{0} != '.')) {
+			if (is_dir($currentdir.'/'.$file) && ($file[0] != '.')) {
 				$folders[] = $file;
 			} elseif (preg_match('#\\.(jpe?g|gif|png|bmp|tiff?)$#i', $file)) {
 				$pictures[] = $file;
