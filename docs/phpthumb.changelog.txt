@@ -7,6 +7,10 @@
 ¤ = structure change or important new feature
 * = less important new feature or change
 
+v1.7.22-202312071641
+  * [bugfix: #219] PHP 8 compatibility
+  * [bugfix: #218] PHP 7 compatibility
+
 v1.7.21-202307141720
   * [bugfix: #215] PHP 8.2 compatibility
   * [bugfix: #214] PHP 8.2 compatibility (Dynamic Properties are deprecated)
