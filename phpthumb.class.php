@@ -265,7 +265,7 @@ class phpthumb {
 	public $issafemode       = null;
 	public $php_memory_limit = null;
 
-	public $phpthumb_version = '1.7.22-202312071641';
+	public $phpthumb_version = '1.7.22-202404301257';
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -3793,7 +3793,7 @@ if (false) {
 						if (function_exists($ImageCreateFromFunctionName)) {
 							$this->DebugMessage('Calling '.$ImageCreateFromFunctionName.'('.$filename.')', __FILE__, __LINE__);
 							$ImageCreateWasAttempted = true;
-							$gd_image = $ImageCreateFromFunctionName($filename);
+							$gd_image = @$ImageCreateFromFunctionName($filename);
 						} else {
 							$this->DebugMessage('NOT calling '.$ImageCreateFromFunctionName.'('.$filename.') because !function_exists('.$ImageCreateFromFunctionName.')', __FILE__, __LINE__);
 						}
