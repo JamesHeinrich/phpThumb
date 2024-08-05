@@ -81,7 +81,7 @@ class phpthumb {
 	public $ws   = null;     // Width  (Square Images Only)
 	public $hs   = null;     // Height (Square Images Only)
 	public $f    = null;     // output image Format
-	public $q    = 75;       // jpeg output Quality
+	public $q    = -1;       // jpeg output Quality
 	public $sx   = null;     // Source crop top-left X position
 	public $sy   = null;     // Source crop top-left Y position
 	public $sw   = null;     // Source crop Width
@@ -221,7 +221,7 @@ class phpthumb {
 
 
 	// private: (should not be modified directly)
-	public $thumbnailQuality = 75;
+	public $thumbnailQuality = -1;
 	public $thumbnailFormat  = null;
 
 	public $sourceFilename   = null;
@@ -265,7 +265,7 @@ class phpthumb {
 	public $issafemode       = null;
 	public $php_memory_limit = null;
 
-	public $phpthumb_version = '1.7.22-202404301257';
+	public $phpthumb_version = '1.7.22-202408051643';
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -572,8 +572,8 @@ class phpthumb {
 					if (($this->thumbnailQuality >= -1) && ($this->thumbnailQuality <= 9)) {
 						$PNGquality = $this->thumbnailQuality;
 					} else {
-						$this->DebugMessage('Specified thumbnailQuality "'.$this->thumbnailQuality.'" is outside the accepted range (0-9, or -1). Using 6 as default value.', __FILE__, __LINE__);
-						$PNGquality = 6;
+						$this->DebugMessage('Specified thumbnailQuality "'.$this->thumbnailQuality.'" is outside the accepted range (0-9, or -1). Using -1 as default value.', __FILE__, __LINE__);
+						$PNGquality = -1;
 					}
 					imagepng($this->gdimg_output, null, $PNGquality);
 				} else {
@@ -1096,7 +1096,7 @@ class phpthumb {
 		// for JPEG images, quality 1 (worst) to 99 (best)
 		// quality < 25 is nasty, with not much size savings - not recommended
 		// problems with 100 - invalid JPEG?
-		$this->thumbnailQuality = max(1, min(99, ($this->q ? (int) $this->q : 75)));
+		$this->thumbnailQuality = max(-1, min(99, ($this->q ? (int) $this->q : -1)));
 		$this->DebugMessage('$this->thumbnailQuality set to "'.$this->thumbnailQuality.'"', __FILE__, __LINE__);
 
 		return true;
