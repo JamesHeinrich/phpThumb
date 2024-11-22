@@ -320,7 +320,7 @@ class phpthumb {
 	// public:
 	public function purgeTempFiles() {
 		foreach ($this->tempFilesToDelete as $tempFileToDelete) {
-			if (file_exists($tempFileToDelete)) {
+			if ((strpos(basename($tempFileToDelete), 'pThumb') === 0) && file_exists($tempFileToDelete)) {
 				$this->DebugMessage('Deleting temp file "'.$tempFileToDelete.'"', __FILE__, __LINE__);
 				@unlink($tempFileToDelete);
 			}
