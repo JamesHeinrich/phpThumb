@@ -7,6 +7,13 @@
 ¤ = structure change or important new feature
 * = less important new feature or change
 
+v1.7.23-202503281052
+  * [bugfix: #227] preserving WEBP transparency
+  * [bugfix: #226] avoid arbitrary file deletion abuse via object injection
+  * [bugfix: #224] imagecolorallocatealpha color out of range
+  * [bugfix: #223] imagepng default quality
+  * [bugfix: #221] gd-png: libpng warning: iCCP: known incorrect sRGB profile
+
 v1.7.22-202312071641
   * [bugfix: #219] PHP 8 compatibility
   * [bugfix: #218] PHP 7 compatibility

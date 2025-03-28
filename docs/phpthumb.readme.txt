@@ -40,16 +40,14 @@ First, read this file.
 Then read phpthumb.faq.txt
 Then run /demo/phpThumb.demo.check.php
 If you still think it's a bug, or can't figure it out, please go to
-http://support.silisoftware.com
+https://github.com/JamesHeinrich/phpThumb/issues
 
 
 =============
 Installation:
 =============
 
-1) Download from either official site:
-  * https://github.com/JamesHeinrich/phpThumb (current development version)
-  * http://phpthumb.sourceforge.net (occasional releases + documentation)
+1) Download from: https://github.com/JamesHeinrich/phpThumb/releases
 2) unzip to a location of your choice on your server, putting it in its
   own subdirectory (e.g. /phpThumb/ is useful but not required)
 3) rename phpThumb.config.php.default -> phpThumb.config.php

@@ -265,7 +265,7 @@ class phpthumb {
 	public $issafemode       = null;
 	public $php_memory_limit = null;
 
-	public $phpthumb_version = '1.7.22-202408102120';
+	public $phpthumb_version = '1.7.23-202503281052';
 
 	//////////////////////////////////////////////////////////////////////
 
