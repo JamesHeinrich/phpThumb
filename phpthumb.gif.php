@@ -114,7 +114,7 @@ function gif_outputAsJpeg($gif, $lpszFileName, $bgColor = -1)
 	if ((strtoupper(substr(PHP_OS, 0, 3)) != 'WIN') && (file_exists('/usr/local/bin/cjpeg') || shell_exec('which cjpeg'))) {
 
 		if (gif_outputAsBmp($gif, $lpszFileName.'.bmp', $bgColor)) {
-			exec('cjpeg '.$lpszFileName.'.bmp >'.$lpszFileName.' 2>/dev/null');
+			exec('cjpeg '.escapeshellarg($lpszFileName.'.bmp').' > '.escapeshellarg($lpszFileName).' 2>/dev/null');
 			@unlink($lpszFileName.'.bmp');
 
 			if (@file_exists($lpszFileName)) {
