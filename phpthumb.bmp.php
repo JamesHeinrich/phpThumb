@@ -104,7 +104,7 @@ class phpthumb_bmp {
 		$offset += 2;
 
 		if ($thisfile_bmp_header_raw['identifier'] != 'BM') {
-			$ThisFileInfo['error'][] = 'Expecting "BM" at offset '. (int) (@$ThisFileInfo[ 'avdataoffset']) .', found "'. $thisfile_bmp_header_raw[ 'identifier'].'"';
+			$ThisFileInfo['error'][] = 'Expecting "BM" at offset 0, found "'. $thisfile_bmp_header_raw[ 'identifier'].'"';
 			unset($ThisFileInfo['fileformat']);
 			unset($ThisFileInfo['bmp']);
 			return false;

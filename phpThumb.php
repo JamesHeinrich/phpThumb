@@ -188,7 +188,7 @@ if (empty($phpThumb->config_disable_pathinfo_parsing) && (empty($_GET) || isset(
 		$phpThumb->DebugMessage('PATH_INFO."w"x"h" set to "'.$_GET['w'].'"x"'.$_GET['h'].'"', __FILE__, __LINE__);
 	}
 	for ($i = 0; $i < count($args) - 2; $i++) {
-		@list($key, $value) = explode('=', @$args[$i]);
+		list($key, $value) = array_pad(explode('=', $args[$i]), 2, '');
 		if (substr($key, -2) == '[]') {
 			$array_key_name = substr($key, 0, -2);
 			$_GET[$array_key_name][] = $value;
@@ -608,7 +608,7 @@ if ($phpThumb->rawImageData) {
 	if (($phpThumb->w <= 0) || ($phpThumb->h <= 0)) {
 		$phpThumb->ErrorImage('"w" and "h" parameters required for "new"');
 	}
-	@list($bghexcolor, $opacity) = explode('|', $_GET['new']);
+	list($bghexcolor, $opacity) = array_pad(explode('|', $_GET['new']), 2, '');
 	if (!phpthumb_functions::IsHexColor($bghexcolor)) {
 		$phpThumb->ErrorImage('BGcolor parameter for "new" is not valid');
 	}
