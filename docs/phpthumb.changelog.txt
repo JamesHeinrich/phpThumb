@@ -7,6 +7,10 @@
 ¤ = structure change or important new feature
 * = less important new feature or change
 
+v1.7.24-202506091232
+  * [bugfix: #230] CVE-2025-52994
+  * [bugfix: #229] PHP 8 compatibility
+
 v1.7.23-202503281052
   * [bugfix: #227] preserving WEBP transparency
   * [bugfix: #226] avoid arbitrary file deletion abuse via object injection
@@ -42,8 +46,8 @@ v1.7.18-202208061319
   ¤ add support for AVIF image format (requires PHP 8.1.0) for native PHP support.
   * [bugfix: G190] ensure that all used IMG_ and IMAGETYPE_ constants are always defined.
   * [bugfix: G188] fix some potential null-parameter warnings
-  * [bugfix: G187] PHP8 compatibility
-  * [bugfix: G185] PHP8 compatibility
+  * [bugfix: G187] PHP 8 compatibility
+  * [bugfix: G185] PHP 8 compatibility
   * [bugfix: G183] better message auth
 
 v1.7.17-202109221111
