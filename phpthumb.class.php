@@ -267,7 +267,7 @@ class phpthumb {
 	public $issafemode       = null;
 	public $php_memory_limit = null;
 
-	public $phpthumb_version = '1.7.24-202509221106';
+	public $phpthumb_version = '1.7.24-202509221109';
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -1452,6 +1452,9 @@ class phpthumb {
 			$AbsoluteFilename = str_replace(DIRECTORY_SEPARATOR, '/', $AbsoluteFilename);
 		}
 		$resolvedAbsoluteFilename = $this->resolvePath($AbsoluteFilename, $this->config_additional_allowed_dirs);
+		/*
+		// removed 2025-Sep-22: https://github.com/JamesHeinrich/phpThumb/issues/231
+		// these checks should not be needed as the above call to resolvePath() should already include these checks (and more)
 		if (!$this->config_allow_src_above_docroot && !preg_match('#^'.preg_quote(str_replace(DIRECTORY_SEPARATOR, '/', $this->realPathSafe($this->config_document_root))).'#'.($this->iswindows ? 'i' : ''), (string)$resolvedAbsoluteFilename)) {
 			$this->DebugMessage('!$this->config_allow_src_above_docroot therefore setting "'.$resolvedAbsoluteFilename.'" (outside "'.$this->realPathSafe($this->config_document_root).'") to null', __FILE__, __LINE__);
 			return false;
@@ -1460,6 +1463,7 @@ class phpthumb {
 			$this->DebugMessage('!$this->config_allow_src_above_phpthumb therefore setting "'.$resolvedAbsoluteFilename.'" (outside "'. __DIR__ .'") to null', __FILE__, __LINE__);
 			return false;
 		}
+		*/
 		return $resolvedAbsoluteFilename;
 	}
 
