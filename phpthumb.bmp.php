@@ -710,7 +710,7 @@ class phpthumb_bmp {
 			if (!empty($BMPdata['palette'])) {
 				// create GD palette from BMP palette
 				foreach ($BMPdata['palette'] as $dummy => $color) {
-					list($r, $g, $b) = $this->IntColor2RGB($color);
+					[$r, $g, $b] = $this->IntColor2RGB($color);
 					imagecolorallocate($gd, $r, $g, $b);
 				}
 			} else {
@@ -734,7 +734,7 @@ class phpthumb_bmp {
 				set_time_limit(30);
 			}
 			foreach ($colarray as $col => $color) {
-				list($red, $green, $blue) = $this->IntColor2RGB($color);
+				[$red, $green, $blue] = $this->IntColor2RGB($color);
 				if ($truecolor) {
 					$pixelcolor = imagecolorallocate($gd, $red, $green, $blue);
 				} else {

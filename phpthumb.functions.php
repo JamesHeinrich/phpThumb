@@ -673,7 +673,7 @@ class phpthumb_functions {
 					$data_body .= $line;
 				}
 				if (preg_match('#^HTTP/[\\.\d]+ ([\d]+)\s*(.+)?$#i', rtrim($line), $matches)) {
-					list( , $errno, $errstr) = $matches;
+					[ , $errno, $errstr] = $matches;
 					$errno = (int) $errno;
 				} elseif (preg_match('#^Location: (.*)$#i', rtrim($line), $matches)) {
 					$header_newlocation = $matches[1];
@@ -721,7 +721,7 @@ class phpthumb_functions {
 		$queries = explode($queryseperator, (string)$parsed_url['query']);
 		$CleanQueries = array();
 		foreach ($queries as $key => $query) {
-			list($param, $value) = array_pad(explode('=', $query), 2, '');
+			[$param, $value] = array_pad(explode('=', $query), 2, '');
 			$CleanQueries[] = strtr($param, $TranslationMatrix).($value ? '='.strtr($value, $TranslationMatrix) : '');
 		}
 		foreach ($CleanQueries as $key => $value) {

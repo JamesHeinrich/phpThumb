@@ -267,7 +267,7 @@ class phpthumb {
 	public $issafemode       = null;
 	public $php_memory_limit = null;
 
-	public $phpthumb_version = '1.7.24-202602061556';
+	public $phpthumb_version = '1.7.24-202611041509';
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -1969,7 +1969,7 @@ if (false) {
 
 							if ($this->iar && ((int) $this->w > 0) && ((int) $this->h > 0)) {
 
-								list($nw, $nh) = phpthumb_functions::TranslateWHbyAngle($this->w, $this->h, $this->ra);
+								[$nw, $nh] = phpthumb_functions::TranslateWHbyAngle($this->w, $this->h, $this->ra);
 								$nw = ((round($nw) != 0) ? round($nw) : '');
 								$nh = ((round($nh) != 0) ? round($nh) : '');
 								$commandline .= ' -'.$IMresizeParameter.' '.phpthumb_functions::escapeshellarg_replacement($nw.'x'.$nh.'!');
@@ -1997,7 +1997,7 @@ if (false) {
 											$this->w = ceil($this->h * ($this->source_width / $this->source_height));
 										}
 									}
-									list($nw, $nh) = phpthumb_functions::TranslateWHbyAngle($this->w, $this->h, $this->ra);
+									[$nw, $nh] = phpthumb_functions::TranslateWHbyAngle($this->w, $this->h, $this->ra);
 									$nw = ((isset($nw) && round($nw) != 0) ? round($nw) : '');
 									$nh = ((isset($nh) && round($nh) != 0) ? round($nh) : '');
 									$commandline .= ' -'.$IMresizeParameter.' '.phpthumb_functions::escapeshellarg_replacement($nw.'x'.$nh);
@@ -2047,7 +2047,7 @@ if (false) {
 
 				$successfullyProcessedFilters = array();
 				foreach ($this->fltr as $filterkey => $filtercommand) {
-					list($command, $parameter) = array_pad(explode('|', $filtercommand, 2), 2, '');
+					[$command, $parameter] = array_pad(explode('|', $filtercommand, 2), 2, '');
 					switch ($command) {
 						case 'brit':
 							if ($this->ImageMagickSwitchAvailable('modulate')) {
@@ -2110,7 +2110,7 @@ if (false) {
 
 						case 'clr':
 							if ($this->ImageMagickSwitchAvailable(array('fill', 'colorize'))) {
-								list($amount, $color) = array_pad(explode('|', $parameter), 2, '');
+								[$amount, $color] = array_pad(explode('|', $parameter), 2, '');
 								$commandline .= ' -fill '.phpthumb_functions::escapeshellarg_replacement('#'.preg_replace('#[^0-9A-F]#i', '', $color));
 								$commandline .= ' -colorize '.phpthumb_functions::escapeshellarg_replacement(min(max((int) $amount, 0), 100));
                                 $successfullyProcessedFilters[] = $filterkey;
@@ -2119,7 +2119,7 @@ if (false) {
 
 						case 'sep':
 							if ($this->ImageMagickSwitchAvailable('sepia-tone')) {
-								list($amount, $color) = array_pad(explode('|', $parameter), 2, '');
+								[$amount, $color] = array_pad(explode('|', $parameter), 2, '');
 								$amount = ($amount ? $amount : 80);
 								if (!$color) {
 									$commandline .= ' -sepia-tone '.phpthumb_functions::escapeshellarg_replacement(min(max((int) $amount, 0), 100).'%');
@@ -2129,7 +2129,7 @@ if (false) {
 							break;
 
 						case 'gam':
-							list($amount) = explode('|', $parameter);
+							[$amount] = explode('|', $parameter);
 							$amount = min(max((float) $amount, 0.001), 10);
 							if (number_format($amount, 3) != '1.000') {
 								if ($this->ImageMagickSwitchAvailable('gamma')) {
@@ -2147,7 +2147,7 @@ if (false) {
 							break;
 
 						case 'th':
-							list($amount) = explode('|', $parameter);
+							[$amount] = explode('|', $parameter);
 							if ($this->ImageMagickSwitchAvailable(array('threshold', 'dither', 'monochrome'))) {
 								$commandline .= ' -threshold '.phpthumb_functions::escapeshellarg_replacement(round(min(max((int) $amount, 0), 255) / 2.55).'%');
 								$commandline .= ' -dither';
@@ -2158,7 +2158,7 @@ if (false) {
 
 						case 'rcd':
 							if ($this->ImageMagickSwitchAvailable(array('colors', 'dither'))) {
-								list($colors, $dither) = array_pad(explode('|', $parameter), 2, '');
+								[$colors, $dither] = array_pad(explode('|', $parameter), 2, '');
 								$colors = ($colors                ?  (int) $colors : 256);
 								$dither  = ((strlen($dither) > 0) ? (bool) $dither : true);
 								$commandline .= ' -colors '.phpthumb_functions::escapeshellarg_replacement(max($colors, 8)); // ImageMagick will otherwise fail with "cannot quantize to fewer than 8 colors"
@@ -2199,7 +2199,7 @@ if (false) {
 							break;
 
 						case 'lvl':
-							list($band, $method, $threshold) = array_pad(explode('|', $parameter), 3, '');
+							[$band, $method, $threshold] = array_pad(explode('|', $parameter), 3, '');
 							$band      = ($band ? preg_replace('#[^RGBA\\*]#', '', strtoupper((string)$band))       : '*');
 							$method    = ((strlen((string)$method) > 0)    ? (int) $method :   2);
 							$threshold = ((strlen((string)$threshold) > 0) ? min(max((float) $threshold, 0), 100) : 0.1);
@@ -2212,7 +2212,7 @@ if (false) {
 								// "wb" filter will have (almost) no effect. Therefore, if "wb" is enabled then
 								// force the "lvl" filter to be processed by GD, not ImageMagick.
 								foreach ($this->fltr as $fltr_key => $fltr_value) {
-									list($fltr_cmd) = explode('|', $fltr_value);
+									[$fltr_cmd] = explode('|', $fltr_value);
 									if ($fltr_cmd == 'wb') {
 										$this->DebugMessage('Setting "lvl" filter method to "0" (from "'.$method.'") because white-balance filter also enabled', __FILE__, __LINE__);
 										$method = 0;
@@ -2262,7 +2262,7 @@ if (false) {
 
 						case 'wb':
 							if ($this->ImageMagickSwitchAvailable(array('channel', 'contrast-stretch'))) {
-								list($threshold) = explode('|', $parameter);
+								[$threshold] = explode('|', $parameter);
 								$threshold = (!empty($threshold) ? min(max((float) $threshold, 0), 100) : 0.1);
 								$threshold = preg_replace('#[^0-9\\.]#', '', $threshold); // should be unneccesary, but just to be double-sure
 								//$commandline .= ' -channel R -contrast-stretch '.phpthumb_functions::escapeshellarg_replacement($threshold.'%'); // doesn't work on Windows because most versions of PHP do not properly
@@ -2278,7 +2278,7 @@ if (false) {
 
 						case 'blur':
 							if ($this->ImageMagickSwitchAvailable('blur')) {
-								list($radius) = explode('|', $parameter);
+								[$radius] = explode('|', $parameter);
 								$radius = (!empty($radius) ? min(max((int) $radius, 0), 25) : 1);
 								$commandline .= ' -blur '.phpthumb_functions::escapeshellarg_replacement($radius);
 								$successfullyProcessedFilters[] = $filterkey;
@@ -2286,7 +2286,7 @@ if (false) {
 							break;
 
 						case 'gblr':
-							list($radius) = explode('|', $parameter);
+							[$radius] = explode('|', $parameter);
 							$radius = (!empty($radius) ? min(max((int) $radius, 0), 25) : 1);
 							// "-gaussian" changed to "-gaussian-blur" sometime around 2009
 							if ($this->ImageMagickSwitchAvailable('gaussian-blur')) {
@@ -2300,7 +2300,7 @@ if (false) {
 
 						case 'usm':
 							if ($this->ImageMagickSwitchAvailable('unsharp')) {
-								list($amount, $radius, $threshold) = array_pad(explode('|', $parameter), 3, '');
+								[$amount, $radius, $threshold] = array_pad(explode('|', $parameter), 3, '');
 								$amount    = ($amount            ? min(max((int) $amount,    0), 255) : 80);
 								$radius    = ($radius            ? min(max((int) $radius,    0),  10) : 0.5);
 								$threshold = ('' !== $threshold ? min(max((int) $threshold, 0),  50) : 3);
@@ -2312,7 +2312,7 @@ if (false) {
 						case 'bord':
 							if ($this->ImageMagickSwitchAvailable(array('border', 'bordercolor', 'thumbnail', 'crop'))) {
 								if (!$this->zc) {
-									list($width, $rX, $rY, $color) = array_pad(explode('|', $parameter), 4, '');
+									[$width, $rX, $rY, $color] = array_pad(explode('|', $parameter), 4, '');
 									$width = (int) $width;
 									$rX    = (int) $rX;
 									$rY    = (int) $rY;
@@ -2633,7 +2633,7 @@ if (false) {
 			$this->DebugMessage('AntiOffsiteLinking() checking $_SERVER[HTTP_REFERER] "'.@$_SERVER['HTTP_REFERER'].'"', __FILE__, __LINE__);
 			foreach ($this->config_nooffsitelink_valid_domains as $key => $valid_domain) {
 				// $_SERVER['HTTP_HOST'] contains the port number, so strip it out here to make default configuration work
-				list($clean_domain) = explode(':', $valid_domain);
+				[$clean_domain] = explode(':', $valid_domain);
 				$this->config_nooffsitelink_valid_domains[$key] = $clean_domain;
 			}
 			$parsed_url = phpthumb_functions::ParseURLbetter(@$_SERVER['HTTP_REFERER']);
@@ -2832,7 +2832,7 @@ if (false) {
 			$phpthumbFilters = new phpthumb_filters();
 			$phpthumbFilters->phpThumbObject = &$this;
 			foreach ($this->fltr as $filtercommand) {
-				list($command, $parameter) = array_pad(explode('|', $filtercommand, 2), 2, '');
+				[$command, $parameter] = array_pad(explode('|', $filtercommand, 2), 2, '');
 				$this->DebugMessage('Attempting to process filter command "'.$command.'('.$parameter.')"', __FILE__, __LINE__);
 				switch ($command) {
 					case 'brit': // Brightness
@@ -2860,7 +2860,7 @@ if (false) {
 							$this->DebugMessage('Skipping Colorize() because gd_version is "'.phpthumb_functions::gd_version().'"', __FILE__, __LINE__);
 							break;
 						}
-						list($amount, $color) = array_pad(explode('|', $parameter, 2), 2, '');
+						[$amount, $color] = array_pad(explode('|', $parameter, 2), 2, '');
 						$phpthumbFilters->Colorize($this->gdimg_output, $amount, $color);
 						break;
 
@@ -2869,7 +2869,7 @@ if (false) {
 							$this->DebugMessage('Skipping Sepia() because gd_version is "'.phpthumb_functions::gd_version().'"', __FILE__, __LINE__);
 							break;
 						}
-						list($amount, $color) = array_pad(explode('|', $parameter, 2), 2, '');
+						[$amount, $color] = array_pad(explode('|', $parameter, 2), 2, '');
 						$phpthumbFilters->Sepia($this->gdimg_output, $amount, $color);
 						break;
 
@@ -2890,7 +2890,7 @@ if (false) {
 							$this->DebugMessage('Skipping ReduceColorDepth() because gd_version is "'.phpthumb_functions::gd_version().'"', __FILE__, __LINE__);
 							break;
 						}
-						list($colors, $dither) = array_pad(explode('|', $parameter, 2), 2, '');
+						[$colors, $dither] = array_pad(explode('|', $parameter, 2), 2, '');
 						$colors = ($colors                ?  (int) $colors : 256);
 						$dither  = ((strlen($dither) > 0) ? (bool) $dither : true);
 						$phpthumbFilters->ReduceColorDepth($this->gdimg_output, $colors, $dither);
@@ -2909,12 +2909,12 @@ if (false) {
 						break;
 
 					case 'bvl': // Bevel
-						list($width, $color1, $color2) = array_pad(explode('|', $parameter, 3), 3, '');
+						[$width, $color1, $color2] = array_pad(explode('|', $parameter, 3), 3, '');
 						$phpthumbFilters->Bevel($this->gdimg_output, $width, $color1, $color2);
 						break;
 
 					case 'lvl': // autoLevels
-						list($band, $method, $threshold) = array_pad(explode('|', $parameter, 3), 3, '');
+						[$band, $method, $threshold] = array_pad(explode('|', $parameter, 3), 3, '');
 						$band      = ($band ? preg_replace('#[^RGBA\\*]#', '', strtoupper($band)) : '*');
 						$method    = ((strlen((string)$method) > 0)    ? (int) $method :   2);
 						$threshold = ((strlen((string)$threshold) > 0) ? (float) $threshold : 0.1);
@@ -2931,7 +2931,7 @@ if (false) {
 							$this->DebugMessage('Skipping HistogramOverlay() because gd_version is "'.phpthumb_functions::gd_version().'"', __FILE__, __LINE__);
 							break;
 						}
-						list($bands, $colors, $width, $height, $alignment, $opacity, $margin_x, $margin_y) = array_pad(explode('|', $parameter, 8), 8, '');
+						[$bands, $colors, $width, $height, $alignment, $opacity, $margin_x, $margin_y] = array_pad(explode('|', $parameter, 8), 8, '');
 						$bands     = ($bands     ? $bands     :  '*');
 						$colors    = ($colors    ? $colors    :   '');
 						$width     = ($width     ? $width     : 0.25);
@@ -2944,7 +2944,7 @@ if (false) {
 						break;
 
 					case 'fram': // Frame
-						list($frame_width, $edge_width, $color_frame, $color1, $color2) = array_pad(explode('|', $parameter, 5), 5, '');
+						[$frame_width, $edge_width, $color_frame, $color1, $color2] = array_pad(explode('|', $parameter, 5), 5, '');
 						$phpthumbFilters->Frame($this->gdimg_output, $frame_width, $edge_width, $color_frame, $color1, $color2);
 						break;
 
@@ -2954,7 +2954,7 @@ if (false) {
 							return false;
 						}
 						$this->is_alpha = true;
-						list($distance, $width, $color, $angle, $fade) = array_pad(explode('|', $parameter, 5), 5, '');
+						[$distance, $width, $color, $angle, $fade] = array_pad(explode('|', $parameter, 5), 5, '');
 						$phpthumbFilters->DropShadow($this->gdimg_output, $distance, $width, $color, $angle, $fade);
 						break;
 
@@ -2963,7 +2963,7 @@ if (false) {
 							$this->DebugMessage('Skipping Mask() because gd_version is "'.phpthumb_functions::gd_version().'"', __FILE__, __LINE__);
 							return false;
 						}
-						list($mask_filename, $invert) = array_pad(explode('|', $parameter, 2), 2, '');
+						[$mask_filename, $invert] = array_pad(explode('|', $parameter, 2), 2, '');
 						$mask_filename = $this->ResolveFilenameToAbsolute($mask_filename);
 						if (@is_readable($mask_filename) && ($fp_mask = @fopen($mask_filename, 'rb'))) {
 							$MaskImageData = '';
@@ -3003,7 +3003,7 @@ if (false) {
 							$this->DebugMessage('Skipping RoundedImageCorners() because gd_version is "'.phpthumb_functions::gd_version().'"', __FILE__, __LINE__);
 							return false;
 						}
-						list($radius_x, $radius_y) = array_pad(explode('|', $parameter, 2), 2, '');
+						[$radius_x, $radius_y] = array_pad(explode('|', $parameter, 2), 2, '');
 						if (($radius_x < 1) || ($radius_y < 1)) {
 							$this->DebugMessage('Skipping RoundedImageCorners('.$radius_x.', '.$radius_y.') because x/y radius is less than 1', __FILE__, __LINE__);
 							break;
@@ -3013,18 +3013,18 @@ if (false) {
 						break;
 
 					case 'crop': // Crop
-						list($left, $right, $top, $bottom) = array_pad(explode('|', $parameter, 4), 4, '');
+						[$left, $right, $top, $bottom] = array_pad(explode('|', $parameter, 4), 4, '');
 						$phpthumbFilters->Crop($this->gdimg_output, $left, $right, $top, $bottom);
 						break;
 
 					case 'bord': // Border
-						list($border_width, $radius_x, $radius_y, $hexcolor_border) = array_pad(explode('|', $parameter, 4), 4, '');
+						[$border_width, $radius_x, $radius_y, $hexcolor_border] = array_pad(explode('|', $parameter, 4), 4, '');
 						$this->is_alpha = true;
 						$phpthumbFilters->ImageBorder($this->gdimg_output, $border_width, $radius_x, $radius_y, $hexcolor_border);
 						break;
 
 					case 'over': // Overlay
-						list($filename, $underlay, $margin, $opacity) = array_pad(explode('|', $parameter, 4), 4, '');
+						[$filename, $underlay, $margin, $opacity] = array_pad(explode('|', $parameter, 4), 4, '');
 						$underlay = (bool) ($underlay              ? $underlay : false);
 						$margin   =        ((strlen((string)$margin)  > 0) ? $margin   : ($underlay ? 0.1 : 0.0));
 						$opacity  =        ((strlen((string)$opacity) > 0) ? $opacity  : 100);
@@ -3101,7 +3101,7 @@ if (false) {
 						break;
 
 					case 'wmi': // WaterMarkImage
-						list($filename, $alignment, $opacity, $margin['x'], $margin['y'], $rotate_angle) = array_pad(explode('|', $parameter, 6), 6, '');
+						[$filename, $alignment, $opacity, $margin['x'], $margin['y'], $rotate_angle] = array_pad(explode('|', $parameter, 6), 6, '');
 						// $margin can be pixel margin or percent margin if $alignment is text, or max width/height if $alignment is position like "50x75"
 						$alignment    = ($alignment            ? $alignment            : 'BR');
 						$opacity      = ('' != $opacity ? (int) $opacity : 50);
@@ -3159,7 +3159,7 @@ if (false) {
 						break;
 
 					case 'wmt': // WaterMarkText
-						list($text, $size, $alignment, $hex_color, $ttffont, $opacity, $margin, $angle, $bg_color, $bg_opacity, $fillextend, $lineheight) = array_pad(explode('|', $parameter, 12), 12, '');
+						[$text, $size, $alignment, $hex_color, $ttffont, $opacity, $margin, $angle, $bg_color, $bg_opacity, $fillextend, $lineheight] = array_pad(explode('|', $parameter, 12), 12, '');
 						$text       = ($text            ? $text       : '');
 						$size       = ($size            ? $size       : 3);
 						$alignment  = ($alignment       ? $alignment  : 'BR');
@@ -3182,7 +3182,7 @@ if (false) {
 						break;
 
 					case 'blur': // Blur
-						list($radius) = explode('|', $parameter, 1);
+						[$radius] = explode('|', $parameter, 1);
 						$radius = ($radius ? $radius : 1);
 						if (phpthumb_functions::gd_version() >= 2) {
 							$phpthumbFilters->Blur($this->gdimg_output, $radius);
@@ -3208,7 +3208,7 @@ if (false) {
 						break;
 
 					case 'usm': // UnSharpMask sharpening
-						list($amount, $radius, $threshold) = array_pad(explode('|', $parameter, 3), 3, '');
+						[$amount, $radius, $threshold] = array_pad(explode('|', $parameter, 3), 3, '');
 						$amount    = ($amount            ? $amount    : 80);
 						$radius    = ($radius            ? $radius    : 0.5);
 						$threshold = ('' !== $threshold ? $threshold : 3);
@@ -3232,7 +3232,7 @@ if (false) {
 						break;
 
 					case 'size': // Resize
-						list($newwidth, $newheight, $stretch) = array_pad(explode('|', $parameter), 3, '');
+						[$newwidth, $newheight, $stretch] = array_pad(explode('|', $parameter), 3, '');
 						$newwidth  = (!$newwidth  ? imagesx($this->gdimg_output) : ((($newwidth  > 0) && ($newwidth  < 1)) ? round($newwidth  * imagesx($this->gdimg_output)) : round($newwidth)));
 						$newheight = (!$newheight ? imagesy($this->gdimg_output) : ((($newheight > 0) && ($newheight < 1)) ? round($newheight * imagesy($this->gdimg_output)) : round($newheight)));
 						$stretch   = ($stretch ? true : false);
@@ -3264,12 +3264,12 @@ if (false) {
 						break;
 
 					case 'rot': // ROTate
-						list($angle, $bgcolor) = array_pad(explode('|', $parameter, 2), 2, '');
+						[$angle, $bgcolor] = array_pad(explode('|', $parameter, 2), 2, '');
 						$phpthumbFilters->ImprovedImageRotate($this->gdimg_output, $angle, $bgcolor, null, $this);
 						break;
 
 					case 'stc': // Source Transparent Color
-						list($hexcolor, $min_limit, $max_limit) = array_pad(explode('|', $parameter, 3), 3, '');
+						[$hexcolor, $min_limit, $max_limit] = array_pad(explode('|', $parameter, 3), 3, '');
 						if (!phpthumb_functions::IsHexColor($hexcolor)) {
 							$this->DebugMessage('Skipping SourceTransparentColor hex color is invalid ('.$hexcolor.')', __FILE__, __LINE__);
 							return false;
@@ -4176,7 +4176,7 @@ if (false) {
 				// 4 = IMG_CROP_SIDES
 				// 5 = IMG_CROP_THRESHOLD
 				if (preg_match('#^(([0-4])|(5)\\|(0?\\.?[0-9]+)\\|([0-9A-F]{6}))$#i', $this->ica, $matches)) {
-					list($dummy, $dummy, $ica_mode1, $ica_mode2, $ica_threshold, $ica_color) = $matches;
+					[$dummy, $dummy, $ica_mode1, $ica_mode2, $ica_threshold, $ica_color] = $matches;
 					if ($ica_mode2) {
 						$param_color = hexdec($ica_color);
 						if (!imageistruecolor($this->gdimg_source)) {

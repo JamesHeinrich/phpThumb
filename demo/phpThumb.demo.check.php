@@ -76,8 +76,8 @@ $versions['raw'] = array(
 );
 foreach ($versions['raw'] as $key => $value) {
 	preg_match('#^([0-9\\.]+)\\-?(([0-9]{4})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2}))?#i', $value, $matches);
-	@list($huge, $major, $minor) = @explode('.', @$matches[1]);
-	@list($year, $month, $day, $hour, $min) = @$matches[3];
+	[$huge, $major, $minor] = explode('.', $matches[1]);
+	[$year, $month, $day, $hour, $min] = $matches[3];
 	$versions['base'][$key]  = $matches[1];
 	$versions['huge'][$key]  = $huge;
 	$versions['major'][$key] = $major;
@@ -88,7 +88,7 @@ foreach ($versions['raw'] as $key => $value) {
 	$versions['day'][$key]   = $day;
 	$versions['hour'][$key]  = $hour;
 	$versions['min'][$key]   = $min;
-	$versions['date'][$key]  = @mktime($hour, $min, 0, $month, $day, $year);
+	$versions['date'][$key]  = mktime($hour, $min, 0, $month, $day, $year);
 }
 $downloadlatest = 'Download the latest version from <a href="https://github.com/JamesHeinrich/phpThumb/">https://github.com/JamesHeinrich/phpThumb/</a>';
 echo '<tr><th nowrap>Latest phpThumb version:</th><th colspan="2">'.$versions['raw']['latest'].'</th><td>'.$downloadlatest.'</td></tr>';
@@ -242,7 +242,7 @@ echo '</th><td>GD2-bundled version is ideal.<br>GD2 (non-bundled) is second choi
 
 $IMreleaseDate = 0;
 if (preg_match('# ([0-9]{2})/([0-9]{2})/([0-9]{2}) #', $ServerInfo['im_version'], $matches)) {
-	list($dummy, $m, $d, $y) = $matches;
+	[$dummy, $m, $d, $y] = $matches;
 	if ($y < 70) {
 		$y += 2000;
 	} elseif ($y < 100) {
@@ -250,7 +250,7 @@ if (preg_match('# ([0-9]{2})/([0-9]{2})/([0-9]{2}) #', $ServerInfo['im_version']
 	}
 	$IMreleaseDate = mktime(12, 0, 0, $m, $d, $y);
 } elseif (preg_match('# ([0-9]{4})\\-([0-9]{2})\\-([0-9]{2}) #', $ServerInfo['im_version'], $matches)) {
-	list($dummy, $y, $m, $d) = $matches;
+	[$dummy, $y, $m, $d] = $matches;
 	$IMreleaseDate = mktime(12, 0, 0, $m, $d, $y);
 }
 $IMversionAge = time() - $IMreleaseDate;
@@ -420,7 +420,7 @@ $FunctionsExist = array(
 	'imageautocrop'         => array('yellow',     'PHP v5.5.0+, required for "ica" filter'),
 );
 foreach ($FunctionsExist as $function => $details) {
-	list($color, $description) = $details;
+	[$color, $description] = $details;
 	echo '<tr><th>'.$function.'</th><th colspan="2" style="background-color: ';
 	if (function_exists(strtolower($function))) {
 		echo 'lime;">TRUE';
@@ -443,7 +443,7 @@ $SettingFeatures = array(
 );
 
 foreach ($SettingFeatures as $feature => $FeaturesDetails) {
-	list($color_true, $color_false, $reason) = $FeaturesDetails;
+	[$color_true, $color_false, $reason] = $FeaturesDetails;
 	echo '<tr><th>'.$feature.':</th>';
 	echo '<th style="background-color: '.(@get_cfg_var($feature)                      ? $color_true : $color_false).';">'.$phpThumb->phpThumbDebugVarDump((bool) @get_cfg_var($feature)).'</th>';
 	echo '<th style="background-color: '.(preg_match('#(1|ON)#i', @ini_get($feature)) ? $color_true : $color_false).';">'.$phpThumb->phpThumbDebugVarDump((bool) preg_match('#(1|ON)#i', ini_get($feature))).'</th>';

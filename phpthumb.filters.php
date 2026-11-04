@@ -710,7 +710,7 @@ class phpthumb_filters {
 		$output_width  = imagesx($gdimg);
 		$output_height = imagesy($gdimg);
 
-		list($new_width, $new_height) = phpthumb_functions::ProportionalResize($output_width, $output_height, $output_width - max($border_width * 2, $radius_x), $output_height - max($border_width * 2, $radius_y));
+		[$new_width, $new_height] = phpthumb_functions::ProportionalResize($output_width, $output_height, $output_width - max($border_width * 2, $radius_x), $output_height - max($border_width * 2, $radius_y));
 		$offset_x = ($radius_x ? $output_width  - $new_width  - $radius_x : 0);
 
 		if ($gd_border_canvas = phpthumb_functions::ImageCreateFunction($output_width, $output_height)) {

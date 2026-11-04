@@ -41,7 +41,7 @@ $captionfile = $docroot.'/'.$imgdir.(@$_REQUEST['dir'] ? $_REQUEST['dir'].'/' : 
 if (file_exists($captionfile)) {
 	$filecontents = file($captionfile);
 	foreach ($filecontents as $key => $value) {
-		@list($photo, $caption) = explode("\t", $value);
+		[$photo, $caption] = explode("\t", $value);
 		$CAPTIONS[$photo] = $caption;
 	}
 }
